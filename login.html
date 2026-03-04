@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acessar | Vet System Control – Equine</title>
+  <meta name="description" content="Acesso ao sistema Vet System Control – Equine.">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/assets/css/styles.css">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="topbar topbar--solid">
+    <div class="container topbar__inner">
+      <a class="brand" href="/" aria-label="Vet System Control – Equine">
+        <span class="brand__mark" aria-hidden="true"></span>
+        <span class="brand__text"><strong>Vet System Control</strong><span>Equine</span></span>
+      </a>
+      <nav class="nav" aria-label="Navegação principal">
+        <a href="/recursos.html">Recursos</a>
+        <a href="/sobre.html">Sobre</a>
+        <a href="/contato.html">Contato</a>
+        <a class="btn btn--ghost is-active" href="/login.html">Acessar</a>
+      </nav>
+      <button class="nav__toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-nav-toggle>
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="nav__mobile" data-nav-mobile hidden>
+      <div class="container nav__mobileInner">
+        <a href="/recursos.html">Recursos</a>
+        <a href="/sobre.html">Sobre</a>
+        <a href="/contato.html">Contato</a>
+        <a class="btn btn--primary" href="/login.html">Acessar sistema</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="page">
+    <div class="container">
+      <div class="page__head">
+        <h1>Acessar sistema</h1>
+        <p class="lead">Você será direcionado ao aplicativo.</p>
+      </div>
+
+      <section class="panel">
+        <p class="small">Destino:</p>
+        <code class="code">https://app.vetsystemcontrol.com.br</code>
+
+        <div class="loginActions">
+          <a class="btn btn--primary" href="https://app.vetsystemcontrol.com.br">Ir para o login</a>
+          <a class="btn btn--secondary" href="/">Voltar ao site</a>
+        </div>
+
+        <p class="hint">Se o redirecionamento automático estiver bloqueado, use o botão acima.</p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    // Redirecionamento suave (melhor UX que "auto-redirect" na home).
+    setTimeout(function() {
+      window.location.href = "https://app.vetsystemcontrol.com.br";
+    }, 900);
+  </script>
+</body>
+</html>
