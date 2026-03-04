@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!--
+    IMPORTANT (Cloudflare Pages / Pretty URLs):
+    Quando a rota é acessada como /dashboard (sem .html), paths relativos como
+    "modules/app.js" viram "/dashboard/modules/app.js" e quebram (tela branca).
+    Base fixa + paths absolutos garantem carregamento consistente.
+  -->
+  <base href="/" />
+  <title>Dashboard - Vet System Control | Equine</title>
+
+  
+  <!-- VSC_AUTH_GUARD_PREHIDE_EARLY_REDIRECT_ESOS53 -->
+  <script>
+  (function(){
+    "use strict";
+    // Fail-safe auth guard (no blank screen):
+    // 1) Oculta só durante a checagem inicial.
+    // 2) Se houver sessão, revela imediatamente.
+    // 3) Se NÃO houver sessão, redireciona para login.
+    // 4) Em qualquer caso, existe timeout de segurança para revelar.
+    try{
+      var LOGIN_PAGE = "login.html";
+      var html = document.documentElement;
+
+      // Esconde apenas por um instante para evitar flash
+      html.style.visibility = "hidden";
+
+      var sid = null;
+      try{ sid = localStorage.getItem("vsc_session_id"); }catch(_){}
+
+      var cur = String(location && location.href ? location.href : "");
+      var isLogin = cur.toLowerCase().indexOf(LOGIN_PAGE) !== -1;
+
+      function reveal(){
+        try{ html.style.visibility = "visible"; }catch(_){}
+      }
+
+      if(!sid){
+        // DEMO/PRINT MODE: permite navegação e prints sem login/back-end
+        try{
+          var qsd = new URLSearchParams(location.search || "");
+          var demo = (qsd.get("demo")==="1" || qsd.get("print")==="1" || (localStorage.getItem("vsc_demo_mode")==="1"));
+          if(demo){
+            try{ localStorage.setItem("vsc_demo_mode","1"); }catch(_){}
+            // Em demo, não redireciona. Sessão será criada pelo demo_mode.js.
+            reveal();
+            setTimeout(reveal, 250);
+            document.addEventListener("DOMContentLoaded", reveal, { once:true });
+            return;
+          }
+        }catch(_){}
+        
+        if(!isLogin){
+          // Mantém escondido e redireciona
+          location.replace(LOGIN_PAGE + "?next=" + encodeURIComponent(cur));
+          return;
+        }
+        // Já está no login: revela
+        reveal();
+        return;
+      }
+
+      // Sessão presente: revela já
+      reveal();
+
+      // Fail-safe (caso algo sobrescreva visibility)
+      setTimeout(reveal, 250);
+      document.addEventListener("DOMContentLoaded", reveal, { once: true });
+
+    }catch(_){
+      try{ document.documentElement.style.visibility = "visible"; }catch(__){}
+    }
+  })();
+  </script>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ctext y=%2750%27 x=%2710%27 font-size=%2748%27%3E🐴%3C/text%3E%3C/svg%3E">
+
+  <link rel="stylesheet" href="/assets/styles.css" />
+
+
+
+
+
+
+  <script src="/modules/vsc_db.js" charset="utf-8" defer></script>
+  <script src="/modules/demo_mode.js" charset="utf-8"></script>
+  <script src="/modules/auth.js" charset="utf-8" defer></script>
+  <script src="/modules/auth_guard.js" charset="utf-8" defer></script>
+  <script src="/modules/app.js" charset="utf-8" defer></script>
+  <script src="/modules/enter-nav.js" charset="utf-8" defer></script>
+  <script src="/modules/vsc-topbar.js" charset="utf-8" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ─── Reset & Tokens ──────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green:        #1d9e5c;
+      --green-light:  #e8f8f0;
+      --green-mid:    #a7e8c6;
+      --red:          #e02424;
+      --red-light:    #fef2f2;
+      --amber:        #d97706;
+      --amber-light:  #fffbeb;
+      --blue:         #2563eb;
+      --blue-light:   #eff6ff;
+      --bg:           #f3f5f7;
+      --surface:      #ffffff;
+      --border:       rgba(0,0,0,.07);
+      --border-strong:rgba(0,0,0,.12);
+      --text:         #0f1923;
+      --muted:        #64748b;
+      --muted-light:  #94a3b8;
+      --radius:       16px;
+      --shadow-sm:    0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md:    0 4px 16px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.04);
+      --shadow-lg:    0 12px 40px rgba(0,0,0,.12), 0 4px 8px rgba(0,0,0,.05);
+    }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ─── Topbar ──────────────────────────────────────────────────── */
+    #vscTopbarFrame {
+      width: 100%; height: 86px; border: 0; display: block; background: #fff;
+    }
+    .topbar, .top-bar, header.topbar, header.top-bar,
+    #topbar, #topBar, #headerTopbar { display: none !important; }
+    body { margin-top: 0 !important; }
+
+    /* ─── Layout ──────────────────────────────────────────────────── */
+    .page {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    /* ─── Header ──────────────────────────────────────────────────── */
+    .dash-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+    .dash-header__left {}
+    .dash-greeting {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: .04em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .dash-title {
+      font-size: 38px;
+      font-weight: 900;
+      letter-spacing: -.03em;
+      color: var(--text);
+      line-height: 1.1;
+    }
+    .dash-date {
+      font-size: 14px;
+      color: var(--muted);
+      margin-top: 6px;
+      font-family: 'DM Mono', monospace;
+    }
+    .dash-refresh {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 16px;
+      cursor: pointer;
+      transition: all .15s;
+      box-shadow: var(--shadow-sm);
+    }
+    .dash-refresh:hover {
+      color: var(--green);
+      border-color: var(--green-mid);
+      box-shadow: var(--shadow-md);
+    }
+    .dash-refresh__icon { font-size: 16px; transition: transform .4s; }
+    .dash-refresh.loading .dash-refresh__icon { animation: spin .7s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── KPI Strip (números grandes) ────────────────────────────── */
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1100px) { .kpi-strip { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 580px)  { .kpi-strip { grid-template-columns: 1fr; } }
+
+    .kpi {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 22px 20px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow .15s, transform .15s;
+    }
+    .kpi:hover { box-shadow: var(--shadow-md); transform: translateY(-1px); }
+    .kpi::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: var(--kpi-accent, var(--green));
+    }
+    .kpi--green  { --kpi-accent: var(--green); }
+    .kpi--red    { --kpi-accent: var(--red); }
+    .kpi--amber  { --kpi-accent: var(--amber); }
+    .kpi--blue   { --kpi-accent: var(--blue); }
+
+    .kpi__label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .kpi__value {
+      font-size: 36px;
+      font-weight: 900;
+      letter-spacing: -.03em;
+      line-height: 1;
+      color: var(--text);
+      margin: 6px 0 2px;
+    }
+    .kpi__sub {
+      font-size: 12px;
+      color: var(--muted-light);
+      font-weight: 500;
+    }
+    .kpi__icon {
+      position: absolute;
+      top: 18px; right: 18px;
+      font-size: 28px;
+      opacity: .15;
+    }
+
+    /* ─── Row de cards médios ─────────────────────────────────────── */
+    .mid-row {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 900px) { .mid-row { grid-template-columns: 1fr; } }
+
+    /* ─── Card base ───────────────────────────────────────────────── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      transition: box-shadow .15s;
+    }
+    .card:hover { box-shadow: var(--shadow-md); }
+    .card__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+    .card__title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -.01em;
+    }
+    .card__badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      background: var(--green-light);
+      color: var(--green);
+    }
+    .card__badge--red   { background: var(--red-light); color: var(--red); }
+    .card__badge--amber { background: var(--amber-light); color: var(--amber); }
+    .card__body { padding: 0; }
+
+    /* ─── Tabela de atendimentos recentes ─────────────────────────── */
+    .atd-table { width: 100%; border-collapse: collapse; }
+    .atd-table th {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted-light);
+      padding: 10px 20px;
+      text-align: left;
+      background: #fafbfc;
+      border-bottom: 1px solid var(--border);
+    }
+    .atd-table td {
+      padding: 12px 20px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    .atd-table tr:last-child td { border-bottom: none; }
+    .atd-table tr:hover td { background: #fafbfc; }
+
+    .status-pill {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .status-pill--rascunho   { background: #f1f5f9; color: #64748b; }
+    .status-pill--finalizado { background: var(--green-light); color: var(--green); }
+    .status-pill--faturado   { background: var(--blue-light); color: var(--blue); }
+    .status-pill--em_atendimento { background: var(--amber-light); color: var(--amber); }
+
+    .atd-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .atd-link {
+      font-weight: 700;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .atd-link:hover { color: var(--green); }
+
+    /* ─── Alertas ─────────────────────────────────────────────────── */
+    .alertas-list { padding: 8px 0; }
+    .alerta-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--border);
+      transition: background .12s;
+    }
+    .alerta-item:last-child { border-bottom: none; }
+    .alerta-item:hover { background: #fafbfc; }
+    .alerta-dot {
+      width: 8px; height: 8px;
+      border-radius: 999px;
+      margin-top: 4px;
+      flex-shrink: 0;
+    }
+    .alerta-dot--red   { background: var(--red); }
+    .alerta-dot--amber { background: var(--amber); }
+    .alerta-dot--green { background: var(--green); }
+    .alerta-dot--blue  { background: var(--blue); }
+    .alerta-text { font-size: 13px; line-height: 1.4; }
+    .alerta-text strong { font-weight: 800; }
+    .alerta-time { font-size: 11px; color: var(--muted-light); margin-top: 2px; }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      color: var(--muted-light);
+      gap: 8px;
+    }
+    .empty-state__icon { font-size: 32px; opacity: .4; }
+    .empty-state__text { font-size: 13px; }
+
+    /* ─── Bottom row: 3 colunas ───────────────────────────────────── */
+    .bot-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1000px) { .bot-row { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px)  { .bot-row { grid-template-columns: 1fr; } }
+
+    /* ─── Mini stat rows ──────────────────────────────────────────── */
+    .stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 20px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+    }
+    .stat-row:last-child { border-bottom: none; }
+    .stat-row__label { color: var(--muted); font-weight: 500; }
+    .stat-row__val { font-weight: 800; color: var(--text); }
+    .stat-row__val--green { color: var(--green); }
+    .stat-row__val--red   { color: var(--red); }
+    .stat-row__val--amber { color: var(--amber); }
+
+    /* ─── Atalhos (módulos) ───────────────────────────────────────── */
+    .atalhos-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    @media (max-width: 1000px) { .atalhos-grid { grid-template-columns: repeat(3,1fr); } }
+    @media (max-width: 640px)  { .atalhos-grid { grid-template-columns: repeat(2,1fr); } }
+
+    .atalho {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 20px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      text-decoration: none;
+      color: var(--text);
+      transition: all .15s;
+      text-align: center;
+    }
+    .atalho:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+      border-color: var(--green-mid);
+    }
+    .atalho__ico {
+      width: 48px; height: 48px;
+      background: var(--green-light);
+      border: 1px solid var(--green-mid);
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      line-height: 1;
+      font-family: "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji", system-ui, sans-serif;
+    }
+    .atalho__label {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: -.01em;
+    }
+
+    /* ─── Seção título ────────────────────────────────────────────── */
+    .section-title {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      margin-top: 8px;
+    }
+
+    /* ─── Rodapé ──────────────────────────────────────────────────── */
+    .dash-footer {
+      font-size: 11px;
+      color: var(--muted-light);
+      text-align: center;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ─── Loading skeleton ────────────────────────────────────────── */
+    .skel {
+      background: linear-gradient(90deg, #f0f2f5 25%, #e8eaed 50%, #f0f2f5 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s infinite;
+      border-radius: 6px;
+      display: inline-block;
+    }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+    /* ─── Modais (backup) ─────────────────────────────────────────── */
+    .vsc-modal { position:fixed; inset:0; z-index:9999; display:none; }
+    .vsc-modal.open { display:block; }
+    .vsc-modal__overlay { position:absolute; inset:0; background:rgba(0,0,0,.4); }
+    .vsc-modal__panel {
+      position:relative;
+      width:min(760px, calc(100% - 24px));
+      margin:80px auto 24px;
+      background:#fff;
+      border:1px solid var(--border);
+      border-radius:18px;
+      box-shadow:var(--shadow-lg);
+      overflow:hidden;
+    }
+    .vsc-modal__head {
+      display:flex; align-items:flex-start; justify-content:space-between;
+      gap:16px; padding:18px 20px 14px;
+      border-bottom:1px solid var(--border);
+    }
+    .vsc-modal__title { font-weight:900; font-size:18px; }
+    .vsc-modal__sub { font-size:12px; color:var(--muted); margin-top:4px; }
+    .vsc-modal__x {
+      border:0; background:transparent; font-size:18px; cursor:pointer;
+      padding:8px 10px; border-radius:10px; line-height:1;
+    }
+    .vsc-modal__x:hover { background:rgba(0,0,0,.06); }
+    .vsc-modal__body { padding:18px 20px 20px; }
+    .vsc-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:12px; }
+    .vsc-btn {
+      border:1px solid var(--border-strong); background:#fff; color:#111;
+      font-weight:800; border-radius:12px; padding:10px 14px; cursor:pointer;
+      font-family:'DM Sans',sans-serif; font-size:14px; transition:all .15s;
+    }
+    .vsc-btn:hover { box-shadow:0 6px 20px rgba(0,0,0,.10); transform:translateY(-1px); }
+    .vsc-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; box-shadow:none; }
+    .vsc-btn--primary { background:var(--green-light); border-color:var(--green-mid); color:var(--green); }
+    .vsc-progress {
+      border:1px solid var(--border); border-radius:12px; padding:12px;
+      background:#fafbfc; margin-top:8px;
+    }
+    .vsc-progress__bar { height:8px; border-radius:999px; background:var(--border); overflow:hidden; }
+    .vsc-progress__fill { height:8px; border-radius:999px; background:var(--green); width:0%; transition:width .3s; }
+    .vsc-progress__text { margin-top:8px; font-size:12px; color:var(--muted); font-weight:700; }
+    .vsc-log {
+      margin-top:12px; height:180px; overflow:auto;
+      border:1px solid var(--border); border-radius:12px; padding:10px 14px;
+      background:#0b1220; color:#a8d8a8;
+      font-family:'DM Mono',monospace; font-size:12px; line-height:1.5; white-space:pre-wrap;
+    }
+    .vsc-footer {
+      display:flex; justify-content:space-between; gap:10px;
+      margin-top:12px; flex-wrap:wrap;
+    }
+
+    /* Badge atualizações */
+    .vsc-badge {
+      position:absolute; top:12px; right:12px;
+      background:#e11d48; color:#fff; font-weight:900; font-size:10px;
+      padding:4px 8px; border-radius:999px; display:none;
+      align-items:center; gap:4px;
+    }
+    .vsc-badge--show { display:inline-flex; }
+    .vsc-badge__dot { width:6px; height:6px; border-radius:999px; background:#fff; }
+
+    /* ─── Animação entrada ────────────────────────────────────────── */
+    .anim-in {
+      opacity: 0;
+      transform: translateY(10px);
+      animation: fadeUp .35s ease forwards;
+    }
+    .anim-in:nth-child(1) { animation-delay: .02s; }
+    .anim-in:nth-child(2) { animation-delay: .06s; }
+    .anim-in:nth-child(3) { animation-delay: .10s; }
+    .anim-in:nth-child(4) { animation-delay: .14s; }
+    @keyframes fadeUp { to { opacity:1; transform:none; } }
+  
+/* Premium Enterprise: Alertas operacionais (detalhes + ação) */
+.alerta-body{ min-width:0; }
+.alerta-actions{ margin-top:10px; }
+.alerta-btn{
+  border:1px solid rgba(0,0,0,.08);
+  background:#fff;
+  padding:8px 10px;
+  border-radius:10px;
+  font-weight:600;
+  font-size:12px;
+  cursor:pointer;
+}
+.alerta-btn:hover{ background:#fafbfc; }
+.alerta-btn--link{ text-decoration:none; display:inline-block; }
+.alerta-details{
+  margin-top:10px;
+  border:1px solid rgba(0,0,0,.06);
+  background:#fff;
+  border-radius:12px;
+  padding:10px;
+}
+.alerta-details__head,
+.alerta-details__row{
+  display:grid;
+  grid-template-columns: 1fr 110px 110px;
+  gap:10px;
+  align-items:center;
+}
+.alerta-details__head{
+  font-size:11px;
+  color:var(--muted);
+  font-weight:700;
+  padding-bottom:6px;
+  border-bottom:1px solid rgba(0,0,0,.06);
+  margin-bottom:6px;
+}
+.alerta-details__row{
+  font-size:12px;
+  padding:6px 0;
+  border-bottom:1px dashed rgba(0,0,0,.06);
+}
+.alerta-details__row:last-child{ border-bottom:none; }
+.alerta-details__more{ font-size:11px; color:var(--muted); margin-top:6px; }
+.cut{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+
+/* VSC_KPI_ICON_INTENSITY – Premium Enterprise
+   Ícones dos KPIs reagem ao estado (neutro/forte/alerta).
+*/
+.kpi__icon{
+  opacity:.22;
+  transition: opacity .18s ease, transform .18s ease, filter .18s ease;
+}
+.kpi.kpi--neutral .kpi__icon{ opacity:.22; transform:translateZ(0) scale(1); filter:none; }
+.kpi.kpi--strong  .kpi__icon{ opacity:.95; transform:translateZ(0) scale(1.06); filter:drop-shadow(0 2px 6px rgba(0,0,0,.12)); }
+.kpi.kpi--alert   .kpi__icon{
+  opacity:1;
+  transform:translateZ(0) scale(1.10);
+  filter:drop-shadow(0 3px 10px rgba(220,38,38,.22));
+  animation:vscKpiPulse 1.6s ease-in-out infinite;
+}
+@keyframes vscKpiPulse{
+  0%,100%{ transform:translateZ(0) scale(1.08); }
+  50%{ transform:translateZ(0) scale(1.16); }
+}
+
+</style>
+  <script src="demo_seed.js" defer></script>
+</head>
+
+<body class="page-dashboard">
+  <iframe id="vscTopbarFrame" src="topbar.html?v=final" title="Navegação"></iframe>
+
+  <main class="page">
+
+    <!-- ─── Header ─────────────────────────────────────────────── -->
+    <div class="dash-header">
+      <div class="dash-header__left">
+        <div class="dash-greeting" id="dashGreeting">Bom dia</div>
+        <h1 class="dash-title">Dashboard</h1>
+        <div class="dash-date" id="dashDate">—</div>
+      </div>
+      <button class="dash-refresh" id="btnRefresh" title="Atualizar dados">
+        <span class="dash-refresh__icon">↻</span>
+        Atualizar
+      </button>
+    </div>
+
+    <!-- ─── KPIs principais ─────────────────────────────────────── -->
+    <div class="kpi-strip">
+      <div class="kpi kpi--green anim-in">
+        <div class="kpi__icon">🩺</div>
+        <div class="kpi__label">Atendimentos Hoje</div>
+        <div class="kpi__value" id="kpiAtdHoje">—</div>
+        <div class="kpi__sub" id="kpiAtdHojeSub">carregando...</div>
+      </div>
+      <div class="kpi kpi--blue anim-in">
+        <div class="kpi__icon">📅</div>
+        <div class="kpi__label">Atendimentos no Mês</div>
+        <div class="kpi__value" id="kpiAtdMes">—</div>
+        <div class="kpi__sub" id="kpiAtdMesSub">carregando...</div>
+      </div>
+      <div class="kpi kpi--green anim-in">
+        <div class="kpi__icon">💰</div>
+        <div class="kpi__label">Faturado no Mês</div>
+        <div class="kpi__value" id="kpiFaturado">—</div>
+        <div class="kpi__sub" id="kpiFaturadoSub">carregando...</div>
+      </div>
+      <div class="kpi kpi--red anim-in">
+        <div class="kpi__icon">⚠️</div>
+        <div class="kpi__label">Contas Vencidas</div>
+        <div class="kpi__value" id="kpiVencidas">—</div>
+        <div class="kpi__sub" id="kpiVencidasSub">carregando...</div>
+      </div>
+    </div>
+
+    <!-- ─── Linha do meio: Atendimentos Recentes + Alertas ──────── -->
+    <div class="mid-row">
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">Atendimentos Recentes</div>
+          <a href="atendimentos.html" class="card__badge" style="text-decoration:none;">Ver todos →</a>
+        </div>
+        <div class="card__body">
+          <table class="atd-table">
+            <thead>
+              <tr>
+                <th>Nº</th>
+                <th>Cliente</th>
+                <th>Data</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="tblAtendimentos">
+              <tr><td colspan="4"><div class="empty-state"><span class="empty-state__icon">⏳</span><span class="empty-state__text">Carregando...</span></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">Alertas & Avisos</div>
+          <span class="card__badge" id="alertasCount">0</span>
+        </div>
+        <div class="alertas-list" id="alertasList">
+          <div class="empty-state">
+            <span class="empty-state__icon">⏳</span>
+            <span class="empty-state__text">Carregando...</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ─── Linha inferior: 3 cards de resumo ───────────────────── -->
+    <div class="bot-row">
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">Cadastros</div>
+        </div>
+        <div class="card__body">
+          <div class="stat-row">
+            <span class="stat-row__label">👤 Clientes ativos</span>
+            <span class="stat-row__val stat-row__val--green" id="statClientes">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">🐴 Animais ativos</span>
+            <span class="stat-row__val stat-row__val--green" id="statAnimais">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">📦 Produtos cadastrados</span>
+            <span class="stat-row__val" id="statProdutos">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">🛠️ Serviços ativos</span>
+            <span class="stat-row__val" id="statServicos">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">🧪 Exames ativos</span>
+            <span class="stat-row__val" id="statExames">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">Contas a Receber</div>
+          <a href="contasareceber.html" class="card__badge" style="text-decoration:none;">Abrir →</a>
+        </div>
+        <div class="card__body">
+          <div class="stat-row">
+            <span class="stat-row__label">Total em aberto</span>
+            <span class="stat-row__val" id="statARAberto">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">Vencidos</span>
+            <span class="stat-row__val stat-row__val--red" id="statARVencido">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">Parcial</span>
+            <span class="stat-row__val stat-row__val--amber" id="statARParcial">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">Recebidos no mês</span>
+            <span class="stat-row__val stat-row__val--green" id="statARRecebido">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">Total (saldo em aberto)</span>
+            <span class="stat-row__val" id="statARTotal">—</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card__head">
+          <div class="card__title">Atendimentos por Status</div>
+        </div>
+        <div class="card__body">
+          <div class="stat-row">
+            <span class="stat-row__label">🟡 Rascunho</span>
+            <span class="stat-row__val stat-row__val--amber" id="statAtdRascunho">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">🟠 Em atendimento</span>
+            <span class="stat-row__val" id="statAtdEmAndamento">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">🟢 Finalizados (total)</span>
+            <span class="stat-row__val stat-row__val--green" id="statAtdFinalizado">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">🔵 Faturados</span>
+            <span class="stat-row__val stat-row__val--green" id="statAtdFaturado">—</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-row__label">Total geral</span>
+            <span class="stat-row__val" id="statAtdTotal">—</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ─── Atalhos rápidos ──────────────────────────────────────── -->
+    <div class="section-title">Acesso Rápido</div>
+    <div class="atalhos-grid">
+      <a class="atalho" href="atendimentos.html">
+        <div class="atalho__ico">🩺</div>
+        <div class="atalho__label">Atendimentos</div>
+      </a>
+      <a class="atalho" href="clientes.html">
+        <div class="atalho__ico">👤</div>
+        <div class="atalho__label">Clientes</div>
+      </a>
+      <a class="atalho" href="animais.html">
+        <div class="atalho__ico">🐴</div>
+        <div class="atalho__label">Animais</div>
+      </a>
+      <a class="atalho" href="contasareceber.html">
+        <div class="atalho__ico">💰</div>
+        <div class="atalho__label">Contas a Receber</div>
+      </a>
+            <a class="atalho" href="contasapagar.html">
+        <div class="atalho__ico">💸</div>
+        <div class="atalho__label">Contas a Pagar</div>
+      </a>
+      <a class="atalho" href="fornecedores.html">
+        <div class="atalho__ico">🏪</div>
+        <div class="atalho__label">Fornecedores</div>
+      </a>
+      <a class="atalho" href="relatorios_financeiro.html">
+        <div class="atalho__ico">📈</div>
+        <div class="atalho__label">Relatórios Financeiros</div>
+      </a>
+<a class="atalho" href="produtos.html">
+        <div class="atalho__ico">📦</div>
+        <div class="atalho__label">Produtos</div>
+      </a>
+      
+      <a class="atalho" href="pedidos.html">
+        <div class="atalho__ico">📦📝</div>
+        <div class="atalho__label">Pedidos</div>
+      </a>
+<a class="atalho" href="servicos.html">
+        <div class="atalho__ico">🛠️</div>
+        <div class="atalho__label">Serviços</div>
+      </a>
+      <a class="atalho" href="exames.html">
+        <div class="atalho__ico">🧪</div>
+        <div class="atalho__label">Exames</div>
+      </a>
+      <a class="atalho" href="relatorios.html">
+        <div class="atalho__ico">📊</div>
+        <div class="atalho__label">Relatórios</div>
+      </a>
+      <a class="atalho" href="importacaoxml.html">
+        <div class="atalho__ico">🧩</div>
+        <div class="atalho__label">Importação XML</div>
+      </a>
+      <a class="atalho" href="empresa.html">
+        <div class="atalho__ico">🏢</div>
+        <div class="atalho__label">Empresa</div>
+      </a>
+      <a class="atalho" href="configuracoes.html">
+        <div class="atalho__ico">⚙️</div>
+        <div class="atalho__label">Configurações</div>
+      </a>
+      <a class="atalho" href="configuracoes_usuarios.html">
+        <div class="atalho__ico">👥</div>
+        <div class="atalho__label">Configurações de Usuários</div>
+      </a>
+      <a class="atalho" href="atualizacoes.html">
+        <div class="atalho__ico">⬆️</div>
+        <div class="atalho__label">Atualizações</div>
+      </a>
+
+      <a class="atalho" href="#" id="atalhoBackup">
+        <div class="atalho__ico">💾</div>
+        <div class="atalho__label">Backup</div>
+      </a>
+    </div>
+
+    <!-- ─── Rodapé ───────────────────────────────────────────────── -->
+    <div class="dash-footer">
+      Vet System Control – Equine &nbsp;·&nbsp; Offline-first &nbsp;·&nbsp; UUID v4 &nbsp;·&nbsp; Outbox (sync_queue)
+      &nbsp;·&nbsp; <span id="footerTs">—</span>
+    </div>
+
+  </main>
+
+  <!-- ─── Modal Backup/Restaurar ──────────────────────────────────── -->
+  <div id="vscBackupModal" class="vsc-modal" aria-hidden="true">
+    <div class="vsc-modal__overlay" data-close="1"></div>
+    <div class="vsc-modal__panel" role="dialog" aria-modal="true" aria-labelledby="vscBackupTitle">
+      <div class="vsc-modal__head">
+        <div>
+          <div id="vscBackupTitle" class="vsc-modal__title">Backup / Restaurar</div>
+          <div class="vsc-modal__sub">Serviço local · <b>C:\Vet System Control - Equine\Vet_Backups</b></div>
+        </div>
+        <button class="vsc-modal__x" id="vscBackupClose" title="Fechar">✕</button>
+      </div>
+      <div class="vsc-modal__body">
+        <div class="vsc-row">
+          <button class="vsc-btn vsc-btn--primary" id="btnBackupNow">Fazer backup agora</button>
+          <button class="vsc-btn" id="btnPickRestore">Restaurar de arquivo</button>
+          <input type="file" id="inpRestoreFile" accept=".vscbak,application/octet-stream" style="display:none;" />
+        </div>
+        <div class="vsc-progress">
+          <div class="vsc-progress__bar"><div id="vscProgFill" class="vsc-progress__fill" style="width:0%;"></div></div>
+          <div id="vscProgText" class="vsc-progress__text">Pronto.</div>
+        </div>
+        <div class="vsc-log" id="vscBackupLog" aria-label="Log do backup"></div>
+        <div id="vscBackupListBox" style="margin-top:12px; display:none;">
+          <div class="vsc-row" style="gap:8px; flex-wrap:wrap;">
+            <select id="vscBackupSelect" style="flex:1; min-width:220px; padding:10px 12px; border:1px solid #ddd; border-radius:12px;"></select>
+            <button class="vsc-btn" id="btnBackupVerifySel" title="Verificar SHA/bytes do backup selecionado">Verificar</button>
+            <button class="vsc-btn" id="btnBackupDownloadSel" title="Baixar arquivo do backup selecionado">Baixar</button>
+            <button class="vsc-btn" id="btnBackupRestoreSel" title="Restaurar (sobrescreve dados)">Restaurar</button>
+            <button class="vsc-btn" id="btnBackupDeleteSel" title="Excluir backup selecionado">Excluir</button>
+          </div>
+          <div class="vsc-row" style="gap:10px; margin-top:10px; flex-wrap:wrap; align-items:center;">
+            <span style="font-size:13px; opacity:.8;">Retenção:</span>
+            <input id="inpBackupKeepLast" type="number" min="1" max="200" value="10" style="width:90px; padding:10px 12px; border:1px solid #ddd; border-radius:12px;" />
+            <button class="vsc-btn" id="btnBackupRetention" title="Manter apenas os N backups mais recentes">Aplicar</button>
+            <span style="flex:1;"></span>
+            <button class="vsc-btn" id="btnBackupAudit" title="Mostrar auditoria (últimos eventos)">Auditoria</button>
+          </div>
+          <div class="vsc-row" style="gap:10px; margin-top:10px; flex-wrap:wrap; align-items:center;">
+            <label style="display:flex; gap:8px; align-items:center; font-size:13px; opacity:.9;">
+              <input type="checkbox" id="chkBackupAuto" />
+              Backup automático (quando o ERP estiver aberto)
+            </label>
+            <select id="selBackupAutoFreq" style="padding:10px 12px; border:1px solid #ddd; border-radius:12px;">
+              <option value="daily">Diário</option>
+              <option value="weekly">Semanal</option>
+              <option value="monthly">Mensal</option>
+            </select>
+            <input id="timeBackupAuto" type="time" value="03:00" style="padding:10px 12px; border:1px solid #ddd; border-radius:12px;" />
+            <button class="vsc-btn" id="btnBackupAutoSave" title="Salvar configurações do backup automático">Salvar</button>
+          </div>
+        </div>
+
+        <div class="vsc-footer">
+          <button class="vsc-btn" id="btnBackupList">Listar backups</button>
+          <button class="vsc-btn" id="btnBackupCancel" disabled>Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/modules/dashboard.js" charset="utf-8" defer></script>
+
+  <script>
+  /* ================================================================
+     DASHBOARD ENGINE — VSC v2.0
+     Lê dados diretamente do IndexedDB (VSC_DB) e preenche os KPIs,
+     tabela de recentes, alertas e estatísticas em tempo real.
+  ================================================================ */
+  (function () {
+    "use strict";
+
+    const $ = (id) => document.getElementById(id);
+
+    /* ── Data/hora ────────────────────────────────────────────── */
+    function hoje() {
+      const d = new Date();
+      return d.toISOString().slice(0, 10); // YYYY-MM-DD
+    }
+
+    function mesFmt() {
+      return new Date().toISOString().slice(0, 7); // YYYY-MM
+    }
+
+    function setGreeting() {
+      const h = new Date().getHours();
+      const g = h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
+      const el = $("dashGreeting"); if (el) el.textContent = g;
+    }
+
+    function setDate() {
+      const d = new Date();
+      const dias = ["domingo","segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado"];
+      const meses = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+      const s = `${dias[d.getDay()]}, ${d.getDate()} de ${meses[d.getMonth()]} de ${d.getFullYear()}`;
+      const el = $("dashDate"); if (el) el.textContent = s;
+      const ft = $("footerTs"); if (ft) ft.textContent = "Atualizado às " + d.toLocaleTimeString("pt-BR");
+    }
+
+    /* ── Formatadores ─────────────────────────────────────────── */
+    function fmtBRL(cents) {
+      const n = Number(cents || 0) / 100;
+      try { return n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" }); }
+      catch (_) { return "R$ " + n.toFixed(2).replace(".", ","); }
+    }
+
+    function fmtBRLK(cents) {
+      const n = Number(cents || 0) / 100;
+      if (n >= 1000) return "R$\u00a0" + (n / 1000).toFixed(1).replace(".", ",") + "k";
+      return fmtBRL(cents);
+    }
+
+    /* ── IDB helpers ──────────────────────────────────────────── */
+    async function openDB() {
+      if (window.VSC_DB && typeof window.VSC_DB.openDB === "function") {
+        return window.VSC_DB.openDB();
+      }
+      return new Promise((res, rej) => {
+        const r = indexedDB.open("vsc_db");
+        r.onsuccess = () => res(r.result);
+        r.onerror = () => rej(r.error);
+      });
+    }
+
+    async function getAll(db, storeName) {
+      if (!db.objectStoreNames.contains(storeName)) return [];
+      return new Promise((res) => {
+        try {
+          const tx = db.transaction([storeName], "readonly");
+          const r = tx.objectStore(storeName).getAll();
+          r.onsuccess = () => res(r.result || []);
+          r.onerror = () => res([]);
+        } catch (_) { res([]); }
+      });
+    }
+
+    /* ── Texto seguro ─────────────────────────────────────────── */
+    function set(id, val) {
+      const el = $(id);
+      if (el) el.textContent = String(val ?? "—");
+    }
+
+    /* ── Renderizar atendimentos recentes ─────────────────────── */
+    function renderAtendimentos(list) {
+      const tbody = $("tblAtendimentos");
+      if (!tbody) return;
+
+      const recent = [...list]
+        .filter(a => a && !a.excluido)
+        .sort((a, b) => String(b.created_at || "").localeCompare(String(a.created_at || "")))
+        .slice(0, 8);
+
+      if (!recent.length) {
+        tbody.innerHTML = `<tr><td colspan="4"><div class="empty-state"><span class="empty-state__icon">📋</span><span class="empty-state__text">Nenhum atendimento ainda.</span></div></td></tr>`;
+        return;
+      }
+
+      const statusPill = (s) => {
+        const map = {
+          orcamento:      "rascunho",
+          em_atendimento: "em_atendimento",
+          finalizado:     "finalizado",
+          cancelado:      "rascunho",
+        };
+        const labelMap = {
+          orcamento: "Orçamento",
+          em_atendimento: "Em Atendimento",
+          finalizado: "Finalizado",
+          cancelado: "Cancelado",
+        };
+        const cls = map[String(s || "").toLowerCase()] || "rascunho";
+        const label = labelMap[String(s || "").toLowerCase()] || String(s || "—");
+        return `<span class="status-pill status-pill--${cls}">${label}</span>`;
+      };
+
+      tbody.innerHTML = recent.map(a => {
+        const dt = a.created_at ? new Date(a.created_at).toLocaleDateString("pt-BR") : "—";
+        const num = a.numero || a.numero_atendimento || "—";
+        const cli = a.cliente_label || a._cliente_nome || "—";
+        return `<tr>
+          <td class="atd-num">${num}</td>
+          <td><a class="atd-link" href="atendimentos.html">${cli}</a></td>
+          <td style="color:var(--muted);font-size:12px;">${dt}</td>
+          <td>${statusPill(a.status)}</td>
+        </tr>`;
+      }).join("");
+    }
+
+    /* ── Renderizar alertas ───────────────────────────────────── */
+    function renderAlertas(alertas) {
+      const list = $("alertasList");
+      const count = $("alertasCount");
+      if (!list) return;
+
+      if (!alertas.length) {
+        list.innerHTML = `<div class="empty-state"><span class="empty-state__icon">✅</span><span class="empty-state__text">Sem alertas no momento.</span></div>`;
+        if (count) { count.textContent = "0"; count.className = "card__badge"; }
+        return;
+      }
+
+      if (count) {
+        count.textContent = String(alertas.length);
+        const hasRed = alertas.some(a => a.tipo === "red");
+        count.className = "card__badge" + (hasRed ? " card__badge--red" : " card__badge--amber");
+      }
+
+      const fmtDateBR = (iso) => {
+        if (!iso) return "—";
+        // iso: YYYY-MM-DD
+        const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(iso).slice(0,10));
+        if (!m) return String(iso);
+        return `${m[3]}/${m[2]}/${m[1]}`;
+      };
+
+      const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({
+        "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+      }[c]));
+
+      list.innerHTML = alertas.map(a => {
+        const items = Array.isArray(a.items) ? a.items : [];
+        const hasItems = items.length > 0;
+
+        const actionHtml = a.action === "ar_overdue"
+          ? `<button class="alerta-btn" type="button" data-action="ar_overdue" data-ids='${esc(a.ids_json || "[]")}'>Abrir contas em atraso →</button>`
+          : (a.href ? `<a class="alerta-btn alerta-btn--link" href="${esc(a.href)}">Abrir →</a>` : "");
+
+        const itemsHtml = hasItems ? `
+          <div class="alerta-details" aria-label="Detalhes do alerta">
+            <div class="alerta-details__head">
+              <span>Cliente</span><span>Vencimento</span><span style="text-align:right">Valor</span>
+            </div>
+            ${items.slice(0, 8).map(it => `
+              <div class="alerta-details__row">
+                <span class="cut">${esc(it.cliente || "—")}</span>
+                <span>${esc(fmtDateBR(it.vencimento))}</span>
+                <span style="text-align:right">${esc(it.valor || "—")}</span>
+              </div>
+            `).join("")}
+            ${items.length > 8 ? `<div class="alerta-details__more">+ ${items.length - 8} item(ns)…</div>` : ""}
+          </div>
+        ` : "";
+
+        return `
+        <div class="alerta-item" data-alert-type="${esc(a.tipo || "amber")}">
+          <span class="alerta-dot alerta-dot--${esc(a.tipo || "amber")}"></span>
+          <div class="alerta-body">
+            <div class="alerta-text"><strong>${esc(a.titulo)}</strong> — ${esc(a.msg)}</div>
+            ${a.sub ? `<div class="alerta-time">${esc(a.sub)}</div>` : ""}
+            ${itemsHtml}
+            ${actionHtml ? `<div class="alerta-actions">${actionHtml}</div>` : ""}
+          </div>
+        </div>
+      `;
+      }).join("");
+
+      // bind actions (idempotente)
+      if (!list.__vscBoundActions) {
+        list.__vscBoundActions = true;
+        list.addEventListener("click", function(ev){
+          const btn = ev.target && ev.target.closest ? ev.target.closest("[data-action]") : null;
+          if (!btn) return;
+          const action = btn.getAttribute("data-action");
+          if (action === "ar_overdue") {
+            ev.preventDefault();
+            let ids = [];
+            try { ids = JSON.parse(btn.getAttribute("data-ids") || "[]"); } catch(_){}
+            try{
+              localStorage.setItem("vsc_nav_ar_filter", JSON.stringify({
+                filter: "overdue",
+                ids,
+                from: "dashboard",
+                ts: new Date().toISOString()
+              }));
+            }catch(_){}
+            const q = new URLSearchParams();
+            q.set("filter","overdue");
+            q.set("only","atraso");
+            window.location.href = "contasareceber.html?" + q.toString();
+          }
+        });
+      }
+    }
+
+    /* ── MAIN: carregar todos os dados ────────────────────────── */
+    async function load() {
+      const btn = $("btnRefresh");
+      if (btn) btn.classList.add("loading");
+
+      try {
+        const db = await openDB();
+
+        const [
+          atendimentos,
+          clientes,
+          animais,
+          produtos,
+          servicos,
+          exames,
+          contasAR,
+        ] = await Promise.all([
+          getAll(db, "atendimentos_master"),
+          getAll(db, "clientes_master"),
+          getAll(db, "animais_master"),
+          getAll(db, "produtos_master"),
+          getAll(db, "servicos_master"),
+          getAll(db, "exames_master"),
+          getAll(db, "contas_receber"),
+        ]);
+
+        try { db.close(); } catch (_) {}
+
+        const todayStr = hoje();
+        const mesStr   = mesFmt();
+
+        /* ── KPIs ─────────────────────────────────────────────── */
+        // Atendimentos hoje
+        const atdHoje = atendimentos.filter(a => a?.created_at?.slice(0, 10) === todayStr);
+        const atdHojeF = atdHoje.filter(a => a.status === "finalizado" || a.status === "faturado");
+        set("kpiAtdHoje", atdHoje.length);
+        set("kpiAtdHojeSub", `${atdHojeF.length} finalizado(s) hoje`);
+
+        // Atendimentos no mês
+        const atdMes = atendimentos.filter(a => a?.created_at?.slice(0, 7) === mesStr);
+        set("kpiAtdMes", atdMes.length);
+        set("kpiAtdMesSub", `${atdMes.filter(a => a.status === "finalizado" || a.status === "faturado").length} finalizados`);
+
+        // Faturado no mês (soma lançamentos dos atendimentos finalizados no mês)
+        // Aqui somamos via contas a receber criadas no mês como proxy de faturamento
+        const arMes = contasAR.filter(a => a?.created_at?.slice(0, 7) === mesStr && !a.cancelado);
+        const totalArMes = arMes.reduce((s, a) => s + (a.valor_original_centavos || 0), 0);
+        set("kpiFaturado", fmtBRLK(totalArMes));
+        set("kpiFaturadoSub", `${arMes.length} título(s) no mês`);
+
+        // Contas vencidas
+        const vencidas = contasAR.filter(a => {
+          if (!a || a.cancelado) return false;
+          const saldo = a.saldo_centavos ?? a.valor_original_centavos ?? 0;
+          if (saldo <= 0) return false;
+          return a.vencimento && a.vencimento < todayStr;
+        });
+        const totalVencido = vencidas.reduce((s, a) => s + (a.saldo_centavos ?? a.valor_original_centavos ?? 0), 0);
+        set("kpiVencidas", vencidas.length);
+        set("kpiVencidasSub", fmtBRL(totalVencido) + " em aberto");
+
+        /* ── Tabela recentes ──────────────────────────────────── */
+        renderAtendimentos(atendimentos);
+
+        /* ── Cadastros ────────────────────────────────────────── */
+        const cliAtivos = clientes.filter(c => c && !c.deleted_at && String(c.status || "").toLowerCase() !== "inativo");
+        const aniAtivos = animais.filter(a => a && !a.deleted && !a.deleted_at && (a.ativo !== false));
+        const prodAtivos = produtos.filter(p => p && !p.deleted_at);
+        const svcAtivos = servicos.filter(s => s && !s.deleted_at && s.ativo !== false);
+        const exaAtivos = exames.filter(e => e && !e.deleted_at && e.ativo !== false);
+
+        set("statClientes", cliAtivos.length);
+        set("statAnimais", aniAtivos.length);
+        set("statProdutos", prodAtivos.length);
+        set("statServicos", svcAtivos.length);
+        set("statExames", exaAtivos.length);
+
+        /* ── Contas a Receber ─────────────────────────────────── */
+        const arAberto  = contasAR.filter(a => a && !a.cancelado && (a.saldo_centavos ?? a.valor_original_centavos ?? 0) > 0 && (!a.vencimento || a.vencimento >= todayStr) && !(Array.isArray(a.recebimentos) && a.recebimentos.length > 0));
+        const arVencido = vencidas;
+        const arParcial = contasAR.filter(a => a && !a.cancelado && (a.saldo_centavos ?? 0) > 0 && Array.isArray(a.recebimentos) && a.recebimentos.length > 0);
+        const arRecMes  = contasAR.filter(a => {
+          if (!a || a.cancelado) return false;
+          const recs = Array.isArray(a.recebimentos) ? a.recebimentos : [];
+          return recs.some(r => r?.data?.slice(0, 7) === mesStr);
+        });
+        const totalAberto = [...arAberto, ...arParcial, ...arVencido].reduce((s, a) => s + (a.saldo_centavos ?? a.valor_original_centavos ?? 0), 0);
+
+        set("statARAberto",   arAberto.length);
+        set("statARVencido",  arVencido.length);
+        set("statARParcial",  arParcial.length);
+        set("statARRecebido", arRecMes.length);
+        set("statARTotal",    fmtBRL(totalAberto));
+
+        const countStatus = (s) => atendimentos.filter(a => a?.status === s).length;
+        set("statAtdRascunho",    countStatus("orcamento"));
+        set("statAtdEmAndamento", countStatus("em_atendimento"));
+        set("statAtdFinalizado",  countStatus("finalizado"));
+        set("statAtdFaturado",    countStatus("cancelado"));
+        set("statAtdTotal",       atendimentos.length);
+
+        /* ── Alertas ──────────────────────────────────────────── */
+        const alertas = [];
+
+        // Contas vencidas (Premium Enterprise: detalhar + ação direta)
+        if (vencidas.length > 0) {
+          const pickNome = (c) =>
+            c?.cliente_nome || c?.nome_cliente || c?.cliente || c?.nome || c?.razao_social || c?.nome_fantasia ||
+            c?.proprietario_nome || c?.proprietario || c?.owner_nome || c?.owner || "";
+
+          const pickId = (c) => c?.id || c?.uuid || c?._id || c?.key || c?.pk || c?.numero || c?.titulo || null;
+
+          const items = vencidas.map(c => ({
+            id: pickId(c),
+            cliente: pickNome(c) || "—",
+            vencimento: c?.vencimento || c?.data_vencimento || c?.vencimento_iso || "",
+            valor: fmtBRL(c?.saldo_centavos ?? c?.valor_original_centavos ?? 0),
+          }));
+
+          const ids = items.map(i => i.id).filter(Boolean);
+
+          alertas.push({
+            tipo: "red",
+            titulo: `${vencidas.length} conta(s) vencida(s)`,
+            msg: `Total de ${fmtBRL(totalVencido)} em atraso`,
+            sub: "Clique para abrir Contas a Receber já filtrado (em atraso)",
+            action: "ar_overdue",
+            ids_json: JSON.stringify(ids),
+            items
+          });
+        }
+
+        // Atendimentos em orçamento há mais de 1 dia
+        const orcVelhos = atendimentos.filter(a => {
+          if (a?.status !== "orcamento") return false;
+          if (!a.created_at) return false;
+          const diff = (new Date() - new Date(a.created_at)) / (1000 * 60 * 60 * 24);
+          return diff > 1;
+        });
+        if (orcVelhos.length > 0) {
+          alertas.push({
+            tipo: "amber",
+            titulo: `${orcVelhos.length} orçamento(s) pendente(s)`,
+            msg: "Criados há mais de 24h sem aprovar",
+            sub: "Verifique e aprove ou descarte"
+          });
+        }
+
+        // Contas a vencer nos próximos 3 dias
+        const em3dias = new Date();
+        em3dias.setDate(em3dias.getDate() + 3);
+        const aVencer = contasAR.filter(a => {
+          if (!a || a.cancelado) return false;
+          const saldo = a.saldo_centavos ?? a.valor_original_centavos ?? 0;
+          if (saldo <= 0) return false;
+          if (!a.vencimento) return false;
+          return a.vencimento >= todayStr && a.vencimento <= em3dias.toISOString().slice(0, 10);
+        });
+        if (aVencer.length > 0) {
+          alertas.push({
+            tipo: "amber",
+            titulo: `${aVencer.length} conta(s) vencendo em 3 dias`,
+            msg: fmtBRL(aVencer.reduce((s, a) => s + (a.saldo_centavos ?? a.valor_original_centavos ?? 0), 0)),
+            sub: "Acompanhe o vencimento"
+          });
+        }
+
+        // Tudo OK
+        if (!alertas.length) {
+          alertas.push({
+            tipo: "green",
+            titulo: "Tudo em dia",
+            msg: "Nenhum alerta crítico no momento",
+            sub: todayStr
+          });
+        }
+
+        renderAlertas(alertas);
+
+      } catch (err) {
+        // Falha silenciosa — mostra estado vazio
+        set("kpiAtdHoje", "—");
+        set("kpiAtdMes", "—");
+        set("kpiFaturado", "—");
+        set("kpiVencidas", "—");
+        renderAlertas([{
+          tipo: "red",
+          titulo: "Erro ao carregar dados",
+          msg: err?.message || String(err),
+          sub: "Verifique se o banco IndexedDB está acessível"
+        }]);
+      } finally {
+        if (btn) btn.classList.remove("loading");
+        setDate();
+      }
+    }
+
+    /* ── Init ─────────────────────────────────────────────────── */
+    function init() {
+      setGreeting();
+      setDate();
+      load();
+
+      const btn = $("btnRefresh");
+      if (btn) btn.addEventListener("click", load);
+
+      // Atualiza a cada 60s automaticamente
+      setInterval(load, 60_000);
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", init);
+    } else {
+      init();
+    }
+
+  })();
+
+  /* ================================================================
+     BACKUP / RESTAURAR
+  ================================================================ */
+  (function () {
+    "use strict";
+    const $ = (id) => document.getElementById(id);
+
+    const modal   = $("vscBackupModal");
+    const logBox  = $("vscBackupLog");
+    const progFill = $("vscProgFill");
+    const progText = $("vscProgText");
+
+    function log(msg) {
+      if (!logBox) return;
+      const t = new Date();
+      const ts = [t.getHours(), t.getMinutes(), t.getSeconds()].map(n => String(n).padStart(2,"0")).join(":");
+      logBox.textContent += `[${ts}] ${msg}\n`;
+      logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function setProgress(pct, text) {
+      if (progFill) progFill.style.width = Math.max(0, Math.min(100, pct | 0)) + "%";
+      if (progText) progText.textContent = text || "";
+    }
+
+    function openModal() {
+      if (!modal) return;
+      modal.classList.add("open");
+      modal.setAttribute("aria-hidden", "false");
+      if (logBox) logBox.textContent = "";
+      setProgress(0, "Pronto.");
+      log("Modal aberto.");
+    }
+
+    function closeModal() {
+      if (!modal) return;
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+
+    // Atalho backup
+    const atalhoB = $("atalhoBackup");
+    if (atalhoB) atalhoB.addEventListener("click", (e) => { e.preventDefault(); openModal(); });
+
+    const btnClose = $("vscBackupClose");
+    if (btnClose) btnClose.addEventListener("click", (e) => { e.preventDefault(); closeModal(); });
+
+    if (modal) {
+      modal.addEventListener("click", (ev) => {
+        if (ev.target?.getAttribute?.("data-close") === "1") closeModal();
+      });
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && modal?.classList.contains("open")) closeModal();
+    });
+
+    async function apiJSON(url, method, body) {
+      const r = await fetch(url, {
+        method: method || "GET",
+        headers: { "Content-Type": "application/json" },
+        credentials: "same-origin",
+        cache: "no-store",
+        body: body ? JSON.stringify(body) : undefined
+      });
+      const j = await r.json().catch(() => null);
+      return { ok: r.ok, status: r.status, json: j };
+    }
+
+    const btnList = $("btnBackupList");
+    const listBox = $("vscBackupListBox");
+    const selBackup = $("vscBackupSelect");
+    const btnVerifySel = $("btnBackupVerifySel");
+    const btnDownloadSel = $("btnBackupDownloadSel");
+    const btnRestoreSel = $("btnBackupRestoreSel");
+    const btnDeleteSel = $("btnBackupDeleteSel");
+    const inpKeepLast = $("inpBackupKeepLast");
+    const btnRetention = $("btnBackupRetention");
+    const btnAudit = $("btnBackupAudit");
+    const chkAuto = $("chkBackupAuto");
+    const selAutoFreq = $("selBackupAutoFreq");
+    const timeAuto = $("timeBackupAuto");
+    const btnAutoSave = $("btnBackupAutoSave");
+
+    let _lastBackups = [];
+
+    function fmtBytes(n){
+      n = Number(n||0);
+      if (!isFinite(n) || n <= 0) return "0 B";
+      const u = ["B","KB","MB","GB"];
+      let i=0;
+      while(n>=1024 && i<u.length-1){ n/=1024; i++; }
+      return (i===0? String(Math.floor(n)) : n.toFixed(1)) + " " + u[i];
+    }
+
+    function pickSelectedId(){
+      const v = String(selBackup?.value||"").trim();
+      return v || null;
+    }
+
+    function renderBackups(arr){
+      _lastBackups = Array.isArray(arr) ? arr : [];
+      if (!selBackup) return;
+      selBackup.innerHTML = "";
+      if (_lastBackups.length === 0){
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "Nenhum backup ainda";
+        selBackup.appendChild(opt);
+      } else {
+        for (const b of _lastBackups){
+          const id = String(b?.id||"");
+          const dt = String(b?.finished_at||"");
+          const bytes = fmtBytes(b?.bytes||0);
+          const opt = document.createElement("option");
+          opt.value = id;
+          opt.textContent = `${dt} · ${bytes} · ${id}`;
+          selBackup.appendChild(opt);
+        }
+      }
+      if (listBox) listBox.style.display = "block";
+    }
+
+    async function refreshList(){
+      setProgress(0, "Listando...");
+      log("GET /api/backup/list");
+      const r = await apiJSON("/api/backup/list", "GET");
+      const arr = r.json?.backups || [];
+      log(`Backups: ${arr.length}`);
+      arr.slice(0, 20).forEach(b => log(`- ${b.id} | ${b.finished_at || ""} | ${b.bytes || 0} bytes`));
+      renderBackups(arr);
+      setProgress(100, "Lista carregada.");
+      return arr;
+    }
+
+    if (btnList) {
+      btnList.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        try { await refreshList(); } 
+        catch (e) { log("Erro: " + (e?.message || e)); setProgress(0, "Falha."); }
+      });
+    }
+
+    async function doVerify(id){
+      if (!id) { log("Selecione um backup."); return; }
+      setProgress(10, "Verificando...");
+      log(`GET /api/backup/verify/${id}`);
+      const r = await apiJSON(`/api/backup/verify/${encodeURIComponent(id)}`, "GET");
+      if (!r.ok || r.json?.ok !== true) { log("ERRO: " + (r.json?.error || "falha verify")); setProgress(0, "Falha."); return; }
+      log(`VERIFY OK ✓ bytes=${r.json?.bytes||0} sha256=${r.json?.sha256||""}`);
+      setProgress(100, "Verificado.");
+    }
+
+    if (btnVerifySel) {
+      btnVerifySel.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        try { await doVerify(pickSelectedId()); } catch (e) { log("ERRO: " + (e?.message||e)); setProgress(0,"Falha."); }
+      });
+    }
+
+    if (btnDownloadSel) {
+      btnDownloadSel.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        const id = pickSelectedId();
+        if (!id) { log("Selecione um backup."); return; }
+        log(`DOWNLOAD /api/backup/download/${id}`);
+        window.open(`/api/backup/download/${encodeURIComponent(id)}`, "_blank");
+      });
+    }
+
+    async function restoreFromId(id){
+      if (!id) { log("Selecione um backup."); return; }
+      const ok = confirm(`ATENÇÃO: Restaurar irá SUBSTITUIR todos os dados.\n\nBackup: ${id}\n\nTem certeza?`);
+      if (!ok) { log("Cancelado."); return; }
+      if (!window.VSC_DB?.importBackupFile) { log("VSC_DB.importBackupFile indisponível."); return; }
+
+      if (btnBackup) btnBackup.disabled = true;
+      if (btnPick) btnPick.disabled = true;
+      if (btnRestoreSel) btnRestoreSel.disabled = true;
+
+      try{
+        setProgress(10, "Verificando...");
+        await doVerify(id); // logs
+        setProgress(30, "Baixando...");
+        const resp = await fetch(`/api/backup/download/${encodeURIComponent(id)}`, { cache:"no-store" });
+        if (!resp.ok) throw new Error("falha download");
+        const blob = await resp.blob();
+        const file = new File([blob], `${id}.vscbak`, { type: "application/octet-stream" });
+
+        setProgress(60, "Importando...");
+        const res = await window.VSC_DB.importBackupFile(file, { mode: "merge_newer" });
+        setProgress(100, "Concluído.");
+        log("Restauração concluída.");
+        if (res?.sha_ok === true) log("SHA-256: verificado ✓");
+        log("Recarregando em 3s...");
+        setTimeout(() => window.location.reload(), 3000);
+      }catch(e){
+        log("ERRO: " + (e?.message||e));
+        setProgress(0, "Falha.");
+      }finally{
+        if (btnBackup) btnBackup.disabled = false;
+        if (btnPick) btnPick.disabled = false;
+        if (btnRestoreSel) btnRestoreSel.disabled = false;
+      }
+    }
+
+    if (btnRestoreSel) {
+      btnRestoreSel.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        try { await restoreFromId(pickSelectedId()); } catch (e) { log("ERRO: " + (e?.message||e)); }
+      });
+    }
+
+    if (btnDeleteSel) {
+      btnDeleteSel.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        const id = pickSelectedId();
+        if (!id) { log("Selecione um backup."); return; }
+        const ok = confirm(`Excluir backup ${id}?\n\nEsta ação não pode ser desfeita.`);
+        if (!ok) { log("Cancelado."); return; }
+        try{
+          setProgress(10, "Excluindo...");
+          log(`POST /api/backup/delete/${id}`);
+          const r = await apiJSON(`/api/backup/delete/${encodeURIComponent(id)}`, "POST", {});
+          if (!r.ok || r.json?.ok !== true) throw new Error(r.json?.error || "falha ao excluir");
+          log(`Excluído ✓ (${(r.json?.removed||[]).join(", ")})`);
+          setProgress(100, "Excluído.");
+          await refreshList();
+        }catch(e){
+          log("ERRO: " + (e?.message||e));
+          setProgress(0, "Falha.");
+        }
+      });
+    }
+
+    if (btnRetention) {
+      btnRetention.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        try{
+          const keep = Math.max(1, Math.min(200, parseInt(String(inpKeepLast?.value||"10"),10) || 10));
+          setProgress(10, "Aplicando retenção...");
+          log(`POST /api/backup/retention keep_last=${keep}`);
+          const r = await apiJSON("/api/backup/retention", "POST", { keep_last: keep });
+          if (!r.ok || r.json?.ok !== true) throw new Error(r.json?.error || "falha retenção");
+          log(`Retenção aplicada ✓ removidos=${(r.json?.deleted||[]).length}`);
+          setProgress(100, "Retenção aplicada.");
+          await refreshList();
+        }catch(e){
+          log("ERRO: " + (e?.message||e));
+          setProgress(0, "Falha.");
+        }
+      });
+    }
+
+    if (btnAudit) {
+      btnAudit.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        try{
+          setProgress(10, "Carregando auditoria...");
+          log("GET /api/backup/audit");
+          const r = await apiJSON("/api/backup/audit?limit=200", "GET");
+          if (!r.ok || r.json?.ok !== true) throw new Error(r.json?.error || "falha auditoria");
+          const lines = r.json?.lines || [];
+          log(`Auditoria (${lines.length}):`);
+          lines.slice(-50).forEach(l => log("· " + l));
+          setProgress(100, "Auditoria carregada.");
+        }catch(e){
+          log("ERRO: " + (e?.message||e));
+          setProgress(0, "Falha.");
+        }
+      });
+    }
+
+    // -------------------- AUTO BACKUP (CLIENT-SIDE) --------------------
+    const AUTO_KEY = "vsc_backup_auto_v1";
+    function loadAutoCfg(){
+      try{ return JSON.parse(localStorage.getItem(AUTO_KEY)||"null")||{}; }catch(_){ return {}; }
+    }
+    function saveAutoCfg(cfg){
+      localStorage.setItem(AUTO_KEY, JSON.stringify(cfg||{}));
+    }
+    function applyAutoUI(){
+      const cfg = loadAutoCfg();
+      if (chkAuto) chkAuto.checked = !!cfg.enabled;
+      if (selAutoFreq) selAutoFreq.value = cfg.freq || "daily";
+      if (timeAuto) timeAuto.value = cfg.time || "03:00";
+    }
+    applyAutoUI();
+
+    if (btnAutoSave) {
+      btnAutoSave.addEventListener("click", (ev) => {
+        ev.preventDefault();
+        const cfg = {
+          enabled: !!chkAuto?.checked,
+          freq: String(selAutoFreq?.value||"daily"),
+          time: String(timeAuto?.value||"03:00"),
+          last_run: loadAutoCfg().last_run || ""
+        };
+        saveAutoCfg(cfg);
+        log("Backup automático: salvo ✓");
+        setProgress(100, "Configuração salva.");
+      });
+    }
+
+    function shouldRunToday(freq, lastRunISO){
+      const now = new Date();
+      const today = now.toISOString().slice(0,10);
+      if (String(lastRunISO||"").slice(0,10) === today) return false;
+      if (freq === "daily") return true;
+      if (freq === "weekly"){
+        // roda 1x por semana no mesmo dia da semana do primeiro run; simplificação: roda quando for domingo
+        return now.getDay() === 0; // domingo
+      }
+      if (freq === "monthly"){
+        return now.getDate() === 1; // dia 1
+      }
+      return true;
+    }
+
+    let _autoTicking = false;
+    setInterval(async () => {
+      if (_autoTicking) return;
+      const cfg = loadAutoCfg();
+      if (!cfg.enabled) return;
+      if (_session) return; // backup em andamento
+      const now = new Date();
+      const hhmm = String(cfg.time||"03:00");
+      const cur = String(now.toTimeString().slice(0,5));
+      if (cur !== hhmm) return;
+      if (!shouldRunToday(String(cfg.freq||"daily"), cfg.last_run)) return;
+      _autoTicking = true;
+      try{
+        log("AUTO: iniciando backup...");
+        await doBackup();
+        const upd = loadAutoCfg();
+        upd.last_run = new Date().toISOString();
+        saveAutoCfg(upd);
+        log("AUTO: concluído ✓");
+      }catch(e){
+        log("AUTO: ERRO: " + (e?.message||e));
+      }finally{
+        _autoTicking = false;
+      }
+    }, 60 * 1000);
+
+    const btnPick = $("btnPickRestore");
+    const inpFile = $("inpRestoreFile");
+    if (btnPick && inpFile) {
+      btnPick.addEventListener("click", (ev) => { ev.preventDefault(); inpFile.value = ""; inpFile.click(); });
+      inpFile.addEventListener("change", async () => {
+        const f = inpFile.files?.[0];
+        if (!f) { log("Nenhum arquivo."); return; }
+        log(`Arquivo: ${f.name} (${f.size} bytes)`);
+        const ok = confirm(`ATENÇÃO: Restaurar irá SUBSTITUIR todos os dados.\n\nArquivo: ${f.name}\n\nTem certeza?`);
+        if (!ok) { log("Cancelado."); return; }
+        if (!window.VSC_DB?.importBackupFile) { log("VSC_DB.importBackupFile indisponível."); return; }
+        if (btnBackup) btnBackup.disabled = true;
+        if (btnPick) btnPick.disabled = true;
+        setProgress(10, "Lendo arquivo...");
+        try {
+          setProgress(30, "Importando...");
+          // Restore deve refletir "SUBSTITUIR todos os dados" (conforme aviso).
+          const res = await window.VSC_DB.importBackupFile(f, { mode: "replace_store" });
+          setProgress(100, "Concluído.");
+          log("Restauração concluída.");
+          if (res?.sha_ok === true) log("SHA-256: verificado ✓");
+          log("Recarregando em 3s...");
+          setTimeout(() => window.location.reload(), 3000);
+        } catch (e) {
+          log("ERRO: " + (e?.message || e));
+          setProgress(0, "Falha.");
+        } finally {
+          if (btnBackup) btnBackup.disabled = false;
+          if (btnPick) btnPick.disabled = false;
+          inpFile.value = "";
+        }
+      });
+    }
+
+    const btnBackup = $("btnBackupNow");
+    const btnCancel = $("btnBackupCancel");
+    let _cancel = false;
+    let _session = null;
+
+    async function sendChunk(sid, seq, u8) {
+      if (_cancel) throw new Error("Cancelado");
+      const resp = await fetch(`/api/backup/session/${encodeURIComponent(sid)}/chunkbin?seq=${encodeURIComponent(seq)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/octet-stream" },
+        credentials: "same-origin",
+        cache: "no-store",
+        body: u8
+      });
+      const j = await resp.json().catch(() => null);
+      if (!resp.ok || j?.ok !== true) throw new Error(j?.error || "Falha chunk");
+      return j;
+    }
+
+    async function doBackup() {
+      if (!window.VSC_DB) throw new Error("VSC_DB indisponível.");
+      _cancel = false;
+      setProgress(0, "Iniciando sessão...");
+      log("Iniciando backup...");
+      if (btnCancel) btnCancel.disabled = false;
+      if (btnBackup) btnBackup.disabled = true;
+      const sess = await (async () => {
+        const r = await apiJSON("/api/backup/session", "POST", {});
+        if (!r.ok || r.json?.ok !== true) throw new Error("Falha ao iniciar sessão");
+        return r.json;
+      })();
+      _session = sess.id;
+      const SAFE = Math.min(sess.chunk_max_bytes || 850 * 1024, 850 * 1024);
+      const enc = new TextEncoder();
+      let seq = 0, buf = "", sent = 0;
+      async function flush(force) {
+        if (_cancel) throw new Error("Cancelado");
+        if (!force && buf.length < 4096) return;
+        const u8 = enc.encode(buf);
+        if (u8.length <= SAFE) { await sendChunk(_session, seq++, u8); sent += u8.length; buf = ""; return; }
+        for (let off = 0; off < u8.length;) {
+          const t = u8.subarray(off, off + SAFE);
+          await sendChunk(_session, seq++, t); sent += t.length; off += SAFE;
+        }
+        buf = "";
+      }
+      const db = await (window.VSC_DB.openDB ? window.VSC_DB.openDB() : new Promise((r, j) => { const q = indexedDB.open("vsc_db"); q.onsuccess = () => r(q.result); q.onerror = () => j(q.error); }));
+      try {
+        const stores = Array.from(db.objectStoreNames);
+        buf += `{"format":"vsc_backup_stream_v1","created_at":${JSON.stringify(new Date().toISOString())},"db_name":"vsc_db","db_version":${db.version},"data":{\n`;
+        await flush(true);
+        for (let si = 0; si < stores.length; si++) {
+          if (_cancel) throw new Error("Cancelado");
+          const sn = stores[si];
+          log(`Exportando: ${sn}`);
+          setProgress(5 + Math.floor((si / stores.length) * 80), `${sn}...`);
+          buf += `${JSON.stringify(sn)}:[`;
+          await flush(true);
+          let lk = null, first = true;
+          for (;;) {
+            if (_cancel) throw new Error("Cancelado");
+            const batch = await new Promise((res, rej) => {
+              const tx = db.transaction([sn], "readonly");
+              const st = tx.objectStore(sn);
+              const rng = lk != null ? IDBKeyRange.lowerBound(lk, true) : null;
+              const rq = st.openCursor(rng, "next");
+              const out = []; let n = 0;
+              rq.onerror = () => rej(rq.error);
+              rq.onsuccess = () => {
+                const c = rq.result;
+                if (!c || n >= 200) return res({ items: out, lk: c ? c.key : lk, done: !c });
+                out.push(c.value); lk = c.key; n++; c.continue();
+              };
+            });
+            for (const item of batch.items) {
+              if (!first) buf += ",";
+              buf += JSON.stringify(item);
+              first = false;
+              if (buf.length > 64 * 1024) await flush(true);
+            }
+            lk = batch.lk;
+            if (batch.done) break;
+            await flush(true);
+          }
+          buf += `]${si < stores.length - 1 ? ",\n" : "\n"}`;
+          await flush(true);
+        }
+        buf += "}}\n";
+        await flush(true);
+        setProgress(95, "Finalizando...");
+        const fin = await (async () => {
+          const r = await apiJSON(`/api/backup/session/${encodeURIComponent(_session)}/finish`, "POST", { seq_final: seq - 1, meta: { origin: "dashboard", sent_bytes: sent } });
+          if (!r.ok || r.json?.ok !== true) throw new Error(r.json?.error || "Falha ao finalizar");
+          return r.json;
+        })();
+        log(`Backup concluído. Arquivo: ${fin.file}`);
+        log(`SHA256: ${fin.sha256}`);
+        setProgress(100, "Backup concluído com sucesso.");
+      } catch (e) {
+        log("ERRO: " + (e?.message || e));
+        setProgress(0, "Falha.");
+        try { await apiJSON(`/api/backup/session/${encodeURIComponent(_session)}/abort`, "POST", {}); } catch (_) {}
+        throw e;
+      } finally {
+        try { db.close(); } catch (_) {}
+        _session = null;
+        if (btnCancel) btnCancel.disabled = true;
+        if (btnBackup) btnBackup.disabled = false;
+      }
+    }
+
+    if (btnCancel) {
+      btnCancel.addEventListener("click", async (ev) => {
+        ev.preventDefault(); _cancel = true;
+        log("Cancelando...");
+        setProgress(0, "Cancelado.");
+        try { if (_session) await apiJSON(`/api/backup/session/${encodeURIComponent(_session)}/abort`, "POST", {}); } catch (_) {}
+        if (btnCancel) btnCancel.disabled = true;
+        if (btnBackup) btnBackup.disabled = false;
+      });
+    }
+
+    if (btnBackup) {
+      btnBackup.addEventListener("click", async (ev) => { ev.preventDefault(); try { await doBackup(); } catch (_) {} });
+    }
+
+  })();
+
+  /* ================================================================
+     BADGE DE ATUALIZAÇÕES (DEFERIDO / FAIL-CLOSED)
+     - Não faz chamadas automáticas no boot para manter console limpo.
+     - Só consulta quando o usuário interage (hover/click) no tile.
+     - Endpoint: usa window.VSC_UPDATES_ENDPOINT (se definido) senão "/api/updates/list".
+  ================================================================ */
+  (function () {
+    "use strict";
+
+    let _checked = false;
+    let _checking = false;
+
+    function getEndpoint() {
+      const ep = (window.VSC_UPDATES_ENDPOINT && String(window.VSC_UPDATES_ENDPOINT).trim()) || "/api/updates/list";
+      // Fail-closed: nunca chamar "undefined" ou vazio
+      if (!ep || ep === "undefined" || ep.endsWith("/undefined")) return null;
+      return ep;
+    }
+
+    async function checkUpdatesOnce() {
+      if (_checked || _checking) return;
+      _checking = true;
+
+      try {
+        const ep = getEndpoint();
+        if (!ep) return;
+
+        const r = await fetch(ep, { cache: "no-store" });
+        if (!r.ok) { _checked = true; return; } // não insiste se backend não expõe rota
+        const j = await r.json().catch(() => null);
+
+        const n = j?.ok && Array.isArray(j.packages) ? j.packages.length : 0;
+
+        const link = document.querySelector('a.atalho[href="atualizacoes.html"]');
+        if (!link) { _checked = true; return; }
+
+        let badge = link.querySelector(".vsc-badge");
+        if (!badge) {
+          link.style.position = "relative";
+          badge = document.createElement("span");
+          badge.className = "vsc-badge";
+          badge.innerHTML = '<span class="vsc-badge__dot"></span><span class="vsc-badge__txt">NOVO</span>';
+          link.appendChild(badge);
+        }
+
+        if (n > 0) {
+          badge.classList.add("vsc-badge--show");
+          const txt = badge.querySelector(".vsc-badge__txt");
+          if (txt) txt.textContent = `NOVO (${n})`;
+        } else {
+          badge.classList.remove("vsc-badge--show");
+        }
+
+        _checked = true;
+      } catch (_) {
+        // Mantém console limpo: não loga, não insiste
+        _checked = true;
+      } finally {
+        _checking = false;
+      }
+    }
+
+    function bind() {
+      const link = document.querySelector('a.atalho[href="atualizacoes.html"]');
+      if (!link) return;
+
+      // Primeira interação dispara verificação única
+      link.addEventListener("mouseenter", checkUpdatesOnce, { passive: true, once: true });
+      link.addEventListener("focus", checkUpdatesOnce, { passive: true, once: true });
+      // Se clicar direto sem hover/focus, tenta 1x também
+      link.addEventListener("click", () => { checkUpdatesOnce(); }, { passive: true });
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", bind);
+    } else {
+      bind();
+    }
+  })();
+
+  </script>
+
+<script>
+/* VSC_KPI_ICON_INTENSITY – Premium Enterprise */
+(function(){
+  "use strict";
+
+  function numFromText(t){
+    if(!t) return 0;
+    var s = (""+t).trim();
+    if(s === "—") return 0;
+    if(/R\$\s*/.test(s) || s.indexOf(",") >= 0){
+      s = s.replace(/[^0-9,.-]/g, "");
+      s = s.replace(/\./g, "").replace(",", ".");
+      var v = parseFloat(s);
+      return isFinite(v) ? v : 0;
+    }
+    var n = parseInt(s.replace(/[^\d-]/g, ""), 10);
+    return isFinite(n) ? n : 0;
+  }
+
+  function setState(kpiEl, state){
+    if(!kpiEl) return;
+    kpiEl.classList.remove("kpi--neutral","kpi--strong","kpi--alert");
+    kpiEl.classList.add(state);
+  }
+
+  function bindKpi(valueId, decideState){
+    var valueEl = document.getElementById(valueId);
+    if(!valueEl) return;
+    var kpiEl = valueEl.closest(".kpi");
+    if(!kpiEl) return;
+
+    function apply(){
+      var v = numFromText(valueEl.textContent);
+      setState(kpiEl, decideState(v));
+    }
+
+    apply();
+    try{
+      var mo = new MutationObserver(function(){ apply(); });
+      mo.observe(valueEl, { childList:true, subtree:true, characterData:true });
+    }catch(_){}
+
+    var t0 = Date.now();
+    var it = setInterval(function(){
+      apply();
+      if(Date.now() - t0 > 6000) clearInterval(it);
+    }, 350);
+  }
+
+  function init(){
+    bindKpi("kpiAtdHoje", function(v){ return v > 0 ? "kpi--strong" : "kpi--neutral"; });
+    bindKpi("kpiAtdMes",  function(v){ return v > 0 ? "kpi--strong" : "kpi--neutral"; });
+    bindKpi("kpiFaturado",function(v){ return v > 0 ? "kpi--strong" : "kpi--neutral"; });
+    bindKpi("kpiVencidas",function(v){ return v > 0 ? "kpi--alert"  : "kpi--neutral"; });
+  }
+
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+
+</body>
+</html>

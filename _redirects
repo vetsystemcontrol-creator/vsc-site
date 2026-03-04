@@ -1,0 +1,16 @@
+/          /index.html 200
+/index.html /index.html 200
+/recursos   /recursos.html 200
+/sobre      /sobre.html 200
+/contato    /contato.html 200
+/login      /login.html 200
+
+
+/* /index.html 200
+/atendimentos        /erp/atendimentos.html 200
+/atendimentos/*      /erp/atendimentos.html 200
+/animais             /erp/animais.html 200
+/animais/*           /erp/animais.html 200
+/reproducao          /erp/reproducao.html 200
+/reproducao/*        /erp/reproducao.html 200
+/erp/reprodução.html /erp/reproducao.html 200

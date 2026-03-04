@@ -1,0 +1,10 @@
+{
+  "name": "Vet System Control – Equine",
+  "short_name": "VSC Equine",
+  "start_url": "/index.html",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": []
+}

@@ -294,3 +294,59 @@ input:focus, textarea:focus{border-color: rgba(42,166,255,.45)}
   .nav{display:none}
   .nav__toggle{display:inline-block}
 }
+
+
+
+/* === VSC TOPBAR LOGO — ENTERPRISE (tamanho máximo + fundo branco p/ legibilidade) === */
+.vsc-topbar, header, .topbar, .navbar { --vsc-topbar-h: 84px; }
+header.navbar, .navbar, .topbar, header { min-height: var(--vsc-topbar-h); }
+.navbar .brand, .topbar .brand, header .brand { display:flex; align-items:stretch; height: var(--vsc-topbar-h); }
+.brand__logo-wrap{ display:flex; align-items:stretch; height:100%; }
+.brand__logo-wrap .brand__logo-bg{
+  background:#fff;
+  border-radius:10px;
+  padding:4px 10px; /* menor folga -> logo maior */
+  display:flex;
+  align-items:center;
+  height:100%;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
+.brand__logo-wrap img{
+  height:100% !important;
+  width:auto !important;
+  display:block;
+}
+
+/* === DEMO PREVIEW (prints menores na home) === */
+.vsc-demo-grid{ display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap:24px; }
+@media (max-width: 980px){ .vsc-demo-grid{ grid-template-columns:1fr; } }
+.vsc-demo-card{ border-radius:18px; overflow:hidden; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); }
+.vsc-demo-thumb{ width:100%; aspect-ratio: 16 / 9; object-fit: cover; display:block; background:#0b1220; }
+.vsc-demo-frame{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;display:block;background:#0b1220;}
+.vsc-demo-frame iframe{width:400%;height:400%;transform:scale(.25);transform-origin:0 0;border:0;pointer-events:none;background:#0b1220;}
+.vsc-demo-shotframe{position:relative;width:100%;overflow:hidden;border-radius:18px;border:1px solid rgba(0,0,0,.08);box-shadow:0 18px 55px rgba(0,0,0,.22);}
+.vsc-demo-shotframe iframe{width:100%;height:min(82vh,900px);border:0;display:block;}
+
+.vsc-demo-card__bar{ display:flex; align-items:center; justify-content:space-between; padding:14px 16px; }
+.vsc-demo-card__title{ font-weight:800; }
+.vsc-demo-card__link{ color:#59a7ff; font-weight:700; text-decoration:none; }
+.vsc-demo-card__link:hover{ text-decoration:underline; }
+
+/* === DEMO PAGE (print grande + travar ações) === */
+.vsc-demo-page{ max-width: 1280px; margin: 24px auto 80px; padding: 0 20px; }
+.vsc-demo-hero{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin: 18px 0 16px; flex-wrap:wrap; }
+.vsc-demo-hero h1{ font-size: 28px; line-height:1.1; }
+.vsc-demo-hero p{ opacity:.85; max-width: 760px; }
+.vsc-demo-shot{ width:100%; border-radius:18px; border:1px solid rgba(0,0,0,.08); box-shadow: 0 18px 55px rgba(0,0,0,.22); }
+
+/* Login modal (site -> sistema real) */
+.vsc-modal{ position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.55); z-index:9999; padding: 18px; }
+.vsc-modal.open{ display:flex; }
+.vsc-modal__box{ width:min(520px, 100%); background:#0b1220; color:#fff; border:1px solid rgba(255,255,255,.14); border-radius:18px; box-shadow: 0 25px 80px rgba(0,0,0,.6); overflow:hidden; }
+.vsc-modal__head{ padding:16px 18px; display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,.12); }
+.vsc-modal__title{ font-weight:900; }
+.vsc-modal__body{ padding:16px 18px; opacity:.95; }
+.vsc-modal__actions{ padding:16px 18px; display:flex; gap:10px; justify-content:flex-end; border-top:1px solid rgba(255,255,255,.12); }
+.vsc-btn{ border:0; border-radius:12px; padding:10px 14px; font-weight:800; cursor:pointer; }
+.vsc-btn.primary{ background:#3b82f6; color:#061125; }
+.vsc-btn.ghost{ background:rgba(255,255,255,.08); color:#fff; }
