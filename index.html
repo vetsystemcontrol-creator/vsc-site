@@ -211,60 +211,96 @@
       <div class="container">
         <h2 style="margin-bottom:10px;">Veja o sistema real (demo com dados fictícios)</h2>
         <p style="opacity:.9; max-width: 880px; margin-bottom:18px;">
-          Sem maquiagem: as miniaturas abaixo são <strong>prints reais</strong> das telas do ERP (com dados de demonstração). Ao clicar, você abre a versão em tela cheia.
+          Sem maquiagem: as miniaturas abaixo são <strong>as próprias telas reais do ERP</strong>, carregadas em modo demonstração (dados 100% fictícios). Ao clicar, você abre a versão em tela cheia.
         </p>
 
-        <div class="vsc-demo-grid">
-          <div class="vsc-demo-card">
-            <a href="/erp/dashboard.html?demo=1" aria-label="Abrir Dashboard (tela cheia)">
-              <span class="vsc-demo-frame" aria-hidden="true"><iframe src="/erp/dashboard.html?demo=1&embed=1" title="Dashboard (DEMO)" loading="lazy"></iframe></span>
-            </a>
-            <div class="vsc-demo-card__bar">
-              <div class="vsc-demo-card__title">Dashboard</div>
-              <a class="vsc-demo-card__link" href="/erp/dashboard.html?demo=1">Abrir em tela cheia</a>
+        <div class="vsc-carousel" data-vsc-carousel>
+          <div class="vsc-carousel__viewport" tabindex="0" aria-label="Carrossel de telas do sistema (imagens)">
+            <div class="vsc-carousel__track">
+              <!-- IMPORTANTE: estas imagens são estáticas (não editáveis). Substitua os arquivos em /assets/screens/ -->
+              <figure class="vsc-shot" data-vsc-slide>
+                <button class="vsc-shot__btn" type="button" data-vsc-open data-src="/assets/screens/dashboard.png" data-title="Dashboard">
+                  <img class="vsc-demo-thumb" src="/assets/screens/dashboard.png" alt="Tela do Dashboard (dados fictícios)" loading="lazy" decoding="async">
+                </button>
+                <figcaption class="vsc-shot__bar">
+                  <div class="vsc-shot__title">Dashboard</div>
+                  <button class="vsc-shot__link" type="button" data-vsc-open data-src="/assets/screens/dashboard.png" data-title="Dashboard">Abrir em tela cheia</button>
+                </figcaption>
+              </figure>
+
+              <figure class="vsc-shot" data-vsc-slide>
+                <button class="vsc-shot__btn" type="button" data-vsc-open data-src="/assets/screens/clientes.png" data-title="Clientes">
+                  <img class="vsc-demo-thumb" src="/assets/screens/clientes.png" alt="Tela de Clientes (dados fictícios)" loading="lazy" decoding="async">
+                </button>
+                <figcaption class="vsc-shot__bar">
+                  <div class="vsc-shot__title">Clientes</div>
+                  <button class="vsc-shot__link" type="button" data-vsc-open data-src="/assets/screens/clientes.png" data-title="Clientes">Abrir em tela cheia</button>
+                </figcaption>
+              </figure>
+
+              <figure class="vsc-shot" data-vsc-slide>
+                <button class="vsc-shot__btn" type="button" data-vsc-open data-src="/assets/screens/animais.png" data-title="Animais">
+                  <img class="vsc-demo-thumb" src="/assets/screens/animais.png" alt="Tela de Animais (dados fictícios)" loading="lazy" decoding="async">
+                </button>
+                <figcaption class="vsc-shot__bar">
+                  <div class="vsc-shot__title">Animais</div>
+                  <button class="vsc-shot__link" type="button" data-vsc-open data-src="/assets/screens/animais.png" data-title="Animais">Abrir em tela cheia</button>
+                </figcaption>
+              </figure>
+
+              <figure class="vsc-shot" data-vsc-slide>
+                <button class="vsc-shot__btn" type="button" data-vsc-open data-src="/assets/screens/atendimentos.png" data-title="Atendimentos">
+                  <img class="vsc-demo-thumb" src="/assets/screens/atendimentos.png" alt="Tela de Atendimentos (dados fictícios)" loading="lazy" decoding="async">
+                </button>
+                <figcaption class="vsc-shot__bar">
+                  <div class="vsc-shot__title">Atendimentos</div>
+                  <button class="vsc-shot__link" type="button" data-vsc-open data-src="/assets/screens/atendimentos.png" data-title="Atendimentos">Abrir em tela cheia</button>
+                </figcaption>
+              </figure>
+
+              <figure class="vsc-shot" data-vsc-slide>
+                <button class="vsc-shot__btn" type="button" data-vsc-open data-src="/assets/screens/contasareceber.png" data-title="Contas a Receber">
+                  <img class="vsc-demo-thumb" src="/assets/screens/contasareceber.png" alt="Tela de Contas a Receber (dados fictícios)" loading="lazy" decoding="async">
+                </button>
+                <figcaption class="vsc-shot__bar">
+                  <div class="vsc-shot__title">Contas a Receber</div>
+                  <button class="vsc-shot__link" type="button" data-vsc-open data-src="/assets/screens/contasareceber.png" data-title="Contas a Receber">Abrir em tela cheia</button>
+                </figcaption>
+              </figure>
+
+              <figure class="vsc-shot" data-vsc-slide>
+                <button class="vsc-shot__btn" type="button" data-vsc-open data-src="/assets/screens/produtos.png" data-title="Produtos">
+                  <img class="vsc-demo-thumb" src="/assets/screens/produtos.png" alt="Tela de Produtos (dados fictícios)" loading="lazy" decoding="async">
+                </button>
+                <figcaption class="vsc-shot__bar">
+                  <div class="vsc-shot__title">Produtos</div>
+                  <button class="vsc-shot__link" type="button" data-vsc-open data-src="/assets/screens/produtos.png" data-title="Produtos">Abrir em tela cheia</button>
+                </figcaption>
+              </figure>
             </div>
           </div>
 
-          <div class="vsc-demo-card">
-            <a href="/erp/atendimentos.html?demo=1" aria-label="Abrir Atendimentos (tela cheia)">
-              <span class="vsc-demo-frame" aria-hidden="true"><iframe src="/erp/atendimentos.html?demo=1&embed=1" title="Atendimentos (DEMO)" loading="lazy"></iframe></span>
-            </a>
-            <div class="vsc-demo-card__bar">
-              <div class="vsc-demo-card__title">Atendimentos</div>
-              <a class="vsc-demo-card__link" href="/erp/atendimentos.html?demo=1">Abrir em tela cheia</a>
-            </div>
+          <div class="vsc-carousel__controls" aria-label="Controles do carrossel">
+            <button class="vsc-carbtn" type="button" data-vsc-prev aria-label="Anterior">‹</button>
+            <div class="vsc-dots" data-vsc-dots aria-label="Selecionar tela"></div>
+            <button class="vsc-carbtn" type="button" data-vsc-next aria-label="Próximo">›</button>
           </div>
+        </div>
 
-          <div class="vsc-demo-card">
-            <a href="/erp/animais.html?demo=1" aria-label="Abrir Animais (tela cheia)">
-              <span class="vsc-demo-frame" aria-hidden="true"><iframe src="/erp/animais.html?demo=1&embed=1" title="Animais (DEMO)" loading="lazy"></iframe></span>
-            </a>
-            <div class="vsc-demo-card__bar">
-              <div class="vsc-demo-card__title">Animais</div>
-              <a class="vsc-demo-card__link" href="/erp/animais.html?demo=1">Abrir em tela cheia</a>
+        <!-- Lightbox (tela cheia) -->
+        <div class="vsc-lightbox" hidden aria-hidden="true">
+          <div class="vsc-lightbox__backdrop" data-vsc-close></div>
+          <div class="vsc-lightbox__panel" role="dialog" aria-modal="true" aria-label="Visualização em tela cheia">
+            <div class="vsc-lightbox__top">
+              <div class="vsc-lightbox__title" id="vscLightboxTitle">Tela</div>
+              <button class="vsc-lightbox__close" type="button" data-vsc-close aria-label="Fechar">✕</button>
             </div>
-          </div>
-
-          <div class="vsc-demo-card">
-            <a href="/erp/reproducao.html?demo=1" aria-label="Abrir Reprodução (tela cheia)">
-              <span class="vsc-demo-frame" aria-hidden="true"><iframe src="/erp/reproducao.html?demo=1&embed=1" title="Reprodução (DEMO)" loading="lazy"></iframe></span>
-            </a>
-            <div class="vsc-demo-card__bar">
-              <div class="vsc-demo-card__title">Reprodução</div>
-              <a class="vsc-demo-card__link" href="/erp/reproducao.html?demo=1">Abrir em tela cheia</a>
-            </div>
-          </div>
-
-          <div class="vsc-demo-card">
-            <a href="/erp/importacaoxml.html?demo=1" aria-label="Abrir Importação XML (tela cheia)">
-              <span class="vsc-demo-frame" aria-hidden="true"><iframe src="/erp/importacaoxml.html?demo=1&embed=1" title="Importação XML (DEMO)" loading="lazy"></iframe></span>
-            </a>
-            <div class="vsc-demo-card__bar">
-              <div class="vsc-demo-card__title">Importação XML</div>
-              <a class="vsc-demo-card__link" href="/erp/importacaoxml.html?demo=1">Abrir em tela cheia</a>
+            <div class="vsc-lightbox__stage">
+              <img id="vscLightboxImg" alt="" />
             </div>
           </div>
         </div>
+
       </div>
     </section>
 
