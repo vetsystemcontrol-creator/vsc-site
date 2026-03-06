@@ -1,0 +1,6 @@
+﻿.tmp.driveupload/
+*.tmp
+diretorio.zip
+*.zip
+node_modules/
+.wrangler/

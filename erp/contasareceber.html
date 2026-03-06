@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Contas a Receber – Vet System Control</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Crect width='16' height='16' rx='3' fill='%231d9e5c'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f3f5f7;--surface:#fff;--border:rgba(0,0,0,.07);--border-md:rgba(0,0,0,.11);
+  --text:#0f1923;--muted:#64748b;--muted-lt:#94a3b8;
+  --green:#1d9e5c;--green-bg:#e8f8f0;--green-bd:#a7e8c6;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-bd:#fcd34d;
+  --red:#dc2626;--red-bg:#fef2f2;--red-bd:#fca5a5;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-bd:#bfdbfe;
+  --radius:16px;--shadow:0 1px 3px rgba(0,0,0,.06);--shadow-md:0 4px 16px rgba(0,0,0,.08);--shadow-lg:0 12px 40px rgba(0,0,0,.14);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);font-size:14px;line-height:1.5;}
+#vscTopbarFrame{width:100%;height:86px;border:0;display:block;background:#fff;position:sticky;top:0;z-index:2000;}
+.kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+@media(max-width:900px){.kpi-strip{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:500px){.kpi-strip{grid-template-columns:1fr;}}
+.kpi{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+.kpi::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kpi-color,var(--green));border-radius:var(--radius) var(--radius) 0 0;}
+.kpi--green{--kpi-color:var(--green);}
+.kpi--amber{--kpi-color:var(--amber);}
+.kpi--red{--kpi-color:var(--red);}
+.kpi--blue{--kpi-color:var(--blue);}
+.kpi__label{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.kpi__value{font-size:26px;font-weight:900;letter-spacing:-.02em;font-family:'DM Mono',monospace;color:var(--text);}
+.kpi__sub{font-size:11px;color:var(--muted-lt);margin-top:3px;}
+.kpi__icon{position:absolute;top:16px;right:16px;font-size:22px;opacity:.15;}
+.page{max-width:1300px;margin:0 auto;padding:20px 20px 100px;}
+.page-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:16px;}
+.page-title{font-size:22px;font-weight:900;letter-spacing:-.02em;}
+.page-sub{font-size:13px;color:var(--muted);margin-top:2px;}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.filters input,.filters select{border:1px solid var(--border-md);border-radius:9px;padding:8px 11px;font-size:13px;font-family:inherit;outline:none;background:#fff;min-width:130px;flex:1;}
+.filters input:focus,.filters select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(29,158,92,.1);}
+.list-table{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.list-table table{width:100%;border-collapse:collapse;}
+.list-table th{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted-lt);padding:10px 14px;text-align:left;background:#fafbfc;border-bottom:1px solid var(--border);}
+.list-table td{padding:10px 14px;border-bottom:1px solid var(--border);font-size:13px;vertical-align:middle;}
+.list-table tr:last-child td{border-bottom:none;}
+.list-table tr:hover td{background:#fafbfc;}
+.mono{font-family:'DM Mono',monospace;}
+.spill{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;letter-spacing:.03em;text-transform:uppercase;border:1px solid transparent;}
+.spill::before{content:'';width:5px;height:5px;border-radius:999px;background:currentColor;opacity:.7;}
+.spill--aberto{background:var(--green-bg);color:var(--green);border-color:var(--green-bd);}
+.spill--parcial{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-bd);}
+.spill--vencido{background:var(--red-bg);color:var(--red);border-color:var(--red-bd);}
+.spill--recebido{background:var(--blue-bg);color:var(--blue);border-color:var(--blue-bd);}
+.spill--cancelado{background:#f8f8f8;color:var(--muted);border-color:var(--border-md);}
+.btn{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--green-bd);background:var(--green);color:#fff;border-radius:11px;padding:8px 14px;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.btn:hover:not(:disabled){filter:brightness(1.08);box-shadow:var(--shadow-md);}
+.btn:disabled{opacity:.4;cursor:not-allowed;}
+.btn--ghost{background:var(--surface);border-color:var(--border-md);color:var(--text);}
+.btn--ghost:hover:not(:disabled){background:#f8fafc;}
+.btn--sm{padding:6px 12px;font-size:12px;border-radius:9px;}
+.btn--xs{padding:4px 9px;font-size:11px;border-radius:7px;}
+.btn--amber{background:var(--amber);border-color:var(--amber-bd);color:#fff;}
+.btn--danger{background:var(--red-bg);border-color:var(--red-bd);color:var(--red);}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;padding:16px;z-index:5000;}
+.modal.hidden{display:none!important;}
+.modal__card{width:min(640px,100%);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-lg);overflow:hidden;max-height:90vh;display:flex;flex-direction:column;}
+.modal__head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 18px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.modal__title{font-size:16px;font-weight:900;}
+.modal__close{border:1px solid var(--border-md);background:var(--surface);border-radius:8px;width:30px;height:30px;display:grid;place-items:center;cursor:pointer;font-size:14px;color:var(--muted);}
+.modal__close:hover{background:#f1f5f9;}
+.modal__body{padding:16px 18px;overflow-y:auto;flex:1;}
+.modal__foot{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0;}
+.field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px;}
+label{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.02em;text-transform:uppercase;}
+input,select,textarea{border:1px solid var(--border-md);border-radius:10px;padding:9px 11px;font-size:13px;font-family:inherit;outline:none;background:#fff;color:var(--text);transition:border-color .12s,box-shadow .12s;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(29,158,92,.12);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.gfull{grid-column:1/-1;}
+.warn-box{background:var(--amber-bg);border:1px solid var(--amber-bd);color:var(--amber);padding:10px 12px;border-radius:10px;font-size:12px;margin-top:8px;display:none;}
+.warn-box.show{display:block;}
+#vscSnackbar{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#0f1923;color:#fff;padding:10px 18px;border-radius:999px;box-shadow:0 8px 32px rgba(0,0,0,.25);display:none;z-index:9999;font-size:13px;font-weight:700;max-width:min(92vw,620px);text-align:center;}
+#vscSnackbar.err{background:#7f1d1d;}
+#vscSnackbar.ok{background:#14532d;}
+#vscSnackbar.warn{background:#92400e;}
+.hidden{display:none!important;}
+</style>
+</head>
+<body>
+<iframe id="vscTopbarFrame" src="topbar.html?v=final" title="Topbar"></iframe>
+<script>(function(){var f=document.getElementById("vscTopbarFrame");if(!f)return;function fit(){try{var d=f.contentDocument;if(!d)return;var h=Math.max(d.documentElement?d.documentElement.scrollHeight:0,d.body?d.body.scrollHeight:0,86);f.style.height=h+"px";}catch(_){}}f.addEventListener("load",fit);setTimeout(fit,150);setTimeout(fit,600);})();</script>
+
+<div class="page">
+  <div class="page-head">
+    <div>
+      <div class="page-title">Contas a Receber</div>
+      <div class="page-sub">Gestão de títulos e recebimentos</div>
+    </div>
+    <button id="btnNovo" class="btn" type="button">+ Novo título</button>
+  </div>
+
+  <div class="kpi-strip">
+    <div class="kpi kpi--green"><div class="kpi__label">Em aberto</div><div class="kpi__value" id="kpiAberto">—</div><div class="kpi__sub" id="kpiAbertoSub">—</div><div class="kpi__icon">📋</div></div>
+    <div class="kpi kpi--amber"><div class="kpi__label">Parcial</div><div class="kpi__value" id="kpiParcial">—</div><div class="kpi__sub" id="kpiParcialSub">—</div><div class="kpi__icon">⏳</div></div>
+    <div class="kpi kpi--red"><div class="kpi__label">Vencido</div><div class="kpi__value" id="kpiVencido">—</div><div class="kpi__sub" id="kpiVencidoSub">—</div><div class="kpi__icon">⚠️</div></div>
+    <div class="kpi kpi--blue"><div class="kpi__label">Recebido no mês</div><div class="kpi__value" id="kpiRecebido">—</div><div class="kpi__sub" id="kpiRecebidoSub">—</div><div class="kpi__icon">✅</div></div>
+  </div>
+
+  <div class="filters">
+    <input id="fCliente" placeholder="🔍 Cliente ou documento..." style="min-width:200px;">
+    <select id="fStatus">
+      <option value="">Todos os status</option>
+      <option value="aberto">Aberto</option>
+      <option value="parcial">Parcial</option>
+      <option value="vencido">Vencido</option>
+      <option value="recebido">Recebido</option>
+      <option value="cancelado">Cancelado</option>
+    </select>
+    <input type="month" id="fCompetencia" title="Competência (mês/ano)">
+    <input type="date" id="fVencimento" title="Vencimento específico">
+  </div>
+
+  <div class="list-table">
+    <table>
+      <thead>
+        <tr>
+          <th>Documento</th>
+          <th>Cliente</th>
+          <th>Competência</th>
+          <th>Vencimento</th>
+          <th style="width:110px;">Valor</th>
+          <th style="width:110px;">Saldo</th>
+          <th style="width:120px;">Status</th>
+          <th style="width:110px;"></th>
+        </tr>
+      </thead>
+      <tbody id="listaReceber">
+        <tr><td colspan="8" style="padding:24px;text-align:center;color:var(--muted-lt);">Carregando...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modal: Novo/Editar Título -->
+<div id="modalTitulo" class="modal hidden" aria-hidden="true">
+  <div class="modal__card">
+    <div class="modal__head">
+      <div class="modal__title" id="modalTituloTitle">Novo título a receber</div>
+      <button id="btnModalClose" class="modal__close" type="button">✕</button>
+    </div>
+    <div class="modal__body">
+      <div class="field"><label>Cliente</label><input id="mClienteNome" placeholder="Nome do cliente"></div>
+      <div class="g2">
+        <div class="field"><label>CPF / CNPJ</label><input id="mClienteDoc" placeholder="Documento (opcional)"></div>
+        <div class="field"><label>Documento OS / Atendimento</label><input id="mDocumento" placeholder="Ex: ATD-2026-00001"></div>
+        <div class="field"><label>Competência</label><input id="mCompetencia" type="month"></div>
+        <div class="field"><label>Vencimento</label><input id="mVencimento" type="date"></div>
+      </div>
+      <div class="field"><label>Valor (R$)</label><input id="mValor" placeholder="Ex: 150,00" inputmode="decimal" data-vsc-mask="money-br"></div>
+      <div class="field"><label>Observação</label><input id="mObs" placeholder="Opcional"></div>
+      <div id="mWarn" class="warn-box"></div>
+    </div>
+    <div class="modal__foot">
+      <button id="btnCancelarModal" class="btn btn--ghost btn--sm" type="button">Cancelar</button>
+      <button id="btnSalvarTitulo" class="btn btn--sm" type="button">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Registrar Recebimento -->
+<div id="modalReceber" class="modal hidden" aria-hidden="true">
+  <div class="modal__card">
+    <div class="modal__head">
+      <div class="modal__title">Registrar recebimento</div>
+      <button id="btnReceberClose" class="modal__close" type="button">✕</button>
+    </div>
+    <div class="modal__body">
+      <input id="rId" type="hidden">
+      <div id="rTituloInfo" style="background:#fafbfc;border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:14px;font-size:13px;color:var(--muted);"></div>
+      <div class="g2">
+        <div class="field"><label>Data</label><input id="rData" type="date"></div>
+        <div class="field"><label>Forma de pagamento</label>
+          <select id="rForma">
+            <option value="">Selecione...</option>
+            <option value="pix">PIX</option>
+            <option value="dinheiro">Dinheiro</option>
+            <option value="cartao_debito">Cartão Débito</option>
+            <option value="cartao_credito">Cartão Crédito</option>
+            <option value="transferencia">Transferência</option>
+            <option value="cheque">Cheque</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Valor recebido (R$)</label><input id="rValor" placeholder="Ex: 50,00" inputmode="decimal" data-vsc-mask="money-br"></div>
+      <div class="field"><label>Observação</label><input id="rObs" placeholder="Opcional"></div>
+      <div id="rWarn" class="warn-box"></div>
+    </div>
+    <div class="modal__foot">
+      <button id="btnCancelarReceber" class="btn btn--ghost btn--sm" type="button">Cancelar</button>
+      <button id="btnConfirmarReceber" class="btn btn--sm" type="button">Confirmar recebimento</button>
+    </div>
+  </div>
+</div>
+
+<div id="vscSnackbar"></div>
+
+<script src="modules/vsc_ui_core.js"></script>
+<script src="modules/vsc-utils.js"></script>
+<script src="modules/ui-global.js"></script>
+<script src="modules/vsc_db.js"></script>
+
+  <script src="modules/auth.js" charset="utf-8"></script>
+  <script src="modules/auth_guard.js" charset="utf-8"></script>
+<script src="modules/vsc-outbox-relay.js"></script>
+<script src="modules/contasareceber.js"></script>
+<script>
+// KPI updater hook
+(function(){
+  function fmt(cents){
+    try{ return "R$\u00a0"+Number((cents||0)/100).toLocaleString("pt-BR",{minimumFractionDigits:2}); }catch(_){ return "R$ 0,00"; }
+  }
+  function s(id,v){ var el=document.getElementById(id); if(el) el.textContent=v; }
+  function updateKPIs(items){
+    var today=new Date().toISOString().slice(0,10);
+    var mes=new Date().toISOString().slice(0,7);
+    var ab=0,abV=0,pa=0,paV=0,ve=0,veV=0,re=0,reV=0;
+    items.forEach(function(a){
+      if(!a||a.cancelado) return;
+      var saldo=a.saldo_centavos!=null?a.saldo_centavos:(a.valor_original_centavos||0);
+      var recs=Array.isArray(a.recebimentos)?a.recebimentos:[];
+      if(saldo<=0){
+        if(recs.some(function(r){ return (r.data||"").slice(0,7)===mes; })){ re++; reV+=(a.valor_original_centavos||0); }
+        return;
+      }
+      if(a.vencimento&&a.vencimento<today){ ve++; veV+=saldo; return; }
+      if(recs.length>0){ pa++; paV+=saldo; return; }
+      ab++; abV+=saldo;
+    });
+    s("kpiAberto",ab); s("kpiAbertoSub",fmt(abV)+" em aberto");
+    s("kpiParcial",pa); s("kpiParcialSub",fmt(paV)+" parcial");
+    s("kpiVencido",ve); s("kpiVencidoSub",fmt(veV)+" vencido");
+    s("kpiRecebido",re); s("kpiRecebidoSub",fmt(reV)+" recebido");
+  }
+  var obs=new MutationObserver(function(){ if(window.__VSC_AR_ALL) updateKPIs(window.__VSC_AR_ALL); });
+  function tryObs(){ var el=document.getElementById("listaReceber"); if(el) obs.observe(el,{childList:true}); else setTimeout(tryObs,200); }
+  tryObs();
+  setInterval(function(){ if(window.__VSC_AR_ALL) updateKPIs(window.__VSC_AR_ALL); },3000);
+})();
+</script>
+</body>
+</html>

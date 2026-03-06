@@ -1318,90 +1318,7 @@
   // ============================================================
   // INIT
   // ============================================================
-  async function __demoAutoLoad() {
-    try {
-      const qs = new URLSearchParams(location.search);
-      const isDemo = qs.get("demo") === "1" || qs.get("print") === "1";
-      if (!isDemo) return;
-
-      // Monta uma NF-e demonstrativa (sem arquivo)
-      const nfe = {
-        chave: "00000000000000000000000000000000000000000000",
-        numero: "000123",
-        emissao: "2026-03-03",
-        emitente: {
-          cnpj: "00000000000000",
-          nome: "Fornecedor Demonstração (DEMO)",
-          fantasia: "Distribuidora Exemplo",
-          ie: "ISENTO",
-          telefone: "(00) 00000-0000",
-          email: "nfe@example.com",
-          logradouro: "Rua Demonstrativa",
-          numero: "123",
-          bairro: "Bairro Exemplo",
-          cidade: "Cidade Exemplo",
-          uf: "EX",
-          cep: "00000-000"
-        },
-        totais: { rateioCents: 8900 },
-        items: [
-          { nItem: 1, cProd: "VSC-DEMO-001", nome: "Vacina Influenza Equina (DEMO)", ean: "7890000000001", unidade: "UN", qtdNum: 10, vUnCents: 12500, vTotCents: 125000 },
-          { nItem: 2, cProd: "VSC-DEMO-002", nome: "Progesterona 300mg (DEMO)", ean: "7890000000002", unidade: "UN", qtdNum: 6,  vUnCents: 9800,  vTotCents: 58800 },
-          { nItem: 3, cProd: "VSC-DEMO-003", nome: "Seringa 10ml (DEMO)", ean: "7890000000003", unidade: "UN", qtdNum: 50, vUnCents: 220,   vTotCents: 11000 }
-        ]
-      };
-
-      State.nfe = nfe;
-      State.items = nfe.items;
-      State.fornecedorId = await resolveFornecedor(nfe.emitente);
-
-      const produtos = await loadProdutos();
-      for (const it of State.items) {
-        aplicarConversao(it, null);
-        if (it.ean) {
-          const p = findProdByEAN(produtos, it.ean);
-          if (p) {
-            it.vinculoProdutoId = getProdId(p);
-            it.vinculoAuto = true;
-            it.vinculoTipo = "EAN_EXATO";
-            it._vinculoNome = p.nome || "";
-            vmapSet(it.ean, getProdId(p));
-            aplicarConversao(it, p);
-            continue;
-          }
-        }
-        const m = findBestSim(produtos, it.nome, 0.95);
-        if (m) {
-          it._simProdutoId = getProdId(m.produto);
-          it._simScore = m.sim;
-          it.vinculoTipo = "PENDENTE_SIM";
-          it._vinculoNome = m.produto.nome || "";
-          continue;
-        }
-        it.vinculoTipo = null;
-      }
-
-      calcRateio(State.items, nfe.totais.rateioCents);
-      renderResumo(nfe, State.fornecedorId);
-      renderItens();
-      const cr = $("cardResultados");
-      if (cr) cr.style.display = "block";
-      atualizarBtnFinalizar();
-
-      // Sinal visual de demo
-      try {
-        const h = document.createElement("div");
-        h.textContent = "AMBIENTE DEMONSTRATIVO — DADOS FICTÍCIOS";
-        h.style.cssText = "position:fixed;bottom:12px;left:12px;z-index:99999;background:rgba(0,0,0,.75);color:#fff;padding:8px 10px;border-radius:10px;font-weight:800;font-size:12px;letter-spacing:.02em;";
-        document.body.appendChild(h);
-      } catch(_) {}
-
-    } catch (e) {
-      console.warn("DEMO_XML_AUTOFILL_FAIL", e);
-    }
-  }
-
-function init() {
+  function init() {
     const btnA = $("btnAnalisar"); if (btnA) btnA.addEventListener("click", () => VSC_XML.analisar());
     const btnF = $("btnFinalizar"); if (btnF) btnF.addEventListener("click", () => VSC_XML.finalizar());
 
@@ -1427,10 +1344,7 @@ function init() {
       if (e.key !== "Escape") return;
       const mv = $("modalVinculo"); if (mv && mv.style.display === "flex") VSC_XML.closeModal();
     });
-  
-    // Auto-preencher para DEMO/PRINT
-    __demoAutoLoad();
-}
+  }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
   else init();

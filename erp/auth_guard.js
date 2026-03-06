@@ -4,10 +4,7 @@
   // Suporte a Pretty URLs (/clientes, /dashboard, etc.) + URLs com .html
   // Compatível com Cloudflare Pages + wrangler deploy
   try{
-    // IMPORTANTE: Em alguns cenários de Cloudflare (Redirect Rules/Page Rules/Normalização)
-    // a rota /login pode entrar em loop de 308 (Location: /login). Para blindar o sistema,
-    // usamos o arquivo explícito /login.html.
-    var LOGIN_PAGE_PATH  = "/login.html";
+    var LOGIN_PAGE_PATH  = "/login";
     var LOGIN_PAGE_HTML  = "login.html";
     var KEY = "vsc_session_id";
     var html = document.documentElement;
@@ -27,7 +24,6 @@
         var h = String(location.href || "").toLowerCase();
         return (
           p === "/login" ||
-          p === "/login.html" ||
           p.endsWith("/login.html") ||
           h.indexOf("login.html") !== -1
         );

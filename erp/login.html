@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <!-- Base fixa para compatibilidade com /login e /dashboard (Pretty URLs) -->
+  <base href="/" />
   <title>Login - Vet System Control | Equine</title>
   <link rel="stylesheet" href="/assets/styles.css" />
   <style>
@@ -27,9 +29,9 @@
     .status.info{border-color:rgba(2,119,189,.35);background:rgba(2,119,189,.06);}
     .small{font-size:11px;color:#777;margin-top:10px;line-height:1.35}
     .small code{background:#f2f2f2;border-radius:6px;padding:2px 6px;}
-  </style><script src="modules/vsc_db.js" charset="utf-8" defer></script>
-  <script src="modules/auth.js" charset="utf-8" defer></script>
-  <script src="modules/login.js" charset="utf-8" defer></script>
+  </style><script src="/modules/vsc_db.js" charset="utf-8" defer></script>
+  <script src="/modules/auth.js" charset="utf-8" defer></script>
+  <script src="/modules/login.js" charset="utf-8" defer></script>
 </head>
 <body>
   <div class="wrap">

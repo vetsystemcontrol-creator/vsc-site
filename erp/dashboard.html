@@ -40,20 +40,6 @@
       }
 
       if(!sid){
-        // DEMO/PRINT MODE: permite navegação e prints sem login/back-end
-        try{
-          var qsd = new URLSearchParams(location.search || "");
-          var demo = (qsd.get("demo")==="1" || qsd.get("print")==="1" || (localStorage.getItem("vsc_demo_mode")==="1"));
-          if(demo){
-            try{ localStorage.setItem("vsc_demo_mode","1"); }catch(_){}
-            // Em demo, não redireciona. Sessão será criada pelo demo_mode.js.
-            reveal();
-            setTimeout(reveal, 250);
-            document.addEventListener("DOMContentLoaded", reveal, { once:true });
-            return;
-          }
-        }catch(_){}
-        
         if(!isLogin){
           // Mantém escondido e redireciona
           location.replace(LOGIN_PAGE + "?next=" + encodeURIComponent(cur));
@@ -87,7 +73,6 @@
 
 
   <script src="/modules/vsc_db.js" charset="utf-8" defer></script>
-  <script src="/modules/demo_mode.js" charset="utf-8"></script>
   <script src="/modules/auth.js" charset="utf-8" defer></script>
   <script src="/modules/auth_guard.js" charset="utf-8" defer></script>
   <script src="/modules/app.js" charset="utf-8" defer></script>
@@ -643,7 +628,6 @@
 }
 
 </style>
-  <script src="demo_seed.js" defer></script>
 </head>
 
 <body class="page-dashboard">

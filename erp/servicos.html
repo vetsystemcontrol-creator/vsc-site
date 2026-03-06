@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3E%3Crect width=%2716%27 height=%2716%27 rx=%273%27 fill=%27%232fb26a%27/%3E%3C/svg%3E">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Serviços - Vet System Control | Equine</title>
+
+  <link rel="stylesheet" href="/assets/styles.css" />
+
+  <!-- JS CANÔNICO: somente \modules (não referenciar assets/) -->
+  <script src="modules/vsc_ui_core.js" charset="utf-8"></script>
+  <script src="modules/app.js" charset="utf-8"></script>
+<script src="modules/enter-nav.js" charset="utf-8"></script>
+<script src="modules/vsc-topbar.js" charset="utf-8"></script>
+<script src="modules/ui-global.js"></script>
+<script src="modules/vsc_db.js" charset="utf-8"></script>
+
+  
+  <script src="modules/auth.js" charset="utf-8"></script>
+  <script src="modules/auth_guard.js" charset="utf-8"></script>
+<style>
+    :root{
+      --muted:#6b7280;
+      --bg:#f7f8fa;
+      --card:#ffffff;
+      --border:rgba(0,0,0,.06);
+      --green:#2fb26a;
+      --danger:#b91c1c;
+    }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:#111; }
+    #vscTopbarFrame{ width:100%; height:86px; border:0; display:block; background:#fff; }
+    .page-wrap{ max-width:1280px; margin:0 auto; padding:28px 24px 60px; }
+    .title{ font-size:28px; font-weight:800; margin:12px 0 6px; }
+    .sub{ font-size:14px; color:var(--muted); margin-bottom:18px; }
+    .card{ background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; }
+    .field{ display:flex; flex-direction:column; gap:6px; min-width:220px; flex:1; }
+    label{ font-size:12px; color:var(--muted); }
+    input, select, textarea{
+      width:100%; padding:10px 10px;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:10px; outline:none; background:#fff; color:#111;
+    }
+    textarea{ min-height:84px; resize:vertical; }
+    .btn{ border:1px solid rgba(0,0,0,.12); background:#fff; border-radius:10px; padding:10px 12px; cursor:pointer; font-weight:700; }
+    .btn.primary{ border-color:var(--green); background:var(--green); color:#fff; }
+    .btn.danger{ border-color:var(--danger); background:var(--danger); color:#fff; }
+    .sep{ height:1px; background:rgba(0,0,0,.08); margin:14px 0; }
+    .note{ font-size:12px; color:var(--muted); line-height:1.35; }
+    table{ width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:12px; border:1px solid rgba(0,0,0,.08); background:#fff; }
+    th, td{ padding:10px 10px; border-bottom:1px solid rgba(0,0,0,.06); font-size:13px; }
+    th{ text-align:left; color:#111; background:#fafafa; font-weight:800; }
+    tr:last-child td{ border-bottom:none; }
+    .pill{ display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px; border:1px solid rgba(0,0,0,.10); font-size:12px; color:var(--muted); background:#fff; }
+      /* ===== MODAL CANÔNICO (Serviços) ===== */
+    .vsc-overlay{
+      position:fixed; inset:0;
+      background:rgba(0,0,0,.35);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:9999;
+    }
+    .vsc-overlay.show{ display:flex; }
+
+    .vsc-modal{
+      width:min(760px, 100%);
+      background:#fff;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:18px;
+      box-shadow:0 18px 45px rgba(0,0,0,.18);
+      overflow:hidden;
+    }
+    .vsc-modal-h{
+      display:flex; align-items:flex-start; justify-content:space-between;
+      padding:16px 16px 10px;
+      background:#fff;
+      border-bottom:1px solid rgba(0,0,0,.08);
+      gap:12px;
+    }
+    .vsc-modal-title{
+      font-size:16px; font-weight:900; margin:0;
+    }
+    .vsc-modal-sub{
+      font-size:12px; color:var(--muted); margin:4px 0 0;
+      line-height:1.3;
+    }
+    .vsc-modal-x{
+      border:1px solid rgba(0,0,0,.12);
+      background:#fff;
+      border-radius:10px;
+      padding:8px 10px;
+      cursor:pointer;
+      font-weight:900;
+      line-height:1;
+    }
+    .vsc-modal-b{
+      padding:14px 16px 16px;
+      background:#fff;
+    }
+    .vsc-grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .vsc-grid .field{ min-width:unset; }
+    .vsc-grid .span2{ grid-column:1 / -1; }
+    .vsc-actions{
+      display:flex; gap:10px; justify-content:flex-end; flex-wrap:wrap;
+      padding:12px 16px;
+      border-top:1px solid rgba(0,0,0,.08);
+      background:#fafafa;
+    }
+    .vsc-check{
+      display:flex; align-items:center; gap:8px;
+      padding:10px 10px;
+      border:1px solid rgba(0,0,0,.10);
+      border-radius:10px;
+      background:#fff;
+      user-select:none;
+    }
+    .vsc-check input{ width:auto; }
+    /* ===== VIEW (VISUALIZAR) — Premium Summary ===== */
+    .vsc-badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border-radius:999px;
+      border:1px solid rgba(0,0,0,.12);
+      font-size:12px; font-weight:900;
+      background:#fff;
+    }
+    .vsc-badge.view{ color:#111; }
+    .vsc-badge.edit{ color:#111; border-color:rgba(47,178,106,.35); }
+    .vsc-badge i{
+      width:8px; height:8px; border-radius:999px;
+      display:inline-block; background:var(--green);
+    }
+
+    .vsc-kv{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px 14px;
+      border:1px solid rgba(0,0,0,.08);
+      border-radius:14px;
+      padding:12px;
+      background:#fff;
+    }
+    .vsc-kv .kv{
+      display:flex; flex-direction:column; gap:4px;
+      padding:8px 10px;
+      border:1px solid rgba(0,0,0,.06);
+      border-radius:12px;
+      background:#fafafa;
+    }
+    .vsc-kv .kv .k{ font-size:11px; color:var(--muted); font-weight:800; letter-spacing:.2px; }
+    .vsc-kv .kv .v{ font-size:13px; color:#111; font-weight:800; }
+    .vsc-kv .span2{ grid-column:1 / -1; }
+
+    .vsc-view-note{
+      font-size:12px; color:var(--muted); line-height:1.35;
+      margin-top:10px;
+    }
+
+    .vsc-actions .btn.ghost{
+      background:#fff;
+      border-color:rgba(0,0,0,.12);
+      color:#111;
+    }
+
+  </style>
+</head>
+<body class="page-servicos">
+  <!-- Topbar oficial -->
+  <iframe id="vscTopbarFrame" src="topbar.html?v=final"></iframe>
+
+  <main class="page-wrap">
+    <div class="title">Serviços</div>
+    <div class="sub">Cadastro e manutenção do catálogo de serviços · Offline-first · UUID v4</div>
+
+    <!-- KPI Strip -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+      <div class="card" style="padding:12px 14px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px;">Total</div>
+        <div style="font-size:22px;font-weight:900;margin-top:4px;" id="kpiSvcTotal">—</div>
+        <div style="font-size:12px;color:var(--muted);">serviços cadastrados</div>
+      </div>
+      <div class="card" style="padding:12px 14px;">
+        <div style="font-size:11px;color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:.4px;">Ativos</div>
+        <div style="font-size:22px;font-weight:900;margin-top:4px;color:var(--green);" id="kpiSvcAtivos">—</div>
+        <div style="font-size:12px;color:var(--muted);">disponíveis para uso</div>
+      </div>
+      <div class="card" style="padding:12px 14px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px;">Consultas</div>
+        <div style="font-size:22px;font-weight:900;margin-top:4px;" id="kpiSvcConsulta">—</div>
+        <div style="font-size:12px;color:var(--muted);">tipo consulta/clínica</div>
+      </div>
+      <div class="card" style="padding:12px 14px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px;">Cirurgias</div>
+        <div style="font-size:22px;font-weight:900;margin-top:4px;" id="kpiSvcCirurgia">—</div>
+        <div style="font-size:12px;color:var(--muted);">tipo cirurgia</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row" style="justify-content:space-between; align-items:center;">
+        <div class="note">
+          Regra: este módulo mantém o <b>cadastro mestre</b> (serviços). O atendimento apenas <b>consome snapshot</b>.
+        </div>
+        <button type="button" class="btn primary" id="btnNovo">Novo Serviço</button>
+      </div>
+
+      <div class="sep"></div>
+
+      <!-- Filtros (sempre acima da lista) -->
+      <div class="row">
+        <div class="field" style="max-width:280px;">
+          <label>Buscar</label>
+          <input id="fBusca" type="text" placeholder="Nome / código / categoria">
+        </div>
+
+        <div class="field" style="max-width:220px;">
+          <label>Categoria</label>
+          <select id="fCategoria">
+            <option value="">(todas)</option>
+            <option value="clinica">Clínica</option>
+            <option value="odontologia">Odontologia</option>
+            <option value="emergencia">Emergência</option>
+            <option value="profilaxia">Profilaxia/Sanidade</option>
+          </select>
+        </div>
+
+        <div class="field" style="max-width:220px;">
+          <label>Status</label>
+          <select id="fAtivo">
+            <option value="">(todos)</option>
+            <option value="ativos">Ativos</option>
+            <option value="inativos">Inativos</option>
+          </select>
+        </div>
+
+        <button type="button" class="btn" id="btnReset">Reset</button>
+      </div>
+
+      <div class="sep"></div>
+      <!-- Lista -->
+      <div class="row" style="align-items:center; justify-content:space-between;">
+        <span class="pill">Total: <strong id="uiTotal" style="margin-left:6px;">0</strong></span>
+        <span class="note" id="uiMsg"></span>
+      </div>
+
+      <div style="height:10px;"></div>
+
+      <table aria-label="Tabela de serviços">
+        <thead>
+          <tr>
+  <th style="width:30%;">Serviço</th>
+  <th style="width:16%;">Categoria</th>
+  <th style="width:16%;">Cobrança</th>
+  <th style="width:16%;">Preço base</th>
+  <th style="width:12%;">Status</th>
+  <th style="width:10%;">Ações</th>
+</tr>
+        </thead>
+        <tbody id="tbServicos">
+          <tr>
+            <td colspan="6" class="note">Scaffold criado. Próximo patch: CRUD offline-first + outbox (console limpo).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="sep"></div>
+
+      <div class="note">
+        Campos canônicos (mínimo): <b>UUID</b>, nome, descrição curta, categoria, tipo de cobrança, preço base (centavos),
+        ativo/inativo, created_at, updated_at, deleted_at.
+      </div>
+    </div>
+      <!-- ================= MODAL: VISUALIZAR SERVIÇO (PREMIUM) ================= -->
+    <div class="vsc-overlay" id="svcViewOverlay" aria-hidden="true">
+      <div class="vsc-modal" role="dialog" aria-modal="true" aria-labelledby="svcViewTitle">
+        <div class="vsc-modal-h">
+          <div>
+            <div class="vsc-modal-title" id="svcViewTitle">Visualizar Serviço</div>
+            <div class="vsc-modal-sub">
+              Modo leitura. Para alterar dados, clique em <b>Editar</b>.
+            </div>
+          </div>
+          <button type="button" class="vsc-modal-x" id="svcViewClose" aria-label="Fechar">✕</button>
+        </div>
+
+        <div class="vsc-modal-b">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+            <span class="vsc-badge view"><i></i>VISUALIZAÇÃO</span>
+            <span class="pill" id="svcViewStatusPill">—</span>
+          </div>
+
+          <div style="height:12px;"></div>
+
+          <div class="vsc-kv" aria-label="Resumo do serviço">
+            <div class="kv span2">
+              <div class="k">Serviço</div>
+              <div class="v" id="svcViewNome">—</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">Categoria</div>
+              <div class="v" id="svcViewCategoria">—</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">Cobrança</div>
+              <div class="v" id="svcViewTipo">—</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">Preço base</div>
+              <div class="v" id="svcViewPreco">—</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">Código</div>
+              <div class="v" id="svcViewCodigo">—</div>
+            </div>
+
+            <div class="kv span2">
+              <div class="k">Descrição</div>
+              <div class="v" id="svcViewDesc" style="font-weight:700; color:#111;">—</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">UUID</div>
+              <div class="v" id="svcViewId" style="font-weight:700;">—</div>
+            </div>
+
+            <div class="kv">
+              <div class="k">Criado em</div>
+              <div class="v" id="svcViewCreatedAt" style="font-weight:700;">—</div>
+            </div>
+          </div>
+
+          <div class="vsc-view-note">
+            Estado visível e governado: clique na lista abre <b>Visualizar</b>. Edição somente por ação consciente.
+          </div>
+        </div>
+
+        <div class="vsc-actions">
+          <button type="button" class="btn ghost" id="svcViewBack">Fechar (Esc)</button>
+          <button type="button" class="btn primary" id="svcViewEdit">Editar</button>
+        </div>
+      </div>
+    </div>
+    <!-- =============== FIM MODAL VISUALIZAR =============== -->
+
+    <!-- ================= MODAL: CRIAR/EDITAR SERVIÇO ================= -->
+    <div class="vsc-overlay" id="svcOverlay" aria-hidden="true">
+      <div class="vsc-modal" role="dialog" aria-modal="true" aria-labelledby="svcTitle">
+        <div class="vsc-modal-h">
+          <div>
+            <div class="vsc-modal-title" id="svcTitle">Serviço</div>
+            <div class="vsc-modal-sub">
+              Cadastro mestre (catálogo). O atendimento consome snapshot.
+            </div>
+          </div>
+          <button type="button" class="vsc-modal-x" id="svcClose" aria-label="Fechar">✕</button>
+        </div>
+
+        <div class="vsc-modal-b">
+          <form id="svcForm" autocomplete="off">
+            <!-- IDs escondidos (para edição) -->
+            <input type="hidden" id="svcId" />
+            <input type="hidden" id="svcCreatedAt" />
+
+            <div class="vsc-grid">
+              <div class="field span2">
+                <label>Nome do serviço *</label>
+                <input id="svcNome" type="text" placeholder="Ex.: Consulta, Odontoplastia, Atendimento emergencial" />
+              </div>
+
+              <div class="field span2">
+                <label>Descrição curta</label>
+                <textarea id="svcDesc" placeholder="Ex.: Avaliação clínica completa, com orientações e conduta."></textarea>
+              </div>
+
+              <div class="field">
+                <label>Categoria *</label>
+                <select id="svcCategoria">
+                  <option value="clinica">Clínica</option>
+                  <option value="odontologia">Odontologia</option>
+                  <option value="emergencia">Emergência</option>
+                  <option value="profilaxia">Profilaxia/Sanidade</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Tipo de cobrança *</label>
+                <select id="svcTipo">
+                  <option value="unitario">Unitário</option>
+                  <option value="por_hora">Por hora</option>
+                  <option value="por_animal">Por animal</option>
+                  <option value="pacote">Pacote</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label>Preço base (R$) *</label>
+                <input id="svcPreco" type="text" inputmode="decimal" placeholder="0,00" data-vsc-mask="money-br" />
+              </div>
+
+              <div class="field">
+                <label>Status</label>
+                <div class="vsc-check">
+                  <input id="svcAtivo" type="checkbox" checked />
+                  <span>Ativo</span>
+                </div>
+              </div>
+
+              <div class="field span2">
+                <label>Código interno (opcional)</label>
+                <input id="svcCodigo" type="text" placeholder="Ex.: OD-001" />
+              </div>
+            </div>
+          </form>
+
+          <div class="note" style="margin-top:10px;">
+            * Campos obrigatórios. Valores monetários são armazenados em <b>centavos</b>.
+          </div>
+        </div>
+
+        <div class="vsc-actions">
+          <button type="button" class="btn" id="svcCancel">Cancelar (Esc)</button>
+          <button type="button" class="btn danger" id="svcDelete">Deletar</button>
+          <button type="button" class="btn primary" id="svcSave">Salvar</button>
+        </div>
+      </div>
+    </div>
+    <!-- =============== FIM MODAL =============== -->
+  </main>
+  <script src="modules/servicos.js" charset="utf-8"></script>
+</body>
+</html>

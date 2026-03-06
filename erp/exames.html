@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Exames - Vet System Control | Equine</title>
+
+  <link rel="stylesheet" href="/assets/styles.css" />
+
+  <script src="modules/app.js" charset="utf-8"></script>
+  <script src="modules/enter-nav.js" charset="utf-8"></script>
+  <script src="modules/vsc-topbar.js" charset="utf-8"></script>
+<script src="modules/ui-global.js"></script>
+<script src="modules/vsc_db.js" charset="utf-8"></script> 
+
+  <script src="modules/auth.js" charset="utf-8"></script>
+  <script src="modules/auth_guard.js" charset="utf-8"></script>
+<script src="modules/exames.js" charset="utf-8"></script>
+
+  <style>
+    :root{
+      --muted:#6b7280;
+      --bg:#f7f8fa;
+      --card:#ffffff;
+      --border:rgba(0,0,0,.06);
+      --green:#2fb26a;
+      --danger:#b91c1c;
+    }
+    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:#111; }
+    #vscTopbarFrame{ width:100%; height:86px; border:0; display:block; background:#fff; }
+    .page-wrap{ max-width:1280px; margin:0 auto; padding:28px 22px 40px; }
+    h1{ font-size:44px; margin:0 0 8px; letter-spacing:-.02em; }
+    .sub{ color:var(--muted); margin:0 0 18px; }
+    .card{ background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px; box-shadow:0 8px 22px rgba(0,0,0,.04); }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; }
+    .f{ display:flex; flex-direction:column; gap:6px; min-width:220px; flex:1; }
+    label{ font-size:12px; color:var(--muted); }
+    input,select{ height:44px; border-radius:12px; border:1px solid var(--border); padding:0 12px; background:#fff; outline:none; }
+    input:focus,select:focus{ border-color:rgba(47,178,106,.55); box-shadow:0 0 0 4px rgba(47,178,106,.12); }
+    .btn{ height:44px; border-radius:12px; border:1px solid var(--border); padding:0 14px; background:#fff; cursor:pointer; font-weight:700; }
+    .btn.primary{ background:var(--green); border-color:var(--green); color:#fff; }
+    .btn.danger{ background:var(--danger); border-color:var(--danger); color:#fff; }
+    .muted{ color:var(--muted); }
+    .bar{ display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .table-wrap{ margin-top:14px; border-top:1px solid var(--border); padding-top:14px; }
+    table{ width:100%; border-collapse:collapse; }
+    th{ text-align:left; font-size:12px; color:var(--muted); padding:10px 8px; }
+    td{ padding:12px 8px; border-top:1px solid rgba(0,0,0,.05); vertical-align:top; }
+    .pill{ display:inline-block; padding:2px 10px; border-radius:999px; font-size:12px; border:1px solid var(--border); background:#fff; }
+    .note{ font-size:12px; color:var(--muted); margin-top:4px; }
+    #exOverlay{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; padding:18px; z-index:9999; }
+    #exOverlay.show{ display:flex; }
+    #exModal{ width:min(920px, 100%); background:#fff; border-radius:18px; border:1px solid var(--border); box-shadow:0 18px 60px rgba(0,0,0,.18); overflow:hidden; }
+    #exHead{ padding:16px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; gap:12px; }
+    #exTitle{ font-size:18px; font-weight:900; }
+    #exClose{ width:40px; height:40px; border-radius:12px; border:1px solid var(--border); background:#fff; cursor:pointer; }
+    #exBody{ padding:16px 18px; }
+    #exFoot{ padding:14px 18px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; }
+  
+    /* ===== VIEW MODAL (Floorplan enterprise) ===== */
+    #exViewOverlay{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; padding:18px; z-index:9999; }
+    #exViewOverlay.show{ display:flex; }
+    #exViewModal{ width:min(920px, 100%); background:#fff; border-radius:18px; border:1px solid var(--border); box-shadow:0 18px 60px rgba(0,0,0,.18); overflow:hidden; }
+    #exViewHead{ padding:16px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    #exViewTitle{ font-size:18px; font-weight:900; }
+    #exViewClose{ width:40px; height:40px; border-radius:12px; border:1px solid var(--border); background:#fff; cursor:pointer; font-weight:900; line-height:1; }
+    #exViewBody{ padding:16px 18px; }
+    #exViewFoot{ padding:14px 18px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; background:#fafafa; }
+    .ex-badge{ display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid rgba(0,0,0,.12); font-size:12px; font-weight:900; background:#fff; }
+    .ex-badge i{ width:8px; height:8px; border-radius:999px; display:inline-block; background:var(--green); }
+    .ex-kv{ display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; border:1px solid rgba(0,0,0,.08); border-radius:14px; padding:12px; background:#fff; }
+    .ex-kv .kv{ display:flex; flex-direction:column; gap:4px; padding:8px 10px; border:1px solid rgba(0,0,0,.06); border-radius:12px; background:#fafafa; }
+    .ex-kv .kv .k{ font-size:11px; color:var(--muted); font-weight:800; letter-spacing:.2px; }
+    .ex-kv .kv .v{ font-size:13px; color:#111; font-weight:800; }
+    .ex-kv .span2{ grid-column:1 / -1; }
+
+  </style>
+</head>
+<body>
+  <iframe id="vscTopbarFrame" src="topbar.html?v=final" title="Topbar" style="position:sticky;top:0;z-index:9999;"></iframe>
+
+  <div class="page-wrap">
+    <h1>Exames</h1>
+    <p class="sub">Cadastro mestre (catálogo) de exames • Offline-first • UUID v4</p>
+
+    <!-- KPI Strip -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+      <div class="card" style="padding:12px 14px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px;">Total</div>
+        <div style="font-size:22px;font-weight:900;margin-top:4px;" id="kpiExTotal">—</div>
+        <div style="font-size:12px;color:var(--muted);">exames cadastrados</div>
+      </div>
+      <div class="card" style="padding:12px 14px;">
+        <div style="font-size:11px;color:var(--green);font-weight:800;text-transform:uppercase;letter-spacing:.4px;">Ativos</div>
+        <div style="font-size:22px;font-weight:900;margin-top:4px;color:var(--green);" id="kpiExAtivos">—</div>
+        <div style="font-size:12px;color:var(--muted);">disponíveis para uso</div>
+      </div>
+      <div class="card" style="padding:12px 14px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px;">Laboratorial</div>
+        <div style="font-size:22px;font-weight:900;margin-top:4px;" id="kpiExLab">—</div>
+        <div style="font-size:12px;color:var(--muted);">exames lab.</div>
+      </div>
+      <div class="card" style="padding:12px 14px;">
+        <div style="font-size:11px;color:var(--muted);font-weight:800;text-transform:uppercase;letter-spacing:.4px;">Imagem</div>
+        <div style="font-size:22px;font-weight:900;margin-top:4px;" id="kpiExImagem">—</div>
+        <div style="font-size:12px;color:var(--muted);">exames de imagem</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="bar">
+        <div class="muted"><b>Regra:</b> este módulo mantém o <b>cadastro mestre</b> (exames). O atendimento apenas consome <b>snapshot</b>.</div>
+        <div class="row">
+          <button id="btnNovo" class="btn primary">NOVO EXAME</button>
+        </div>
+      </div>
+
+      <div style="margin-top:14px" class="row">
+        <div class="f">
+          <label>Buscar</label>
+          <input id="fBusca" placeholder="Nome / código / tipo" />
+        </div>
+        <div class="f">
+          <label>Tipo</label>
+          <select id="fTipo">
+            <option value="">(todos)</option>
+            <option value="laboratorial">Laboratorial</option>
+            <option value="imagem">Imagem</option>
+            <option value="clinico">Clínico</option>
+          </select>
+        </div>
+        <div class="f">
+          <label>Status</label>
+          <select id="fAtivo">
+            <option value="">(todos)</option>
+            <option value="ativos">Ativos</option>
+            <option value="inativos">Inativos</option>
+          </select>
+        </div>
+        <div class="row" style="min-width:140px">
+          <button id="btnReset" class="btn">RESET</button>
+        </div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="row" style="justify-content:space-between;">
+          <span class="pill">Total: <span id="uiTotal">0</span></span>
+          <span id="uiMsg" class="note"></span>
+        </div>
+
+        <table aria-label="Tabela de exames">
+          <thead>
+  <tr>
+    <th>EXAME</th>
+    <th>TIPO</th>
+    <th>CUSTO BASE</th>
+    <th>VENDA</th>
+    <th>STATUS</th>
+    <th style="width:16%">AÇÕES</th>
+  </tr>
+</thead>
+          <tbody id="tbExames">
+            <tr><td colspan="6" class="note">Scaffold criado. Próximo patch: CRUD offline-first + outbox (console limpo).</td></tr>
+          </tbody>
+        </table>
+
+        <div class="note" style="margin-top:10px;">
+          Campos canônicos (mínimo): UUID, nome, descrição curta, tipo, custo base (centavos), ativo/inativo, created_at, updated_at, deleted_at.
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= MODAL: VISUALIZAR EXAME (FLOORPLAN ENTERPRISE) ================= -->
+  <div id="exViewOverlay" aria-hidden="true">
+    <div id="exViewModal" role="dialog" aria-modal="true" aria-labelledby="exViewTitle">
+      <div id="exViewHead">
+        <div>
+          <div id="exViewTitle">Visualizar Exame</div>
+          <div class="note">Modo leitura. Para alterar dados, clique em <b>Editar</b>.</div>
+        </div>
+        <button id="exViewClose" title="Fechar" aria-label="Fechar">×</button>
+      </div>
+
+      <div id="exViewBody">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+          <span class="ex-badge"><i></i>VISUALIZAÇÃO</span>
+          <span class="pill" id="exViewStatusPill">—</span>
+        </div>
+
+        <div style="height:12px;"></div>
+
+        <div class="ex-kv" aria-label="Resumo do exame">
+          <div class="kv span2">
+            <div class="k">Exame</div>
+            <div class="v" id="exViewNome">—</div>
+          </div>
+
+          <div class="kv">
+            <div class="k">Tipo</div>
+            <div class="v" id="exViewTipo">—</div>
+          </div>
+
+          <div class="kv">
+            <div class="k">Código</div>
+            <div class="v" id="exViewCodigo">—</div>
+          </div>
+
+          <div class="kv">
+            <div class="k">Custo base</div>
+            <div class="v" id="exViewCusto">—</div>
+          </div>
+
+          <div class="kv">
+            <div class="k">Venda</div>
+            <div class="v" id="exViewVenda">—</div>
+          </div>
+
+          <div class="kv">
+            <div class="k">UUID</div>
+            <div class="v" id="exViewId" style="font-weight:700;">—</div>
+          </div>
+
+          <div class="kv">
+            <div class="k">Criado em</div>
+            <div class="v" id="exViewCreatedAt" style="font-weight:700;">—</div>
+          </div>
+        </div>
+
+        <div class="note" style="margin-top:10px;">
+          Estado governado: clique na lista abre <b>Visualizar</b>. Edição somente por ação consciente.
+        </div>
+      </div>
+
+      <div id="exViewFoot">
+        <button id="exViewBack" class="btn">Fechar (ESC)</button>
+        <button id="exViewEdit" class="btn primary">Editar</button>
+      </div>
+      <style>.pill.pillOff{background:#fee2e2;border-color:#fca5a5;color:#b91c1c;}</style>
+    </div>
+  </div>
+  <!-- ================= FIM MODAL VISUALIZAR ================= -->
+
+  <div id="exOverlay" aria-hidden="true">
+    <div id="exModal" role="dialog" aria-modal="true" aria-labelledby="exTitle">
+      <div id="exHead">
+        <div>
+          <div id="exTitle">Exame</div>
+          <div class="note">Cadastro mestre (catálogo). O atendimento consome snapshot.</div>
+        </div>
+        <button id="exClose" title="Fechar">×</button>
+      </div>
+
+      <div id="exBody">
+        <form id="exForm">
+          <input id="exId" type="hidden" />
+          <input id="exCreatedAt" type="hidden" />
+
+          <div class="row">
+            <div class="f" style="min-width:340px;">
+              <label>Nome do exame *</label>
+              <input id="exNome" placeholder="Ex.: Hemograma, Raio-X, Avaliação clínica" />
+            </div>
+            <div class="f">
+              <label>Tipo *</label>
+              <select id="exTipo">
+                <option value="laboratorial">Laboratorial</option>
+                <option value="imagem">Imagem</option>
+                <option value="clinico">Clínico</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row" style="margin-top:10px;">
+  <div class="f">
+    <label>Custo base (R$) *</label>
+    <input id="exCusto" value="0,00" />
+  </div>
+
+  <div class="f">
+    <label>Valor de venda (R$) *</label>
+    <input id="exVenda" value="0,00" />
+  </div>
+
+  <div class="f">
+    <label>Status</label>
+    <label style="display:flex; align-items:center; gap:10px; height:44px; border:1px solid var(--border); border-radius:12px; padding:0 12px; background:#fff;">
+      <input id="exAtivo" type="checkbox" checked />
+      <span>Ativo</span>
+    </label>
+  </div>
+
+  <div class="f">
+    <label>Código interno (opcional)</label>
+    <input id="exCodigo" placeholder="Ex.: EX-001" />
+  </div>
+</div>
+
+          <div class="note" style="margin-top:10px;">* Campos obrigatórios. Valores monetários são armazenados em <b>centavos</b>.</div>
+        </form>
+      </div>
+
+      <div id="exFoot">
+        <button id="exCancel" class="btn">CANCELAR (ESC)</button>
+        <button id="exDelete" class="btn danger" style="display:none;">EXCLUIR</button>
+        <button id="exSave" class="btn primary">SALVAR</button>
+      </div>
+      <!-- pillOff style adicionado para status inativo -->
+      <style>.pill.pillOff{background:#fee2e2;border-color:#fca5a5;color:#b91c1c;}
+    /* ===== VIEW MODAL (Floorplan enterprise) ===== */
+    #exViewOverlay{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; align-items:center; justify-content:center; padding:18px; z-index:9999; }
+    #exViewOverlay.show{ display:flex; }
+    #exViewModal{ width:min(920px, 100%); background:#fff; border-radius:18px; border:1px solid var(--border); box-shadow:0 18px 60px rgba(0,0,0,.18); overflow:hidden; }
+    #exViewHead{ padding:16px 18px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:flex-start; gap:12px; }
+    #exViewTitle{ font-size:18px; font-weight:900; }
+    #exViewClose{ width:40px; height:40px; border-radius:12px; border:1px solid var(--border); background:#fff; cursor:pointer; font-weight:900; line-height:1; }
+    #exViewBody{ padding:16px 18px; }
+    #exViewFoot{ padding:14px 18px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; flex-wrap:wrap; background:#fafafa; }
+    .ex-badge{ display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid rgba(0,0,0,.12); font-size:12px; font-weight:900; background:#fff; }
+    .ex-badge i{ width:8px; height:8px; border-radius:999px; display:inline-block; background:var(--green); }
+    .ex-kv{ display:grid; grid-template-columns:1fr 1fr; gap:10px 14px; border:1px solid rgba(0,0,0,.08); border-radius:14px; padding:12px; background:#fff; }
+    .ex-kv .kv{ display:flex; flex-direction:column; gap:4px; padding:8px 10px; border:1px solid rgba(0,0,0,.06); border-radius:12px; background:#fafafa; }
+    .ex-kv .kv .k{ font-size:11px; color:var(--muted); font-weight:800; letter-spacing:.2px; }
+    .ex-kv .kv .v{ font-size:13px; color:#111; font-weight:800; }
+    .ex-kv .span2{ grid-column:1 / -1; }
+
+  </style>
+    </div>
+  </div>
+</body>
+</html>
