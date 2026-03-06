@@ -1,7 +1,5 @@
-/erp/atendimentos      https://app.vetsystemcontrol.com.br/atendimentos       301
-/erp/animais           https://app.vetsystemcontrol.com.br/animais            301
-/erp/reproducao        https://app.vetsystemcontrol.com.br/reproducao_equina  301
-/erp/reprodução        https://app.vetsystemcontrol.com.br/reproducao_equina  301
-/erp/importacaoxml     https://app.vetsystemcontrol.com.br/importacaoxml      301
-/erp/dashboard         https://app.vetsystemcontrol.com.br/dashboard          301
-/erp/*                 https://app.vetsystemcontrol.com.br/:splat             301
+# ERP routes
+/erp/*   /erp/:splat   200
+
+# root
+/        /index.html   200
