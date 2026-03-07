@@ -1,7 +1,0 @@
-name = "vsc-frontend"
-pages_build_output_dir = "."
-
-[env.production]
-# Domínio principal: www.vetsystemcontrol.com.br
-# Domínio do app:    app.vetsystemcontrol.com.br
-# Configurar esses domínios no painel Cloudflare Pages → Custom Domains

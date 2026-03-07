@@ -1,5 +1,11 @@
-# ERP routes
-/erp/*   /erp/:splat   200
+# Canonical site domain
+https://vetsystemcontrol.com.br/* https://www.vetsystemcontrol.com.br/:splat 301
 
-# root
-/        /index.html   200
+# ERP traffic must live on the app domain
+/erp/* https://app.vetsystemcontrol.com.br/:splat 302
+
+# Static pages
+/ /index.html 200
+
+# SPA fallback for the institutional site only
+/* /index.html 200
