@@ -1,11 +1,8 @@
-# Canonical site domain
+# domínio canônico
 https://vetsystemcontrol.com.br/* https://www.vetsystemcontrol.com.br/:splat 301
 
-# ERP traffic must live on the app domain
+# futuro ERP separado
 /erp/* https://app.vetsystemcontrol.com.br/:splat 302
 
-# Static pages
-/ /index.html 200
-
-# SPA fallback for the institutional site only
+# SPA fallback
 /* /index.html 200
