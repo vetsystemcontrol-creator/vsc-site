@@ -1,43 +1,43 @@
 /*
-  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  X-Permitted-Cross-Domain-Policies: none
   Cross-Origin-Opener-Policy: same-origin
-  Cross-Origin-Resource-Policy: same-origin
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https://app.vetsystemcontrol.com.br; form-action 'self' https://app.vetsystemcontrol.com.br; upgrade-insecure-requests
+  Permissions-Policy: accelerometer=(), autoplay=(), camera=(), display-capture=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), publickey-credentials-get=(self), usb=()
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self' https://app.vetsystemcontrol.com.br; img-src 'self' data: https:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https://app.vetsystemcontrol.com.br; manifest-src 'self'; upgrade-insecure-requests; block-all-mixed-content
 
 /
-  Cache-Control: public, max-age=0, must-revalidate
   Content-Type: text/html; charset=UTF-8
+  Cache-Control: no-store, max-age=0, must-revalidate
 
 /*.html
-  Cache-Control: public, max-age=0, must-revalidate
   Content-Type: text/html; charset=UTF-8
+  Cache-Control: no-store, max-age=0, must-revalidate
 
 /assets/css/*
-  Cache-Control: public, max-age=31536000, immutable
   Content-Type: text/css; charset=UTF-8
+  Cache-Control: public, max-age=86400, must-revalidate
 
 /assets/js/*
-  Cache-Control: public, max-age=31536000, immutable
   Content-Type: application/javascript; charset=UTF-8
+  Cache-Control: public, max-age=86400, must-revalidate
 
 /assets/img/*
-  Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=604800, must-revalidate
 
 /assets/screens/*
-  Cache-Control: public, max-age=31536000, immutable
-
-/site.webmanifest
-  Cache-Control: public, max-age=3600, must-revalidate
-  Content-Type: application/manifest+json; charset=UTF-8
+  Cache-Control: public, max-age=604800, must-revalidate
 
 /robots.txt
-  Cache-Control: public, max-age=3600, must-revalidate
   Content-Type: text/plain; charset=UTF-8
+  Cache-Control: public, max-age=3600, must-revalidate
 
 /sitemap.xml
-  Cache-Control: public, max-age=3600, must-revalidate
   Content-Type: application/xml; charset=UTF-8
+  Cache-Control: public, max-age=3600, must-revalidate
+
+/site.webmanifest
+  Content-Type: application/manifest+json; charset=UTF-8
+  Cache-Control: public, max-age=3600, must-revalidate

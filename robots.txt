@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Host: www.vetsystemcontrol.com.br
 Sitemap: https://www.vetsystemcontrol.com.br/sitemap.xml
+Host: https://www.vetsystemcontrol.com.br
