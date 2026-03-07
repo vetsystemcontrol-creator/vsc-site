@@ -1,37 +1,34 @@
-# OS
+﻿# OS
 .DS_Store
 Thumbs.db
 desktop.ini
 
-# ENV / Secrets
+# Env / secrets
 .env
 .env.*
-*.key
 *.pem
-*.p12
-*.crt
+*.key
 
 # Node
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-
-# Build / coverage
-dist/
-build/
-coverage/
 
 # Wrangler / Cloudflare local state
 .wrangler/
+**/.wrangler/
 .wrangler/cache/
 .wrangler/tmp/
 
-# Temp / cache
+# Build / cache / temp
+dist/
+build/
+coverage/
 .cache/
 .tmp/
 *.tmp
+*.cache
 
 # IDE
 .vscode/
@@ -46,12 +43,6 @@ logs/
 *.tar
 *.gz
 
-# Local databases / backups
+# Local databases
 *.sqlite
 *.db
-backup/
-backups/
-
-# Process artifacts
-artifact/
-artifacts/
