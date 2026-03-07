@@ -1,6 +1,43 @@
 /*
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), browsing-topics=()
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; font-src 'self' data:; connect-src 'self' https://app.vetsystemcontrol.com.br; form-action 'self' https://app.vetsystemcontrol.com.br; upgrade-insecure-requests
+
+/
+  Cache-Control: public, max-age=0, must-revalidate
+  Content-Type: text/html; charset=UTF-8
+
+/*.html
+  Cache-Control: public, max-age=0, must-revalidate
+  Content-Type: text/html; charset=UTF-8
+
+/assets/css/*
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: text/css; charset=UTF-8
+
+/assets/js/*
+  Cache-Control: public, max-age=31536000, immutable
+  Content-Type: application/javascript; charset=UTF-8
+
+/assets/img/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/assets/screens/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/site.webmanifest
+  Cache-Control: public, max-age=3600, must-revalidate
+  Content-Type: application/manifest+json; charset=UTF-8
+
+/robots.txt
+  Cache-Control: public, max-age=3600, must-revalidate
+  Content-Type: text/plain; charset=UTF-8
+
+/sitemap.xml
+  Cache-Control: public, max-age=3600, must-revalidate
+  Content-Type: application/xml; charset=UTF-8

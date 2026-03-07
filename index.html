@@ -259,12 +259,12 @@
               </figure>
 
               <figure class="vsc-shot" data-vsc-slide>
-                <button class="vsc-shot__btn" type="button" data-vsc-static data-src="/assets/screens/contasareceber.png" data-title="Contas a receber">
+                <button class="vsc-shot__btn" type="button" data-vsc-static data-src="/assets/screens/contasareceber.png" data-title="Contas a Receber">
                   <img class="vsc-demo-thumb" src="/assets/screens/contasareceber.png" alt="Tela de Contas a Receber (dados fictícios)" loading="lazy" decoding="async">
                 </button>
                 <figcaption class="vsc-shot__bar">
-                  <div class="vsc-shot__title">Contas a receber</div>
-                  <button class="vsc-shot__link" type="button" data-vsc-static data-src="/assets/screens/contasareceber.png" data-title="Contas a receber">Imagem ilustrativa</button>
+                  <div class="vsc-shot__title">Contas a Receber</div>
+                  <button class="vsc-shot__link" type="button" data-vsc-static data-src="/assets/screens/contasareceber.png" data-title="Contas a Receber">Imagem ilustrativa</button>
                 </figcaption>
               </figure>
 
@@ -282,20 +282,23 @@
 
           <div class="vsc-carousel__controls" aria-label="Controles do carrossel">
             <button class="vsc-carbtn" type="button" data-vsc-prev aria-label="Anterior">‹</button>
-            <div class="vsc-dots" data-vsc-dots aria-label="Paginação do carrossel"></div>
+            <div class="vsc-dots" data-vsc-dots aria-label="Selecionar tela"></div>
             <button class="vsc-carbtn" type="button" data-vsc-next aria-label="Próximo">›</button>
           </div>
+        </div>        </div>
         </div>
+
       </div>
     </section>
 
-    <section class="section section--cta">
-      <div class="container ctaBox">
-        <div>
-          <h2>Pronto para usar</h2>
+<section class="section">
+      <div class="container">
+        <div class="ctaFinal">
+          <h2>Comece pelo acesso ao sistema</h2>
           <p>Se você já tem credenciais, vá direto para o login.</p>
+          <a class="btn btn--primary" href="/login.html">Acessar sistema</a>
+          <a class="btn btn--ghost" href="/contato.html">Falar com a equipe</a>
         </div>
-        <a class="btn btn--primary" href="/login.html">Entrar no sistema</a>
       </div>
     </section>
   </main>
@@ -306,23 +309,21 @@
         <div class="footer__brand">Vet System Control – Equine</div>
         <div class="footer__small">© 2026 • vetsystemcontrol.com.br</div>
       </div>
-      <nav class="footer__nav" aria-label="Rodapé">
+
+      <div class="footer__links">
         <a href="/recursos.html">Recursos</a>
         <a href="/sobre.html">Sobre</a>
         <a href="/contato.html">Contato</a>
-        <a href="/login.html">Login</a>
-      </nav>
+        <a href="/login.html">Acessar</a>
+      </div>
     </div>
   </footer>
 
-  <dialog class="vsc-lightbox" id="vscLightbox">
-    <form method="dialog" class="vsc-lightbox__backdrop">
-      <button class="vsc-lightbox__close" aria-label="Fechar">×</button>
-      <img id="vscLightboxImg" alt="Visualização ampliada">
-      <div class="vsc-lightbox__caption" id="vscLightboxCaption"></div>
-    </form>
-  </dialog>
-
+  <script>
+    window.VSC_APP_URL = "https://app.vetsystemcontrol.com.br";
+  </script>
   <script src="/assets/js/main.js" defer></script>
 </body>
 </html>
+
+
