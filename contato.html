@@ -3,88 +3,67 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Contato | Vet System Control – Equine</title>
-  <meta name="description" content="Fale com a equipe do Vet System Control – Equine.">
-  <link rel="canonical" href="https://www.vetsystemcontrol.com.br/contato.html">
-    <link rel="preload" href="/assets/css/styles.css" as="style">
-  <link rel="preload" href="/assets/img/vsc-logo-horizontal.png" as="image" fetchpriority="high">
-  <link rel="dns-prefetch" href="//app.vetsystemcontrol.com.br">
-  <link rel="preconnect" href="https://app.vetsystemcontrol.com.br" crossorigin>
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-  <meta property="og:title" content="Contato | Vet System Control – Equine">
-  <meta property="og:description" content="Fale com a equipe do Vet System Control – Equine.">
-  <meta property="og:url" content="https://www.vetsystemcontrol.com.br/contato.html">
+  <title>Contato | Vet System Control</title>
+  <meta name="description" content="Entre em contato com a equipe do Vet System Control ou siga para o acesso oficial do ERP veterinário equino.">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 </head>
 <body>
-  <header class="topbar topbar--solid">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topbar" data-topbar>
     <div class="container topbar__inner">
-      <a class="brand" href="/" aria-label="Vet System Control – Equine">
-        <span class="brand__logo-wrap">
-          <span class="brand__logo-bg">
-            <img src="/assets/img/vsc-logo-horizontal.png" alt="Vet System Control | Equine">
-          </span>
-        </span>
+      <a class="brand" href="index.html" aria-label="Vet System Control">
+        <img class="brand__logo" src="assets/img/vsc-logo-horizontal.png" alt="Vet System Control">
       </a>
       <nav class="nav" aria-label="Navegação principal">
-        <a href="/recursos.html">Recursos</a>
-        <a href="/sobre.html">Sobre</a>
-        <a class="is-active" href="/contato.html">Contato</a>
-        <a class="btn btn--ghost" href="/login.html">Acessar</a>
+        <a href="index.html">Início</a>
+        <a href="recursos.html">Módulos</a>
+        <a href="sobre.html">Especialização</a>
+        <a href="contato.html">Contato</a>
+        <a class="btn btn--ghost" href="login.html">Acessar ERP</a>
       </nav>
-      <button class="nav__toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-nav-toggle>
+      <button class="nav__toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile" data-nav-toggle>
         <span></span><span></span><span></span>
       </button>
     </div>
-    <div class="nav__mobile" data-nav-mobile hidden>
+    <div class="nav__mobile" id="menu-mobile" data-nav-mobile hidden>
       <div class="container nav__mobileInner">
-        <a href="/recursos.html">Recursos</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/contato.html">Contato</a>
-        <a class="btn btn--primary" href="/login.html">Acessar sistema</a>
+        <a href="index.html">Início</a>
+        <a href="recursos.html">Módulos</a>
+        <a href="sobre.html">Especialização</a>
+        <a href="contato.html">Contato</a>
+        <a class="btn btn--primary" href="login.html">Acessar ERP</a>
       </div>
     </div>
   </header>
 
-  <main class="page">
+  <main class="page" id="conteudo">
     <div class="container">
-      <div class="page__head">
-        <h1>Contato</h1>
-        <p class="lead">Envie sua mensagem. (Página estática: o formulário abre seu e-mail.)</p>
+      <div class="page__head page__head--narrow">
+        <p class="eyebrow">Contato institucional</p>
+        <h1>Fale com a equipe ou siga direto para o ERP oficial.</h1>
+        <p class="lead">A página de contato foi mantida objetiva: comunicação institucional clara e caminho rápido para o ambiente do sistema.</p>
       </div>
 
       <div class="grid grid--2">
-        <section class="panel">
-          <h2>Mensagem</h2>
-          <form class="form" action="mailto:contato@vetsystemcontrol.com.br" method="post" enctype="text/plain">
-            <label>
-              Nome
-              <input name="nome" autocomplete="name" required>
-            </label>
-            <label>
-              E-mail
-              <input type="email" name="email" autocomplete="email" required>
-            </label>
-            <label>
-              Assunto
-              <input name="assunto" required>
-            </label>
-            <label>
-              Mensagem
-              <textarea name="mensagem" rows="6" required></textarea>
-            </label>
-            <button class="btn btn--primary" type="submit">Enviar</button>
-            <p class="hint">Dica: depois você pode trocar por um endpoint (Workers/Formspree/etc.) sem mudar o layout.</p>
-          </form>
+        <section class="panel panel--rich">
+          <h2>Contato da equipe</h2>
+          <p>Para apresentação do software, dúvidas operacionais ou alinhamento institucional:</p>
+          <div class="contact-stack">
+            <a class="btn btn--primary btn--full" href="mailto:contato@vetsystemcontrol.com.br">Enviar e-mail</a>
+            <a class="btn btn--secondary btn--full" href="index.html#telas">Ver telas reais</a>
+          </div>
+          <p class="hint">E-mail institucional: <strong>contato@vetsystemcontrol.com.br</strong></p>
         </section>
 
-        <section class="panel">
-          <h2>Acesso</h2>
-          <p>Se você já é usuário, acesse o sistema:</p>
-          <a class="btn btn--primary" href="/login.html">Acessar sistema</a>
-          <hr class="sep">
-          <p class="small">URL do aplicativo:</p>
+        <section class="panel panel--rich">
+          <h2>Acesso ao aplicativo</h2>
+          <p>Usuários do sistema entram pelo endereço oficial do ERP:</p>
           <code class="code">https://app.vetsystemcontrol.com.br</code>
+          <div class="contact-stack contact-stack--spaced">
+            <a class="btn btn--primary btn--full" href="https://app.vetsystemcontrol.com.br">Abrir login do ERP</a>
+            <a class="btn btn--ghost btn--full" href="index.html">Voltar ao site</a>
+          </div>
         </section>
       </div>
     </div>
@@ -93,18 +72,17 @@
   <footer class="footer">
     <div class="container footer__inner">
       <div>
-        <div class="footer__brand">Vet System Control – Equine</div>
-        <div class="footer__small">© 2026 • vetsystemcontrol.com.br</div>
+        <div class="footer__brand">Vet System Control</div>
+        <div class="footer__small">ERP veterinário equino.</div>
       </div>
-      <div class="footer__links">
-        <a href="/">Início</a>
-        <a href="/recursos.html">Recursos</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/login.html">Acessar</a>
-      </div>
+      <nav class="footer__links" aria-label="Links do rodapé">
+        <a href="index.html">Início</a>
+        <a href="recursos.html">Módulos</a>
+        <a href="sobre.html">Especialização</a>
+        <a href="login.html">Acessar ERP</a>
+      </nav>
     </div>
   </footer>
-
-  <script src="/assets/js/main.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
 </body>
 </html>

@@ -3,104 +3,119 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Recursos | Vet System Control – Equine</title>
-  <meta name="description" content="Recursos do sistema: atendimentos, anexos, financeiro, relatórios PDF e fluxos rápidos.">
-  <link rel="canonical" href="https://www.vetsystemcontrol.com.br/recursos.html">
-    <link rel="preload" href="/assets/css/styles.css" as="style">
-  <link rel="preload" href="/assets/img/vsc-logo-horizontal.png" as="image" fetchpriority="high">
-  <link rel="dns-prefetch" href="//app.vetsystemcontrol.com.br">
-  <link rel="preconnect" href="https://app.vetsystemcontrol.com.br" crossorigin>
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-  <meta property="og:title" content="Recursos | Vet System Control – Equine">
-  <meta property="og:description" content="Recursos do sistema: atendimentos, anexos, financeiro, relatórios PDF e fluxos rápidos.">
-  <meta property="og:url" content="https://www.vetsystemcontrol.com.br/recursos.html">
+  <title>Módulos | Vet System Control</title>
+  <meta name="description" content="Conheça os módulos do Vet System Control: atendimentos, animais, clientes, financeiro, produtos, serviços e relatórios.">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
 </head>
 <body>
-  <header class="topbar topbar--solid">
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topbar" data-topbar>
     <div class="container topbar__inner">
-      <a class="brand" href="/" aria-label="Vet System Control – Equine">
-        <span class="brand__logo-wrap">
-          <span class="brand__logo-bg">
-            <img src="/assets/img/vsc-logo-horizontal.png" alt="Vet System Control | Equine">
-          </span>
-        </span>
+      <a class="brand" href="index.html" aria-label="Vet System Control">
+        <img class="brand__logo" src="assets/img/vsc-logo-horizontal.png" alt="Vet System Control">
       </a>
       <nav class="nav" aria-label="Navegação principal">
-        <a class="is-active" href="/recursos.html">Recursos</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/contato.html">Contato</a>
-        <a class="btn btn--ghost" href="/login.html">Acessar</a>
+        <a href="index.html">Início</a>
+        <a href="recursos.html">Módulos</a>
+        <a href="sobre.html">Especialização</a>
+        <a href="contato.html">Contato</a>
+        <a class="btn btn--ghost" href="login.html">Acessar ERP</a>
       </nav>
-      <button class="nav__toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-nav-toggle>
+      <button class="nav__toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile" data-nav-toggle>
         <span></span><span></span><span></span>
       </button>
     </div>
-    <div class="nav__mobile" data-nav-mobile hidden>
+    <div class="nav__mobile" id="menu-mobile" data-nav-mobile hidden>
       <div class="container nav__mobileInner">
-        <a href="/recursos.html">Recursos</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/contato.html">Contato</a>
-        <a class="btn btn--primary" href="/login.html">Acessar sistema</a>
+        <a href="index.html">Início</a>
+        <a href="recursos.html">Módulos</a>
+        <a href="sobre.html">Especialização</a>
+        <a href="contato.html">Contato</a>
+        <a class="btn btn--primary" href="login.html">Acessar ERP</a>
       </div>
     </div>
   </header>
 
-  <main class="page">
+  <main class="page" id="conteudo">
     <div class="container">
-      <div class="page__head">
-        <h1>Recursos</h1>
-        <p class="lead">Tudo que você precisa para operar com velocidade e previsibilidade.</p>
+      <div class="page__head page__head--narrow">
+        <p class="eyebrow">Módulos do produto</p>
+        <h1>Uma visão direta do que compõe o Vet System Control.</h1>
+        <p class="lead">Aqui o foco é mostrar os blocos que sustentam a rotina veterinária, sem prometer o que o sistema não entrega e sem texto genérico de marketing.</p>
       </div>
 
       <div class="grid grid--2">
-        <section class="panel">
-          <h2>Atendimentos</h2>
-          <ul class="list">
+        <section class="panel panel--rich">
+          <h2>Atendimentos e prontuário</h2>
+          <ul class="list list--checks">
             <li>Registro clínico por atendimento</li>
-            <li>Histórico por animal/proprietário</li>
-            <li>Anexos e descrições por arquivo</li>
-            <li>Atalhos: clique e abre direto</li>
+            <li>Histórico organizado por paciente</li>
+            <li>Anotações, evolução e contexto do caso</li>
+            <li>Base central da rotina médica equina</li>
           </ul>
         </section>
 
-        <section class="panel">
-          <h2>Financeiro</h2>
-          <ul class="list">
-            <li>Contas a receber / a pagar</li>
-            <li>Vencidos e parciais (dois filtros)</li>
-            <li>Alertas de atrasos e avisos</li>
-            <li>Fechamento por proprietário</li>
+        <section class="panel panel--rich">
+          <h2>Animais e vínculo com tutor</h2>
+          <ul class="list list--checks">
+            <li>Cadastro do animal com dados relevantes</li>
+            <li>Ligação com cliente e base operacional</li>
+            <li>Estrutura para continuidade do histórico</li>
+            <li>Leitura mais clara da carteira de pacientes</li>
           </ul>
         </section>
 
-        <section class="panel">
-          <h2>Relatórios e impressão</h2>
-          <ul class="list">
-            <li>PDF profissional</li>
-            <li>Separação clínico vs. financeiro</li>
-            <li>Controle de anexos (sem páginas em branco)</li>
-            <li>Imprimir diretamente (workflow enterprise)</li>
+        <section class="panel panel--rich">
+          <h2>Clientes e operação administrativa</h2>
+          <ul class="list list--checks">
+            <li>Gestão de proprietários e responsáveis</li>
+            <li>Base para cobranças e relacionamento</li>
+            <li>Organização integrada à rotina clínica</li>
+            <li>Informações centrais em um único ambiente</li>
           </ul>
         </section>
 
-        <section class="panel">
-          <h2>Infraestrutura SaaS</h2>
-          <ul class="list">
-            <li>Site institucional (domínio principal)</li>
-            <li>Aplicativo no subdomínio do app</li>
-            <li>Hospedagem estática no Cloudflare Pages</li>
-            <li>Performance e SEO com JS mínimo</li>
+        <section class="panel panel--rich">
+          <h2>Financeiro, produtos e serviços</h2>
+          <ul class="list list--checks">
+            <li>Contas a receber e controle de cobrança</li>
+            <li>Produtos e serviços para apoio operacional</li>
+            <li>Integração com a gestão do negócio</li>
+            <li>Mais previsibilidade para a rotina administrativa</li>
+          </ul>
+        </section>
+
+        <section class="panel panel--rich">
+          <h2>Relatórios e documentos</h2>
+          <ul class="list list--checks">
+            <li>Saída mais profissional para uso interno</li>
+            <li>Organização documental e rastreabilidade</li>
+            <li>Base para impressão e PDF</li>
+            <li>Apoio à padronização do trabalho clínico</li>
+          </ul>
+        </section>
+
+        <section class="panel panel--rich">
+          <h2>Acesso e operação em nuvem</h2>
+          <ul class="list list--checks">
+            <li>Site institucional separado do aplicativo</li>
+            <li>Login direcionado ao ambiente oficial do ERP</li>
+            <li>Fluxo mais limpo para o usuário final</li>
+            <li>Estrutura mais adequada para crescimento contínuo</li>
           </ul>
         </section>
       </div>
 
       <div class="callout">
         <div>
-          <h3>Acessar agora</h3>
-          <p>Se você já usa o sistema, entre pelo login.</p>
+          <h3>Ver o sistema ou entrar no ambiente oficial</h3>
+          <p>Você pode voltar à home para analisar as telas reais ou seguir direto para o login do ERP.</p>
         </div>
-        <a class="btn btn--primary" href="/login.html">Acessar sistema</a>
+        <div class="cluster-actions">
+          <a class="btn btn--secondary" href="index.html#telas">Ver telas</a>
+          <a class="btn btn--primary" href="login.html">Acessar ERP</a>
+        </div>
       </div>
     </div>
   </main>
@@ -108,18 +123,17 @@
   <footer class="footer">
     <div class="container footer__inner">
       <div>
-        <div class="footer__brand">Vet System Control – Equine</div>
-        <div class="footer__small">© 2026 • vetsystemcontrol.com.br</div>
+        <div class="footer__brand">Vet System Control</div>
+        <div class="footer__small">ERP veterinário equino.</div>
       </div>
-      <div class="footer__links">
-        <a href="/">Início</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/contato.html">Contato</a>
-        <a href="/login.html">Acessar</a>
-      </div>
+      <nav class="footer__links" aria-label="Links do rodapé">
+        <a href="index.html">Início</a>
+        <a href="sobre.html">Especialização</a>
+        <a href="contato.html">Contato</a>
+        <a href="login.html">Acessar ERP</a>
+      </nav>
     </div>
   </footer>
-
-  <script src="/assets/js/main.js" defer></script>
+  <script src="assets/js/main.js" defer></script>
 </body>
 </html>

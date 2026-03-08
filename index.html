@@ -3,304 +3,388 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Vet System Control  Equine | Gestão veterinária completa</title>
-  <meta name="description" content="ERP veterinário para equinos: atendimentos, anexos, financeiro e relatórios PDF profissionais. Acesse o sistema com segurança na nuvem.">
+  <title>Vet System Control | Software veterinário equino com acesso ao ERP</title>
+  <meta name="description" content="Software veterinário equino para atendimentos, prontuário, financeiro, histórico clínico, controle vacinal e acesso seguro ao ERP em nuvem.">
   <link rel="canonical" href="https://www.vetsystemcontrol.com.br/">
-
-  <!-- Open Graph -->
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#0e1726">
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Vet System Control  Equine">
-  <meta property="og:description" content="Gestão veterinária completa para equinos: atendimentos, financeiro e relatórios profissionais.">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Vet System Control">
+  <meta property="og:title" content="Vet System Control | Software veterinário equino com acesso ao ERP">
+  <meta property="og:description" content="Conheça o sistema, veja as telas reais e acesse o ERP veterinário equino com prontuário, financeiro e operação clínica em campo.">
   <meta property="og:url" content="https://www.vetsystemcontrol.com.br/">
   <meta property="og:image" content="https://www.vetsystemcontrol.com.br/assets/img/og-cover.png">
-
-  <meta name="theme-color" content="#0b3d5c">
-
-    <link rel="preload" href="/assets/css/styles.css" as="style">
-  <link rel="preload" href="/assets/img/vsc-logo-horizontal.png" as="image" fetchpriority="high">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Vet System Control | Software veterinário equino com acesso ao ERP">
+  <meta name="twitter:description" content="Software veterinário equino para apresentação institucional e acesso ao sistema real.">
+  <meta name="twitter:image" content="https://www.vetsystemcontrol.com.br/assets/img/og-cover.png">
+  <link rel="preload" href="assets/css/styles.css" as="style">
+  <link rel="preload" href="assets/img/vsc-logo-horizontal.png" as="image" fetchpriority="high">
   <link rel="dns-prefetch" href="//app.vetsystemcontrol.com.br">
   <link rel="preconnect" href="https://app.vetsystemcontrol.com.br" crossorigin>
-  <link rel="stylesheet" href="/assets/css/styles.css">
-  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
-  <link rel="manifest" href="/site.webmanifest">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="site.webmanifest">
 
   <script type="application/ld+json">
   {
-    "@context":"https://schema.org",
-    "@type":"SoftwareApplication",
-    "name":"Vet System Control  Equine",
-    "applicationCategory":"BusinessApplication",
-    "operatingSystem":"Web",
-    "description":"ERP veterinário para equinos: atendimentos, anexos, financeiro e relatórios PDF profissionais.",
-    "url":"https://www.vetsystemcontrol.com.br",
-    "offers":{"@type":"Offer","price":"0","priceCurrency":"BRL"}
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "name": "Vet System Control",
+        "url": "https://www.vetsystemcontrol.com.br/",
+        "logo": "https://www.vetsystemcontrol.com.br/assets/img/vsc-logo-horizontal.png"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Vet System Control",
+        "applicationCategory": "BusinessApplication",
+        "operatingSystem": "Web",
+        "url": "https://www.vetsystemcontrol.com.br/",
+        "description": "Software veterinário equino com prontuário, atendimentos, financeiro, histórico clínico, controle vacinal e acesso ao ERP em nuvem.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "BRL"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "O site institucional e o ERP ficam separados?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sim. O site institucional fica em www.vetsystemcontrol.com.br e o aplicativo roda em app.vetsystemcontrol.com.br, uma arquitetura mais adequada para operação SaaS e manutenção contínua."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Posso ver telas reais do sistema antes de acessar?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sim. A home mostra capturas reais do ERP com dados demonstrativos para apresentar o produto com transparência."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "O acesso ao sistema é direto?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sim. Há botões de acesso em pontos estratégicos da página e uma rota dedicada de login para levar o usuário ao aplicativo."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
 </head>
-
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
-  <header class="topbar">
+  <header class="topbar" data-topbar>
     <div class="container topbar__inner">
-      <a class="brand" href="/" aria-label="Vet System Control  Equine">
-        <span class="brand__logo-wrap">
-          <span class="brand__logo-bg">
-            <img src="/assets/img/vsc-logo-horizontal.png" alt="Vet System Control | Equine">
-          </span>
-        </span>
+      <a class="brand" href="index.html" aria-label="Vet System Control">
+        <img class="brand__logo" src="assets/img/vsc-logo-horizontal.png" alt="Vet System Control">
       </a>
 
       <nav class="nav" aria-label="Navegação principal">
-        <a href="/recursos.html">Recursos</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/contato.html">Contato</a>
-        <a class="btn btn--ghost" href="/login.html">Acessar</a>
+        <a href="index.html">Início</a>
+        <a href="recursos.html">Recursos</a>
+        <a href="sobre.html">Especialização</a>
+        <a href="contato.html">Contato</a>
+        <a class="btn btn--ghost" href="login.html">Acessar</a>
       </nav>
 
-      <button class="nav__toggle" type="button" aria-label="Abrir menu" aria-expanded="false" data-nav-toggle>
+      <button class="nav__toggle" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-mobile" data-nav-toggle>
         <span></span><span></span><span></span>
       </button>
     </div>
-    <div class="nav__mobile" data-nav-mobile hidden>
+
+    <div class="nav__mobile" id="menu-mobile" data-nav-mobile hidden>
       <div class="container nav__mobileInner">
-        <a href="/recursos.html">Recursos</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/contato.html">Contato</a>
-        <a class="btn btn--primary" href="/login.html">Acessar sistema</a>
+        <a href="index.html">Início</a>
+        <a href="recursos.html">Recursos</a>
+        <a href="sobre.html">Especialização</a>
+        <a href="contato.html">Contato</a>
+        <a class="btn btn--primary" href="login.html">Acessar sistema</a>
       </div>
     </div>
   </header>
 
   <main id="conteudo">
-    <section class="hero">
+    <section class="hero hero--home">
       <div class="container hero__grid">
         <div class="hero__copy">
-          <p class="badge">ERP veterinário  Equinos  Cloud</p>
-          <h1>Gestão veterinária completa para <span class="gradient">clínica e campo</span>.</h1>
+          <p class="eyebrow">ERP veterinário equino · prontuário clínico · operação real em campo</p>
+          <h1>Software veterinário equino com <span class="gradient">telas reais do sistema</span>, fluxo clínico e acesso direto ao ERP.</h1>
           <p class="lead">
-            Atendimentos, anexos (exames/imagens), financeiro e relatórios PDF profissionais  em um fluxo rápido, seguro e pronto para escalar.
+            O Vet System Control apresenta o produto como ele realmente funciona: atendimentos, animais, dashboard operacional, reprodução equina e rotina fiscal em uma navegação clara, profissional e sem mockup falso.
           </p>
+
           <div class="hero__cta">
-            <a class="btn btn--primary" href="/login.html">Acessar sistema</a>
-            <a class="btn btn--secondary" href="#recursos">Ver recursos</a>
+            <a class="btn btn--primary" href="login.html">Acessar sistema</a>
+            <a class="btn btn--secondary" href="#explorar-sistema">Explorar telas reais</a>
           </div>
 
-          <div class="trust">
-            <div class="trust__item">
-              <div class="trust__title">Rápido</div>
-              <div class="trust__text">Foco em performance e simplicidade</div>
-            </div>
-            <div class="trust__item">
-              <div class="trust__title">Seguro</div>
-              <div class="trust__text">Boas práticas web + Cloudflare</div>
-            </div>
-            <div class="trust__item">
-              <div class="trust__title">Profissional</div>
-              <div class="trust__text">Relatórios pensados para o dia a dia</div>
-            </div>
+          <ul class="hero__bullets" aria-label="Diferenciais principais">
+            <li>Prontuário clínico, histórico e atendimento apresentados com interface real</li>
+            <li>Fluxo veterinário para campo, gestão do paciente e operação financeira</li>
+            <li>Site institucional separado do aplicativo, com acesso claro ao ERP oficial</li>
+          </ul>
+
+          <div class="stats" aria-label="Indicadores visuais da proposta">
+            <article class="stat-card">
+              <strong>Atendimento premium</strong>
+              <span>Prontuário, anexos, status e contexto clínico</span>
+            </article>
+            <article class="stat-card">
+              <strong>Visual real do produto</strong>
+              <span>Sem mockup inventado: só prints do sistema</span>
+            </article>
+            <article class="stat-card">
+              <strong>Acesso sem atrito</strong>
+              <span>Home institucional com ponte direta para o app</span>
+            </article>
           </div>
         </div>
 
-        <div class="hero__visual" aria-hidden="true">
-          <div class="card card--glow">
-            <div class="card__row">
-              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            </div>
-            <div class="card__content">
-              <div class="skeleton s1"></div>
-              <div class="skeleton s2"></div>
-              <div class="skeleton s3"></div>
-              <div class="skeleton s4"></div>
-              <div class="chart">
-                <div class="bar b1"></div><div class="bar b2"></div><div class="bar b3"></div><div class="bar b4"></div><div class="bar b5"></div>
-              </div>
-              <div class="pillRow">
-                <span class="pill">Atendimentos</span>
-                <span class="pill">Financeiro</span>
-                <span class="pill">PDF</span>
-                <span class="pill">Anexos</span>
-              </div>
-            </div>
+        <div class="hero__panel" aria-label="Prévia do sistema">
+          <div class="app-shot app-shot--hero">
+            <img src="assets/screens/explorer/atendimentos-thumb.webp" alt="Tela real de atendimentos do Vet System Control" width="1340" height="600" fetchpriority="high">
           </div>
-
-          <div class="float float--1"></div>
-          <div class="float float--2"></div>
+          <div class="hero__floating hero__floating--a">Atendimento clínico real</div>
+          <div class="hero__floating hero__floating--b">Prontuário + financeiro</div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="recursos">
+    <section class="section section--tight">
+      <div class="container logos-strip" aria-label="Posicionamento do produto">
+        <span>Apresentação institucional</span>
+        <span>Software veterinário</span>
+        <span>Especialização equina</span>
+        <span>ERP em nuvem</span>
+        <span>Acesso ao sistema</span>
+      </div>
+    </section>
+
+    <section class="section" id="valor">
+      <div class="container">
+        <div class="section__head section__head--stack">
+          <p class="eyebrow">O que esta página resolve</p>
+          <h2>Ela vende o software, reduz dúvida e direciona ao login certo.</h2>
+          <p>
+            Em vez de uma home genérica, a estrutura agora mostra proposta de valor, telas reais, módulos, especialização equina, perguntas frequentes e CTA de acesso ao ERP sem confundir o usuário.
+          </p>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="feature feature--accent">
+            <h3>Mensagem clara acima da dobra</h3>
+            <p>O visitante entende rapidamente que o site apresenta o software e também oferece acesso ao aplicativo real.</p>
+          </article>
+          <article class="feature feature--accent">
+            <h3>Transparência visual</h3>
+            <p>As imagens exibidas são telas verdadeiras do sistema, o que fortalece confiança e percepção de maturidade do produto.</p>
+          </article>
+          <article class="feature feature--accent">
+            <h3>Conversão sem atrito</h3>
+            <p>Os CTAs foram distribuídos ao longo da jornada para evitar perda do usuário quando ele já decidiu entrar no sistema.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--alt" id="recursos-home">
       <div class="container">
         <div class="section__head">
-          <h2>O essencial, feito direito</h2>
-          <p>Uma base sólida: clareza de valor, CTA acima da dobra e navegação objetiva  o que mais converte e reduz fricção. </p>
+          <div>
+            <p class="eyebrow">Módulos que o visitante precisa enxergar</p>
+            <h2>O essencial do ERP veterinário em uma leitura rápida.</h2>
+          </div>
+          <a class="btn btn--ghost" href="recursos.html">Ver recursos completos</a>
         </div>
 
         <div class="grid grid--3">
           <article class="feature">
             <h3>Atendimentos</h3>
-            <p>Histórico clínico, evolução, procedimentos e anexos organizados por atendimento.</p>
+            <p>Evolução clínica, histórico por animal, anexos, procedimentos e registro organizado por atendimento.</p>
           </article>
-
+          <article class="feature">
+            <h3>Animais e clientes</h3>
+            <p>Cadastro estruturado para proprietário, paciente, dados zootécnicos e vínculo operacional.</p>
+          </article>
           <article class="feature">
             <h3>Financeiro</h3>
-            <p>Contas a receber/pagar, atrasos, parciais, filtros e fechamento por proprietário.</p>
+            <p>Contas a receber, serviços, produtos, acompanhamento de cobrança e previsibilidade operacional.</p>
           </article>
-
           <article class="feature">
-            <h3>Relatórios PDF</h3>
-            <p>Layout profissional, pronto para envio e arquivo  com controle de anexos e impressão.</p>
+            <h3>Controle vacinal</h3>
+            <p>Espaço de crescimento natural para histórico sanitário, lançamentos e próximos reforços.</p>
           </article>
-
           <article class="feature">
-            <h3>Busca rápida</h3>
-            <p>Fluxos com atalhos: clique e abre direto o atendimento/lançamento  sem telas intermediárias.</p>
+            <h3>Relatórios e documentos</h3>
+            <p>Impressão, PDF e organização documental pensados para uso clínico real.</p>
           </article>
-
           <article class="feature">
-            <h3>Cloud + Controle</h3>
-            <p>Hospedado em infraestrutura web moderna (Cloudflare), com separação site/app.</p>
-          </article>
-
-          <article class="feature">
-            <h3>Pronto para escalar</h3>
-            <p>Arquitetura de SaaS: domínio institucional + subdomínio do app, sem misturar responsabilidades.</p>
+            <h3>Operação em nuvem</h3>
+            <p>Domínio institucional separado do aplicativo para comunicação, manutenção e acesso consistente.</p>
           </article>
         </div>
+      </div>
+    </section>
 
-        <div class="callout">
-          <div>
-            <h3>Quer entrar direto?</h3>
-            <p>O botão Acessar sistema leva você ao login do aplicativo.</p>
+    <section class="section" id="explorar-sistema">
+      <div class="container">
+        <div class="section__head section__head--stack">
+          <p class="eyebrow">Explore o sistema</p>
+          <h2>As telas mostradas aqui são do produto real, com estrutura idêntica à operação do ERP.</h2>
+          <p>
+            Em vez de galeria genérica, a home agora usa um explorador de telas com troca por módulo e visualização ampliada. O objetivo é simples: mostrar o Vet System Control exatamente como ele é.
+          </p>
+        </div>
+
+        <section class="screen-explorer" aria-label="Explorar telas reais do sistema">
+          <div class="screen-tabs" role="tablist" aria-label="Módulos do sistema">
+            <button class="screen-tab is-active" type="button" role="tab" aria-selected="true" data-screen-tab="atendimentos">Atendimentos</button>
+            <button class="screen-tab" type="button" role="tab" aria-selected="false" data-screen-tab="produtos">Produtos</button>
+            <button class="screen-tab" type="button" role="tab" aria-selected="false" data-screen-tab="reproducao">Reprodução</button>
+            <button class="screen-tab" type="button" role="tab" aria-selected="false" data-screen-tab="importacaoxml">Importação XML</button>
           </div>
-          <a class="btn btn--primary" href="/login.html">Acessar sistema</a>
+
+          <article class="screen-stage" data-screen-stage>
+            <div class="screen-stage__copy">
+              <p class="eyebrow">Módulo em destaque</p>
+              <h3 data-screen-title>Atendimentos / Ficha Clínica</h3>
+              <p class="screen-stage__lead" data-screen-description>
+                Prontuário operacional com hero clínico do paciente, status de atendimento, resumo financeiro e estrutura pronta para anexos, evolução e faturamento.
+              </p>
+              <ul class="screen-stage__facts" data-screen-facts>
+                <li>Ficha clínica com contexto completo do paciente</li>
+                <li>Hero clínico forte para apresentação comercial</li>
+                <li>Lightbox abre a tela completa do sistema real</li>
+              </ul>
+              <div class="screen-stage__actions">
+                <button class="btn btn--primary" type="button" data-screen-open>Ampliar tela completa</button>
+                <a class="btn btn--ghost" href="login.html">Acessar ERP oficial</a>
+              </div>
+            </div>
+
+            <div class="screen-frame">
+              <div class="screen-frame__bar" aria-hidden="true">
+                <span></span><span></span><span></span>
+                <strong>Vet System Control Equine · tela real do sistema</strong>
+              </div>
+              <button class="screen-frame__button" type="button" data-screen-open>
+                <img id="screen-preview-image" src="assets/screens/explorer/atendimentos-thumb.webp" alt="Tela real de atendimentos do Vet System Control" width="1340" height="600" loading="eager" decoding="async" fetchpriority="high">
+                <span class="screen-frame__hint">Clique para explorar em tamanho ampliado</span>
+              </button>
+            </div>
+          </article>
+        </section>
+      </div>
+    </section>
+    <section class="section section--alt">
+      <div class="container split">
+        <div>
+          <p class="eyebrow">Especialização equina</p>
+          <h2>Feito para uma rotina veterinária que exige mobilidade, histórico e precisão operacional.</h2>
+          <p class="lead lead--smaller">
+            O posicionamento da marca precisa refletir que o software não é genérico. A página foi ajustada para comunicar melhor contexto equino, campo, prontuário, sanitário, financeiro e continuidade clínica.
+          </p>
+          <ul class="check-list">
+            <li>Comunicação mais aderente à medicina veterinária equina</li>
+            <li>Espaço para evolução de fluxo clínico e sanitário</li>
+            <li>Apresentação compatível com produto profissional em crescimento</li>
+          </ul>
+        </div>
+
+        <aside class="info-card">
+          <h3>Fluxo recomendado de navegação</h3>
+          <ol class="flow-list">
+            <li>Conhecer o software na home</li>
+            <li>Explorar módulos e especialização</li>
+            <li>Ver telas reais</li>
+            <li>Clicar em acessar sistema</li>
+            <li>Entrar no ERP pelo subdomínio do app</li>
+          </ol>
+          <a class="btn btn--primary btn--full" href="login.html">Ir para o login</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section__head section__head--stack">
+          <p class="eyebrow">Infraestrutura e confiança</p>
+          <h2>Página institucional preparada para desempenho, acessibilidade e operação em Cloudflare.</h2>
+          <p>
+            O pacote foi reorganizado para ficar mais coerente com uma presença web profissional: foco em conteúdo estático, sem excesso de JavaScript, com SEO técnico, navegação clara e integração limpa com o aplicativo.
+          </p>
+        </div>
+
+        <div class="grid grid--3">
+          <article class="feature">
+            <h3>SEO técnico</h3>
+            <p>Metadados, canonical, Open Graph, sitemap, robots e dados estruturados para reforçar descoberta e compartilhamento.</p>
+          </article>
+          <article class="feature">
+            <h3>Acessibilidade</h3>
+            <p>Skip link, hierarquia melhor de títulos, foco visível, navegação por teclado e lightbox com fechamento por ESC.</p>
+          </article>
+          <article class="feature">
+            <h3>Performance</h3>
+            <p>HTML estático, CSS único, JavaScript enxuto e priorização das imagens mais importantes da primeira tela.</p>
+          </article>
         </div>
       </div>
     </section>
 
     <section class="section section--alt">
       <div class="container">
-        <div class="section__head">
-          <h2>FAQ</h2>
-          <p>Respostas curtas  para não gerar dúvida no primeiro contato.</p>
+        <div class="section__head section__head--stack">
+          <p class="eyebrow">Perguntas frequentes</p>
+          <h2>O que o visitante geralmente quer saber antes de acessar.</h2>
         </div>
 
         <div class="faq">
           <details>
-            <summary>O acesso é pelo domínio principal?</summary>
+            <summary>O site institucional e o ERP ficam separados?</summary>
             <div class="faq__body">
-              <p>O domínio principal é o site institucional. O sistema roda no subdomínio do app. Isso é padrão SaaS e evita problemas de manutenção.</p>
+              <p>Sim. O site institucional está em <strong>www.vetsystemcontrol.com.br</strong> e o aplicativo roda em <strong>app.vetsystemcontrol.com.br</strong>, o que melhora organização, evolução e manutenção.</p>
             </div>
           </details>
           <details>
-            <summary>Posso salvar esse site no Cloudflare Pages?</summary>
+            <summary>As imagens da home são reais?</summary>
             <div class="faq__body">
-              <p>Sim. Este pacote já está pronto para Cloudflare Pages (site estático, leve e rápido).</p>
+              <p>Sim. A seção Explore o Sistema usa capturas reais do produto, organizadas por módulo e abertas em visualização ampliada.</p>
             </div>
           </details>
           <details>
-            <summary>Tem SEO?</summary>
+            <summary>Como entro no software?</summary>
             <div class="faq__body">
-              <p>Sim: title/description, Open Graph, canonical, sitemap e robots, além de performance (Core Web Vitals) com JS mínimo.</p>
+              <p>Basta clicar em <strong>Acessar sistema</strong>. A página de login faz a ponte para o aplicativo no subdomínio oficial.</p>
             </div>
           </details>
         </div>
       </div>
     </section>
 
-    
     <section class="section">
       <div class="container">
-        <h2 style="margin-bottom:10px;">Veja o sistema real (demo com dados fictícios)</h2>
-        <p style="opacity:.9; max-width: 880px; margin-bottom:18px;">
-          Sem maquiagem: as miniaturas abaixo são <strong>as próprias telas reais do ERP</strong>, carregadas em modo demonstração (dados 100% fictícios). Ao clicar, você abre a versão em tela cheia.
-        </p>
-
-        <div class="vsc-carousel" data-vsc-carousel>
-          <div class="vsc-carousel__viewport" tabindex="0" aria-label="Carrossel de telas do sistema (imagens)">
-            <div class="vsc-carousel__track">
-              <!-- IMPORTANTE: estas imagens são estáticas (não editáveis). Substitua os arquivos em /assets/screens/ -->
-              <figure class="vsc-shot" data-vsc-slide>
-                <button class="vsc-shot__btn" type="button" data-vsc-static data-src="/assets/screens/dashboard.png" data-title="Dashboard">
-                  <img class="vsc-demo-thumb" src="/assets/screens/dashboard.png" alt="Tela do Dashboard (dados fictícios)" loading="lazy" decoding="async">
-                </button>
-                <figcaption class="vsc-shot__bar">
-                  <div class="vsc-shot__title">Dashboard</div>
-                  <button class="vsc-shot__link" type="button" data-vsc-static data-src="/assets/screens/dashboard.png" data-title="Dashboard">Imagem ilustrativa</button>
-                </figcaption>
-              </figure>
-
-              <figure class="vsc-shot" data-vsc-slide>
-                <button class="vsc-shot__btn" type="button" data-vsc-static data-src="/assets/screens/clientes.png" data-title="Clientes">
-                  <img class="vsc-demo-thumb" src="/assets/screens/clientes.png" alt="Tela de Clientes (dados fictícios)" loading="lazy" decoding="async">
-                </button>
-                <figcaption class="vsc-shot__bar">
-                  <div class="vsc-shot__title">Clientes</div>
-                  <button class="vsc-shot__link" type="button" data-vsc-static data-src="/assets/screens/clientes.png" data-title="Clientes">Imagem ilustrativa</button>
-                </figcaption>
-              </figure>
-
-              <figure class="vsc-shot" data-vsc-slide>
-                <button class="vsc-shot__btn" type="button" data-vsc-static data-src="/assets/screens/animais.png" data-title="Animais">
-                  <img class="vsc-demo-thumb" src="/assets/screens/animais.png" alt="Tela de Animais (dados fictícios)" loading="lazy" decoding="async">
-                </button>
-                <figcaption class="vsc-shot__bar">
-                  <div class="vsc-shot__title">Animais</div>
-                  <button class="vsc-shot__link" type="button" data-vsc-static data-src="/assets/screens/animais.png" data-title="Animais">Imagem ilustrativa</button>
-                </figcaption>
-              </figure>
-
-              <figure class="vsc-shot" data-vsc-slide>
-                <button class="vsc-shot__btn" type="button" data-vsc-static data-src="/assets/screens/atendimentos.png" data-title="Atendimentos">
-                  <img class="vsc-demo-thumb" src="/assets/screens/atendimentos.png" alt="Tela de Atendimentos (dados fictícios)" loading="lazy" decoding="async">
-                </button>
-                <figcaption class="vsc-shot__bar">
-                  <div class="vsc-shot__title">Atendimentos</div>
-                  <button class="vsc-shot__link" type="button" data-vsc-static data-src="/assets/screens/atendimentos.png" data-title="Atendimentos">Imagem ilustrativa</button>
-                </figcaption>
-              </figure>
-
-              <figure class="vsc-shot" data-vsc-slide>
-                <button class="vsc-shot__btn" type="button" data-vsc-static data-src="/assets/screens/contasareceber.png" data-title="Contas a Receber">
-                  <img class="vsc-demo-thumb" src="/assets/screens/contasareceber.png" alt="Tela de Contas a Receber (dados fictícios)" loading="lazy" decoding="async">
-                </button>
-                <figcaption class="vsc-shot__bar">
-                  <div class="vsc-shot__title">Contas a Receber</div>
-                  <button class="vsc-shot__link" type="button" data-vsc-static data-src="/assets/screens/contasareceber.png" data-title="Contas a Receber">Imagem ilustrativa</button>
-                </figcaption>
-              </figure>
-
-              <figure class="vsc-shot" data-vsc-slide>
-                <button class="vsc-shot__btn" type="button" data-vsc-static data-src="/assets/screens/produtos.png" data-title="Produtos">
-                  <img class="vsc-demo-thumb" src="/assets/screens/produtos.png" alt="Tela de Produtos (dados fictícios)" loading="lazy" decoding="async">
-                </button>
-                <figcaption class="vsc-shot__bar">
-                  <div class="vsc-shot__title">Produtos</div>
-                  <button class="vsc-shot__link" type="button" data-vsc-static data-src="/assets/screens/produtos.png" data-title="Produtos">Imagem ilustrativa</button>
-                </figcaption>
-              </figure>
-            </div>
-          </div>
-
-          <div class="vsc-carousel__controls" aria-label="Controles do carrossel">
-            <button class="vsc-carbtn" type="button" data-vsc-prev aria-label="Anterior"></button>
-            <div class="vsc-dots" data-vsc-dots aria-label="Selecionar tela"></div>
-            <button class="vsc-carbtn" type="button" data-vsc-next aria-label="Próximo"></button>
-          </div>
-        </div>        </div>
-        </div>
-
-      </div>
-    </section>
-
-<section class="section">
-      <div class="container">
         <div class="ctaFinal">
-          <h2>Comece pelo acesso ao sistema</h2>
-          <p>Se você já tem credenciais, vá direto para o login.</p>
-          <a class="btn btn--primary" href="/login.html">Acessar sistema</a>
-          <a class="btn btn--ghost" href="/contato.html">Falar com a equipe</a>
+          <p class="eyebrow">Pronto para acessar</p>
+          <h2>Entre no ERP oficial.</h2>
+          <p>Quando o usuário já decidiu, o caminho precisa ser simples. Aqui o acesso fica explícito, recorrente e sem desvio.</p>
+          <div class="ctaFinal__actions">
+            <a class="btn btn--primary" href="login.html">Acessar sistema</a>
+            <a class="btn btn--ghost" href="contato.html">Falar com a equipe</a>
+          </div>
         </div>
       </div>
     </section>
@@ -309,24 +393,31 @@
   <footer class="footer">
     <div class="container footer__inner">
       <div>
-        <div class="footer__brand">Vet System Control  Equine</div>
-        <div class="footer__small">© 2026  vetsystemcontrol.com.br</div>
+        <div class="footer__brand">Vet System Control</div>
+        <div class="footer__small">© 2026 · www.vetsystemcontrol.com.br</div>
       </div>
-
       <div class="footer__links">
-        <a href="/recursos.html">Recursos</a>
-        <a href="/sobre.html">Sobre</a>
-        <a href="/contato.html">Contato</a>
-        <a href="/login.html">Acessar</a>
+        <a href="index.html">Início</a>
+        <a href="recursos.html">Recursos</a>
+        <a href="sobre.html">Especialização</a>
+        <a href="contato.html">Contato</a>
+        <a href="login.html">Acessar</a>
       </div>
     </div>
   </footer>
 
-  <script>
-    window.VSC_APP_URL = "https://app.vetsystemcontrol.com.br";
-  </script>
-  <script src="/assets/js/main.js" defer></script>
+  <div class="lightbox" data-lightbox hidden>
+    <button class="lightbox__backdrop" type="button" aria-label="Fechar imagem ampliada" data-lightbox-close></button>
+    <div class="lightbox__dialog lightbox__dialog--screen" role="dialog" aria-modal="true" aria-labelledby="lightbox-title">
+      <button class="lightbox__close" type="button" aria-label="Fechar" data-lightbox-close>×</button>
+      <p class="lightbox__title" id="lightbox-title"></p>
+      <div class="lightbox__viewport">
+        <iframe class="lightbox__frame" title="Prévia ampliada do sistema" loading="lazy" hidden></iframe>
+        <img class="lightbox__image" alt="Prévia ampliada da tela do sistema" hidden>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/main.js" defer></script>
 </body>
 </html>
-
-
