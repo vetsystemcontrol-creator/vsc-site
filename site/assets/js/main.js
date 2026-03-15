@@ -48,7 +48,6 @@
       description: 'Prontuário operacional com hero clínico do paciente, status de atendimento, resumo financeiro, itens lançados e linha do tempo clínica em uma visualização comercial fiel ao ERP.',
       thumb: '/assets/screens/explorer/atendimentos-thumb.webp',
       full: '/assets/screens/explorer/atendimentos-full.webp',
-      previewPage: 'previews/atendimentos.html',
       alt: 'Tela real de atendimentos do Vet System Control com dados demonstrativos',
       facts: [
         'Hero clínico forte para apresentação comercial',
@@ -61,7 +60,6 @@
       description: 'Visão operacional do módulo de produtos com indicadores de estoque, filtros, lotes, validade, itens críticos e integração com atendimento e fiscal.',
       thumb: '/assets/screens/explorer/produtos-thumb.webp',
       full: '/assets/screens/explorer/produtos-full.webp',
-      previewPage: 'previews/produtos.html',
       alt: 'Tela demonstrativa do módulo de produtos do Vet System Control',
       facts: [
         'Cadastro com leitura rápida de estoque e preço',
@@ -74,7 +72,6 @@
       description: 'Módulo especializado para matrizes, garanhões, status do ciclo, eventos recentes, agenda da estação e acompanhamento de gestação.',
       thumb: '/assets/screens/explorer/reproducao-thumb.webp',
       full: '/assets/screens/explorer/reproducao-full.webp',
-      previewPage: 'previews/reproducao.html',
       alt: 'Tela demonstrativa do módulo de reprodução equina do Vet System Control',
       facts: [
         'Especialização equina visível na interface',
@@ -87,7 +84,6 @@
       description: 'Fluxo fiscal com recepção de NF-e, conferência de itens, fornecedor conciliado, geração de conta a pagar e reflexo automático em produtos e estoque.',
       thumb: '/assets/screens/explorer/importacaoxml-thumb.webp',
       full: '/assets/screens/explorer/importacaoxml-full.webp',
-      previewPage: 'previews/importacao-xml.html',
       alt: 'Tela demonstrativa de importação XML do Vet System Control',
       facts: [
         'Leitura comercial forte para o fluxo fiscal',
@@ -194,7 +190,6 @@
       var data = explorerData[currentScreenKey];
       if (!data) return;
       button.setAttribute('data-lightbox-src', data.full);
-      button.removeAttribute('data-lightbox-page');
       button.setAttribute('data-lightbox-title', data.title);
       openLightbox(button);
     });
