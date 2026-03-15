@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Atualizações do Sistema</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif; margin:24px; max-width:900px;}
+    .row{display:flex; gap:12px; flex-wrap:wrap; align-items:center;}
+    button{padding:10px 14px; font-size:14px; cursor:pointer;}
+    select{padding:10px 12px; font-size:14px; min-width:340px;}
+    pre{background:#111; color:#eee; padding:12px; border-radius:8px; overflow:auto;}
+    .card{border:1px solid #ddd; padding:14px; border-radius:10px; margin-top:14px;}
+    .ok{color:#0a7;}
+    .bad{color:#c33;}
+  </style>
+</head>
+<body>
+  <h1>Backup & Atualizações (Padrão A)</h1>
+  <p>Coloque pacotes em <b>C:\Vet System Control - Equine\updates\inbox\&lt;PACOTE&gt;</b> e clique em aplicar.</p>
+
+  <div class="card">
+    <div class="row">
+      <button id="btnList">Verificar atualizações</button>
+      <select id="pkg"></select>
+      <button id="btnApply">Aplicar atualização</button>
+    </div>
+    <p id="status"></p>
+    <pre id="out">(sem saída)</pre>
+  </div>
+
+<script src="app.js"></script>
+</body>
+</html>

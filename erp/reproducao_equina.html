@@ -6,7 +6,9 @@
   <title>Reprodução Equina - Vet System Control | Equine</title>
 
   <link rel="stylesheet" href="/assets/styles.css" />
-  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="modules/vsc-ui.css?v=20260307f" />
+  <link rel="stylesheet" href="assets/css/vsc-premium-enterprise.css" />
+<link rel="icon" href="data:,">
 
   <!-- JS CANÔNICO -->
   <script src="modules/app.js" charset="utf-8"></script>
@@ -161,10 +163,10 @@
   </style>
 </head>
 
-<body>
+<body class="vsc-premium">
   <!-- TOPBAR OFICIAL (CANÔNICO) -->
   <iframe id="vscTopbarFrame"
-          src="topbar.html?v=final"
+          src="topbar.html?v=20260307f"
           title="Topbar — Vet System Control | Equine"
           style="width:100%;height:86px;border:0;display:block;position:sticky;top:0;z-index:9999;background:#fff;"
           loading="eager"></iframe>
@@ -219,5 +221,6 @@
       tryInit();
     })();
   </script>
+  <script src="modules/ui-global.js"></script>
 </body>
 </html>

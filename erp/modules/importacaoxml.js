@@ -35,11 +35,21 @@
   // UTILITÁRIOS
   // ============================================================
   function uuidv4() {
-    try { if (crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (_) {}
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-      const r = crypto.getRandomValues(new Uint8Array(1))[0] & 15;
-      return (c === "x" ? r : (r & 3) | 8).toString(16);
-    });
+    try {
+      if (window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    } catch (_) {}
+    try { if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); } catch (_) {}
+    try {
+      if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b => b.toString(16).padStart(2, "0")).join("");
+        return [hex.slice(0, 8), hex.slice(8, 12), hex.slice(12, 16), hex.slice(16, 20), hex.slice(20)].join("-");
+      }
+    } catch (_) {}
+    throw new TypeError("[IMPORT_XML] ambiente sem CSPRNG para gerar UUID v4.");
   }
   function nowISO() { return new Date().toISOString(); }
   function $(id) { return document.getElementById(id); }
@@ -99,6 +109,10 @@
     nfe: null,
     items: [],
     fornecedorId: null,
+    reviewMode: false,
+    reviewRecord: null,
+    reviewOriginalNfe: null,
+    reviewContaStrategy: null,
     _editingItemIdx: null,
     _priceQueue: [],
     _priceQueueIdx: null,
@@ -127,6 +141,117 @@
   }
   function saveLS(key, arr) {
     try { localStorage.setItem(key, JSON.stringify(arr)); return true; } catch(_) { return false; }
+  }
+  function ymFromISO(iso) {
+    const s = safeTrim(iso);
+    return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s.slice(0,7) : "";
+  }
+  function estoqueSaldoId(produtoId, loteId) {
+    return String(produtoId || "") + "::" + String(loteId || "sem-lote");
+  }
+  function estoqueSourceSig(nfe, it, produtoId) {
+    const chave = safeTrim(nfe && nfe.chave || "sem-chave");
+    const nItem = safeTrim(it && it.nItem || "0");
+    const lote = safeTrim(it && (it.lote || it.cProd || it.ean) || "sem-lote");
+    return ["xml_nfe", chave, nItem, safeTrim(produtoId || ""), lote].join("::");
+  }
+  async function idbGetByKey(store, key) {
+    const db = await window.VSC_DB.openDB();
+    return new Promise((res, rej) => {
+      try {
+        const tx = db.transaction([store], "readonly");
+        const req = tx.objectStore(store).get(key);
+        req.onsuccess = () => { try { db.close(); } catch(_) {} res(req.result || null); };
+        req.onerror = () => { try { db.close(); } catch(_) {} rej(req.error); };
+      } catch (err) {
+        try { db.close(); } catch(_) {}
+        rej(err);
+      }
+    });
+  }
+  async function idbPutRaw(store, obj) {
+    const db = await window.VSC_DB.openDB();
+    return new Promise((res, rej) => {
+      try {
+        const tx = db.transaction([store], "readwrite");
+        tx.oncomplete = () => { try { db.close(); } catch(_) {} res(obj); };
+        tx.onerror = () => { try { db.close(); } catch(_) {} rej(tx.error || new Error("Falha ao gravar em " + store)); };
+        tx.objectStore(store).put(obj);
+      } catch (err) {
+        try { db.close(); } catch(_) {}
+        rej(err);
+      }
+    });
+  }
+  async function findContaPagarByChave(chave) {
+    const c = safeTrim(chave);
+    if (!c) return null;
+    try {
+      const arr = await idbGetAll("contas_pagar");
+      return arr.find(x => x && !x.deleted_at && safeTrim(x.chave_nfe) === c) || null;
+    } catch(_) {
+      const arr = loadLS("contas_pagar");
+      return arr.find(x => x && !x.deleted_at && safeTrim(x.chave_nfe) === c) || null;
+    }
+  }
+
+  function getImportHistoryByChave(chave) {
+    const c = safeTrim(chave);
+    if (!c) return null;
+    const hist = loadLS("vsc_importacoes_xml_v1");
+    return hist.find(r => r && r.nfe && safeTrim(r.nfe.chave) === c) || null;
+  }
+  function replaceImportHistoryById(reg) {
+    if (!reg || !reg.id) return false;
+    const hist = loadLS("vsc_importacoes_xml_v1");
+    const idx = hist.findIndex(x => x && x.id === reg.id);
+    if (idx < 0) return false;
+    hist[idx] = reg;
+    return saveLS("vsc_importacoes_xml_v1", hist);
+  }
+  function getReviewItemHint(reviewRecord, it) {
+    if (!reviewRecord || !Array.isArray(reviewRecord.itens)) return null;
+    const byN = reviewRecord.itens.find(x => x && safeTrim(x.nItem) === safeTrim(it && it.nItem));
+    if (byN) return byN;
+    const ean = safeTrim(it && it.ean);
+    if (ean) {
+      const byEan = reviewRecord.itens.find(x => x && safeTrim(x.ean) === ean);
+      if (byEan) return byEan;
+    }
+    const cProd = safeTrim(it && it.cProd);
+    if (cProd) {
+      const byCod = reviewRecord.itens.find(x => x && safeTrim(x.cProd) === cProd);
+      if (byCod) return byCod;
+    }
+    return null;
+  }
+  function formatContaReviewMessage(conta) {
+    if (!conta) return "Conta a pagar nao localizada no sistema.";
+    const pago = safeTrim(conta.status) === "pago" || Number(conta.pago_centavos || 0) >= Number(conta.valor_centavos || 0);
+    const parts = [];
+    parts.push("Conta localizada: " + safeTrim(conta.documento || conta.numero_doc || "NF-e") + ".");
+    parts.push("Valor atual: " + fmtBRL(Number(conta.valor_centavos || conta.valor_original_centavos || 0)) + ".");
+    if (pago) {
+      parts.push("Status atual: PAGA.");
+      if (conta.pagamento_data) parts.push("Pagamento registrado em " + safeTrim(conta.pagamento_data) + ".");
+      parts.push("Escolha se deseja manter os dados originais ou atualizar o cadastro mantendo o pagamento existente.");
+    } else {
+      parts.push("Status atual: " + String(conta.status || "aberto").toUpperCase() + ".");
+      parts.push("Na revisao, os dados cadastrais e o valor serao atualizados sem gerar nova duplicidade.");
+    }
+    return parts.join(" ");
+  }
+  async function findLoteByProdutoELote(produtoId, lote, vencimento) {
+    const pid = safeTrim(produtoId);
+    if (!pid) return null;
+    const lot = safeTrim(lote);
+    const venc = safeTrim(vencimento);
+    try {
+      const rows = await idbGetAll("produtos_lotes");
+      return rows.find(x => x && !x.deleted_at && safeTrim(x.produto_id) === pid && safeTrim(x.lote) === lot && safeTrim(x.vencimento) === venc) || null;
+    } catch(_) {
+      return null;
+    }
   }
 
   // ============================================================
@@ -180,17 +305,40 @@
   // ============================================================
   // CMPM (CPC 16 / IAS 2)
   // ============================================================
-  function calcCMPM(prod, novaQtd, novoCusto) {
-    const lotes = Array.isArray(prod.lotes) ? prod.lotes : [];
-    let tq = 0, tc = 0;
-    for (const l of lotes) {
-      if (!l || l.deleted_at) continue;
-      tq += Number(l.qtd || 0);
-      tc += Number(l.qtd || 0) * Number(l.custo_cents || 0);
-    }
-    tq += Number(novaQtd || 0);
-    tc += Number(novaQtd || 0) * Number(novoCusto || 0);
-    return tq > 0 ? Math.round(tc / tq) : Number(novoCusto || 0);
+  async function getProdutoSaldoAtual(produtoId) {
+    const pid = safeTrim(produtoId);
+    if (!pid) return 0;
+    try {
+      const saldos = await idbGetAll("estoque_saldos");
+      let total = 0;
+      for (const s of saldos) {
+        if (!s || s.deleted_at) continue;
+        if (safeTrim(s.produto_id) !== pid) continue;
+        total += Number(s.saldo != null ? s.saldo : s.qtd || 0) || 0;
+      }
+      if (Number.isFinite(total) && Math.abs(total) > 0) return total;
+    } catch (_) {}
+    try {
+      const lotes = await idbGetAll("produtos_lotes");
+      let total = 0;
+      for (const l of lotes) {
+        if (!l || l.deleted_at) continue;
+        if (safeTrim(l.produto_id) !== pid) continue;
+        total += Number(l.qtd || 0) || 0;
+      }
+      if (Number.isFinite(total) && Math.abs(total) > 0) return total;
+    } catch (_) {}
+    return 0;
+  }
+
+  async function calcCMPM(prod, novaQtd, novoCusto) {
+    const qtdAtual = await getProdutoSaldoAtual(getProdId(prod));
+    const custoAtual = Number(prod && (prod.custo_medio_cents || prod.custo_real_cents || prod.custo_base_cents || 0)) || 0;
+    const qtdNova = Number(novaQtd || 0) || 0;
+    const custoNovo = Number(novoCusto || 0) || 0;
+    const totalQtd = qtdAtual + qtdNova;
+    const totalValor = (qtdAtual * custoAtual) + (qtdNova * custoNovo);
+    return totalQtd > 0 ? Math.round(totalValor / totalQtd) : custoNovo;
   }
 
   // ============================================================
@@ -365,7 +513,7 @@
         _convFatorManual: null, _venderComoEmbalagem: null, _eanAdicional: null,
         rateioCents: 0, custoRealCents: 0,
         unCompra: "", unEstoque: "", convFator: 1, convOk: true, convRequired: false,
-        qtdCompraNum: 0, qtdEstoqueNum: null, vUnEstoqueCents: null,
+        qtdCompraNum: qtdNum, qtdEstoqueNum: null, vUnEstoqueCents: null,
       };
     });
 
@@ -432,23 +580,16 @@
     const obj = {
       produto_id: id, id,
       nome: it.nome || it.cProd || "Produto importado", nome_norm: normStr(it.nome||""),
-      // EAN: se base==NF, usa como principal; se base!=NF, guarda como EAN alternativo (embalagem)
       ean: (opts.eanPrincipal || ""), ean_list: (opts.eanList || []),
-      custo_base_cents: Number(it.vUnCents||0),
-      custo_real_cents: Number(it.custoRealCents||it.vUnCents||0),
-      custo_medio_cents: Number(it.custoRealCents||it.vUnCents||0),
+      custo_base_cents: Number(it.vUnEstoqueCents||it.vUnCents||0),
+      custo_real_cents: Number(it.custoRealCents||it.vUnEstoqueCents||it.vUnCents||0),
+      custo_medio_cents: Number(it.custoRealCents||it.vUnEstoqueCents||it.vUnCents||0),
       venda_cents: 0,
       un_estoque: safeTrim(opts.unEstoque || it.unCompra || it.unidade || "UN"),
       un_compra_padrao: safeTrim(opts.unCompraPadrao || it.unCompra || it.unidade || "UN"),
       conv_fator_compra_para_estoque: Number(opts.convFator || 1),
       ean_pack_map: opts.eanPackMap || {},
-      estoque: 0, estoque_qtd: 0,
-      lotes: it.lote ? [{
-        lote_id: uuidv4(), lote: it.lote,
-        vencimento: nfeDateToISO(it.dVal), qtd: it.qtdEstoqueNum||it.qtdNum||0,
-        custo_cents: it.custoRealCents||it.vUnEstoqueCents||it.vUnCents||0,
-        created_at: now, updated_at: now, deleted_at: null
-      }] : [],
+      estoque: 0, estoque_qtd: 0, saldo_atual_qtd: 0,
       created_at: now, updated_at: now, deleted_at: null, _origem: "importacao_xml"
     };
     try { await idbUpsert("produtos_master", obj, "produtos", obj.produto_id); }
@@ -459,34 +600,131 @@
   // ============================================================
   // ATUALIZAR PRODUTO após finalizar
   // ============================================================
-  async function atualizarProduto(it) {
+  async function atualizarProduto(nfe, it) {
     let prods; try { prods = await idbGetAll("produtos_master"); } catch(_) { prods = loadLS("vsc_produtos_v1"); }
-    const p = findProdById(prods, it.vinculoProdutoId); if (!p) return false;
+    const p = findProdById(prods, it.vinculoProdutoId); if (!p) return { ok:false, reason:"produto_nao_encontrado" };
     const now = nowISO();
-    const qtd = it.qtdEstoqueNum || it.qtdNum || 0;
-    const custo = it.custoRealCents || it.vUnEstoqueCents || it.vUnCents || 0;
-    p.custo_base_cents = Number(it.vUnCents||0);
+    const qtd = Number(it.qtdEstoqueNum || it.qtdNum || 0) || 0;
+    const custo = Number(it.custoRealCents || it.vUnEstoqueCents || it.vUnCents || 0) || 0;
+    const vencISO = nfeDateToISO(it.dVal);
+    const loteNome = safeTrim(it.lote || "");
+    const usaLoteCanonico = !!(loteNome || vencISO);
+    const sourceSig = estoqueSourceSig(nfe, it, getProdId(p));
+
+    try {
+      const movExist = await idbGetByKey("estoque_movimentos", sourceSig);
+      if (movExist) return { ok:true, noop:true, produto_id:getProdId(p), lote_id:movExist.lote_id || null, mov_id:movExist.id || sourceSig };
+    } catch(_) {}
+
+    p.custo_base_cents = Number(it.vUnEstoqueCents||it.vUnCents||0);
     p.custo_real_cents = custo;
-    p.custo_medio_cents = calcCMPM(p, qtd, custo);
+    p.custo_medio_cents = await calcCMPM(p, qtd, custo);
     if (it.unEstoque) p.un_estoque = it.unEstoque;
     if (it.unCompra) p.un_compra_padrao = it.unCompra;
     if (it.convFator && it.convFator > 0) p.conv_fator_compra_para_estoque = it.convFator;
-    const qAt = Number(p.estoque_qtd ?? p.estoque ?? 0);
-    p.estoque_qtd = qAt + qtd; p.estoque = p.estoque_qtd;
     if (it._eanAdicional) {
       if (!Array.isArray(p.ean_list)) p.ean_list = p.ean ? [p.ean] : [];
       if (!p.ean_list.includes(it._eanAdicional)) p.ean_list.push(it._eanAdicional);
     }
-    if (it.lote) {
-      if (!Array.isArray(p.lotes)) p.lotes = [];
-      const ex = p.lotes.find(l => l && !l.deleted_at && l.lote === it.lote);
-      if (ex) { ex.qtd = Number(ex.qtd||0) + qtd; ex.custo_cents = custo; ex.updated_at = now; }
-      else p.lotes.push({ lote_id: uuidv4(), lote: it.lote, vencimento: nfeDateToISO(it.dVal), qtd, custo_cents: custo, created_at: now, updated_at: now, deleted_at: null });
-    }
     p.updated_at = now;
+
+    let loteId = null;
+    if (usaLoteCanonico) {
+      try {
+        let lote = await findLoteByProdutoELote(getProdId(p), loteNome, vencISO);
+        if (lote) {
+          lote.qtd = Number(lote.qtd || 0) + qtd;
+          lote.custo_cents = custo;
+          lote.updated_at = now;
+        } else {
+          lote = {
+            id: uuidv4(),
+            produto_id: getProdId(p),
+            ean: safeTrim(it.ean || p.ean || ""),
+            lote: loteNome || null,
+            vencimento: vencISO || "",
+            qtd,
+            custo_cents: custo,
+            status: "ATIVO",
+            created_at: now,
+            updated_at: now,
+            deleted_at: null,
+            _origem: "importacao_xml"
+          };
+        }
+        loteId = lote.id;
+        await idbPutRaw("produtos_lotes", lote);
+      } catch(_) {
+        if (safeTrim(it.lote)) {
+          if (!Array.isArray(p.lotes)) p.lotes = [];
+          const ex = p.lotes.find(l => l && !l.deleted_at && l.lote === it.lote);
+          if (ex) { ex.qtd = Number(ex.qtd||0) + qtd; ex.custo_cents = custo; ex.updated_at = now; loteId = ex.lote_id || ex.id || null; }
+          else {
+            const novoL = { lote_id: uuidv4(), lote: it.lote, vencimento: vencISO, qtd, custo_cents: custo, created_at: now, updated_at: now, deleted_at: null };
+            p.lotes.push(novoL);
+            loteId = novoL.lote_id;
+          }
+        }
+      }
+    }
+
     try { await idbUpsert("produtos_master", p, "produtos", getProdId(p), "AUTO"); }
     catch(_) { const a = loadLS("vsc_produtos_v1"); const i = a.findIndex(x => getProdId(x) === getProdId(p)); if (i>=0) a[i]=p; else a.push(p); saveLS("vsc_produtos_v1", a); }
-    return true;
+
+    try {
+      const saldoKey = estoqueSaldoId(getProdId(p), loteId || "sem-lote");
+      const saldoAtual = await idbGetByKey("estoque_saldos", saldoKey);
+      const saldoObj = Object.assign({}, saldoAtual || {}, {
+        id: saldoKey,
+        produto_id: getProdId(p),
+        produto_lote: loteId || null,
+        lote_id: loteId || null,
+        saldo: Number((saldoAtual && saldoAtual.saldo) || 0) + qtd,
+        updated_at: now,
+        _origem: "importacao_xml"
+      });
+      await idbPutRaw("estoque_saldos", saldoObj);
+
+      const mov = {
+        id: sourceSig,
+        produto_id: getProdId(p),
+        produto_lote: loteId || null,
+        lote_id: loteId || null,
+        lote: loteNome || null,
+        tipo: "ENTRADA",
+        origem: "IMPORTACAO_XML",
+        source_sig: sourceSig,
+        documento_tipo: "NFE",
+        documento_chave: safeTrim(nfe && nfe.chave || ""),
+        documento_numero: safeTrim(nfe && nfe.numero || ""),
+        fornecedor_id: safeTrim(State.fornecedorId || ""),
+        qtd_delta: qtd,
+        saldo_delta: qtd,
+        custo_unit_cents: custo,
+        custo_total_cents: Math.round(qtd * custo),
+        created_at: now,
+        updated_at: now,
+        _origem: "importacao_xml",
+        meta: {
+          nItem: it.nItem,
+          unidade_nf: it.unidade,
+          unidade_estoque: it.unEstoque || it.unidade,
+          conv_fator: it.convFator || 1,
+          ean: it.ean || ""
+        }
+      };
+      await idbPutRaw("estoque_movimentos", mov);
+
+      try {
+        const saldoTotalProduto = await getProdutoSaldoAtual(getProdId(p));
+        p.estoque = saldoTotalProduto;
+        p.estoque_qtd = saldoTotalProduto;
+        p.updated_at = now;
+        await idbUpsert("produtos_master", p, "produtos", getProdId(p), "AUTO_STOCK_SYNC");
+      } catch(_) {}
+    } catch(_) {}
+
+    return { ok:true, produto_id:getProdId(p), lote_id:loteId || null, mov_id:sourceSig };
   }
 
   // ============================================================
@@ -494,23 +732,113 @@
   // ============================================================
   async function criarContaPagar(nfe, fornId) {
     const v = Math.round((nfe.totais && nfe.totais.vNF || 0) * 100); if (!v) return null;
+    const chave = safeTrim(nfe && nfe.chave || "");
+    const existente = await findContaPagarByChave(chave);
+    if (existente) return existente;
     const now = nowISO();
-    const venc = nfeDateToISO(nfe.vencimento) || now.slice(0,10);
+    const emissaoISO = nfe.emissao ? nfe.emissao.slice(0,10) : now.slice(0,10);
+    const venc = nfeDateToISO(nfe.vencimento) || emissaoISO;
     const conta = {
       id: uuidv4(), tipo: "pagar",
       descricao: "NF-e " + safeTrim(nfe.numero) + " — " + (nfe.emitente&&nfe.emitente.nome||""),
       fornecedor_id: safeTrim(fornId||""),
       fornecedor_doc: nfe.emitente ? onlyDigits(nfe.emitente.cnpj||"") : "",
       fornecedor_nome: nfe.emitente ? safeTrim(nfe.emitente.nome||"") : "",
-      numero_doc: safeTrim(nfe.numero), chave_nfe: safeTrim(nfe.chave),
+      documento: "NF-e " + safeTrim(nfe.numero),
+      numero_doc: safeTrim(nfe.numero), chave_nfe: chave,
+      competencia: ymFromISO(emissaoISO),
+      origem: "importacao_xml",
+      obs: chave ? ("Chave NF-e: " + chave) : "Gerado automaticamente pela importação XML",
       valor_centavos: v, valor_original_centavos: v, pago_centavos: 0,
-      status: "aberto", vencimento: venc, emissao: nfe.emissao ? nfe.emissao.slice(0,10) : now.slice(0,10),
+      status: "aberto", vencimento: venc, emissao: emissaoISO,
       pagamento_data: null, cancelado: false,
       created_at: now, updated_at: now, deleted_at: null, _origem: "importacao_xml"
     };
     try { await idbUpsert("contas_pagar", conta, "contas_pagar", conta.id); }
     catch(_) { const a = loadLS("contas_pagar"); a.push(conta); saveLS("contas_pagar", a); }
     return conta;
+  }
+
+  async function revisarProduto(nfe, it) {
+    let prods; try { prods = await idbGetAll("produtos_master"); } catch(_) { prods = loadLS("vsc_produtos_v1"); }
+    const p = findProdById(prods, it.vinculoProdutoId); if (!p) return { ok:false, reason:"produto_nao_encontrado" };
+    const now = nowISO();
+    const custo = Number(it.custoRealCents || it.vUnEstoqueCents || it.vUnCents || 0) || 0;
+    p.custo_base_cents = Number(it.vUnEstoqueCents || it.vUnCents || 0);
+    p.custo_real_cents = custo;
+    p.custo_medio_cents = Number(p.custo_medio_cents || custo);
+    if (it.unEstoque) p.un_estoque = it.unEstoque;
+    if (it.unCompra) p.un_compra_padrao = it.unCompra;
+    if (it.convFator && it.convFator > 0) p.conv_fator_compra_para_estoque = it.convFator;
+    if (it.ean) {
+      p.ean_list = Array.isArray(p.ean_list) ? p.ean_list : (p.ean ? [p.ean] : []);
+      if (!p.ean && (!it.unEstoque || it.unEstoque === it.unCompra || Number(it.convFator || 1) === 1)) p.ean = safeTrim(it.ean);
+      if (!p.ean_list.some(ee => safeTrim(ee) === safeTrim(it.ean))) p.ean_list.push(safeTrim(it.ean));
+    }
+    if (it._eanAdicional) {
+      p.ean_list = Array.isArray(p.ean_list) ? p.ean_list : (p.ean ? [p.ean] : []);
+      if (!p.ean_list.some(ee => safeTrim(ee) === safeTrim(it._eanAdicional))) p.ean_list.push(it._eanAdicional);
+    }
+    try {
+      const saldoAtual = await getProdutoSaldoAtual(getProdId(p));
+      p.estoque = saldoAtual;
+      p.estoque_qtd = saldoAtual;
+    } catch(_) {}
+    p.updated_at = now;
+    try { await idbUpsert("produtos_master", p, "produtos", getProdId(p), "UI_REVIEW_XML"); }
+    catch(_) {
+      const a = loadLS("vsc_produtos_v1"); const i = a.findIndex(x => getProdId(x) === getProdId(p));
+      if (i>=0) a[i]=p; else a.push(p); saveLS("vsc_produtos_v1", a);
+    }
+    return { ok:true, produto_id:getProdId(p) };
+  }
+
+  async function revisarContaPagar(nfe, fornId, strategy) {
+    const chave = safeTrim(nfe && nfe.chave || "");
+    const existente = await findContaPagarByChave(chave);
+    if (!existente) return criarContaPagar(nfe, fornId);
+    const now = nowISO();
+    const emissaoISO = nfe.emissao ? nfe.emissao.slice(0,10) : now.slice(0,10);
+    const venc = nfeDateToISO(nfe.vencimento) || emissaoISO;
+    const v = Math.round((nfe.totais && nfe.totais.vNF || 0) * 100);
+    const pago = safeTrim(existente.status) === "pago" || Number(existente.pago_centavos || 0) >= Number(existente.valor_centavos || 0);
+    if (strategy === "keep_original" && pago) return existente;
+
+    const upd = Object.assign({}, existente, {
+      descricao: "NF-e " + safeTrim(nfe.numero) + " — " + (nfe.emitente&&nfe.emitente.nome||""),
+      fornecedor_id: safeTrim(fornId||""),
+      fornecedor_doc: nfe.emitente ? onlyDigits(nfe.emitente.cnpj||"") : "",
+      fornecedor_nome: nfe.emitente ? safeTrim(nfe.emitente.nome||"") : "",
+      documento: "NF-e " + safeTrim(nfe.numero),
+      numero_doc: safeTrim(nfe.numero),
+      chave_nfe: chave,
+      competencia: ymFromISO(emissaoISO),
+      origem: "importacao_xml_revisao",
+      obs: chave ? ("Chave NF-e: " + chave + " | Revisado via importação XML") : "Revisado via importação XML",
+      valor_centavos: v,
+      valor_original_centavos: v,
+      vencimento: venc,
+      emissao: emissaoISO,
+      updated_at: now,
+      _origem: "importacao_xml_revisao"
+    });
+
+    if (!pago) {
+      upd.status = "aberto";
+      upd.pagamento_data = "";
+      upd.pago_centavos = 0;
+    } else {
+      upd.status = "pago";
+    }
+
+    try { await idbUpsert("contas_pagar", upd, "contas_pagar", upd.id, "UI_REVIEW_XML"); }
+    catch(_) {
+      const a = loadLS("contas_pagar");
+      const i = a.findIndex(x => x && x.id === upd.id);
+      if (i>=0) a[i] = upd; else a.push(upd);
+      saveLS("contas_pagar", a);
+    }
+    return upd;
   }
 
   // ============================================================
@@ -645,8 +973,21 @@
   // ============================================================
   // DUPLICATA
   // ============================================================
-  function isDuplicate(chave) {
-    return loadLS("vsc_importacoes_xml_v1").some(r => r && r.nfe && r.nfe.chave === chave);
+  async function isDuplicate(chave) {
+    const key = safeTrim(chave);
+    if (!key) return false;
+    if (loadLS("vsc_importacoes_xml_v1").some(r => r && r.nfe && r.nfe.chave === key)) return true;
+    try {
+      if (window.VSC_IMPORT_LEDGER && typeof window.VSC_IMPORT_LEDGER.get === "function") {
+        const row = await window.VSC_IMPORT_LEDGER.get("xml_nfe::" + key);
+        if (row) return true;
+      }
+    } catch(_) {}
+    try {
+      const ap = await findContaPagarByChave(key);
+      if (ap) return true;
+    } catch(_) {}
+    return false;
   }
 
   // ============================================================
@@ -659,12 +1000,13 @@
     const fornBadge = isNovo
       ? '<span class="r-badge r-badge-warn">+ Criado automaticamente</span>'
       : '<span class="r-badge r-badge-ok">✓ Fornecedor cadastrado</span>';
+    const reviewBadge = State.reviewMode ? '<span class="r-badge r-badge-blue">Modo revisão</span>' : '';
     const ratVal = nfe.totais.rateioCents;
     const vencStr = nfeDateToISO(nfe.vencimento) || "—";
     wrap.innerHTML = `
       <div class="resumo-grid">
         <div class="r-card">
-          <div class="r-card-title">📦 Fornecedor ${fornBadge}</div>
+          <div class="r-card-title">📦 Fornecedor ${fornBadge} ${reviewBadge}</div>
           <div class="r-card-main">${escHtml(e.nome || "—")}</div>
           ${e.fantasia ? `<div class="r-card-sub">${escHtml(e.fantasia)}</div>` : ""}
           <div class="r-card-sub">CNPJ: <b>${escHtml(fmtCnpj(e.cnpj||""))}</b>${e.ie ? " &nbsp;·&nbsp; IE: "+escHtml(e.ie) : ""}</div>
@@ -832,10 +1174,10 @@
     btn.style.display = "inline-flex";
     if (total > 0) {
       btn.className = "btn-fin btn-fin-warn";
-      btn.textContent = `FINALIZAR IMPORTAÇÃO  ·  ${total} pendente${total > 1 ? "s" : ""}`;
+      btn.textContent = `${State.reviewMode ? "FINALIZAR REVISÃO" : "FINALIZAR IMPORTAÇÃO"}  ·  ${total} pendente${total > 1 ? "s" : ""}`;
     } else {
       btn.className = "btn-fin btn-fin-ok";
-      btn.textContent = "✓  FINALIZAR IMPORTAÇÃO";
+      btn.textContent = State.reviewMode ? "✓  FINALIZAR REVISÃO" : "✓  FINALIZAR IMPORTAÇÃO";
     }
   }
 
@@ -926,7 +1268,7 @@
     State._focusFator = false;
 
     const modalTitle = $("mvTitulo"); if (modalTitle) modalTitle.textContent = "Ajustar vínculo do item";
-    const btnOk = $("mvConfirmar"); if (btnOk) btnOk.textContent = "Confirmar vínculo";
+    const btnOk = $("btnConfirmarVinculo"); if (btnOk) btnOk.textContent = "Confirmar vínculo";
   };
 
   VSC_XML.confirmarVinculo = async function() {
@@ -940,7 +1282,11 @@
     const mvUE = $("mvUnEstoque");
     const uNF = normUn(it.unCompra || it.unidade || "");
 
-    if (mvQtd && mvQtd.value) it.qtd = safeTrim(mvQtd.value);
+    if (mvQtd && mvQtd.value) {
+      it.qtd = safeTrim(mvQtd.value);
+      it.qtdNum = toNumXML(it.qtd);
+      it.qtdCompraNum = it.qtdNum;
+    }
     if (mvCusto && mvCusto.value) it.vUnCents = toCents(mvCusto.value);
 
     // unidade base escolhida (obrigatória no modo criação / recomendada no modo vínculo)
@@ -1044,15 +1390,17 @@
       upd.updated_at = now;
       try { await idbUpsert("produtos_master", upd, "produtos", getProdId(upd), "UI_EDIT"); }
       catch(_) { /* fallback local já existe no idbUpsert interno */ }
+      it._produtoAtualizado = upd;
     }
 
-    it._vinculoNome = p ? (p.nome||"") : (it._vinculoNome||"");
-    aplicarConversao(it, p || null);
+    const prodAtual = (it._produtoAtualizado || p || null);
+    it._vinculoNome = prodAtual ? (prodAtual.nome||"") : (it._vinculoNome||"");
+    aplicarConversao(it, prodAtual);
     if (it.ean) vmapSet(it.ean, produtoId);
     calcRateio(State.items, State.nfe.totais.rateioCents);
 
     // reset ui texts
-    const btnOk = $("mvConfirmar"); if (btnOk) btnOk.textContent = "Confirmar vínculo";
+    const btnOk = $("btnConfirmarVinculo"); if (btnOk) btnOk.textContent = "Confirmar vínculo";
 
     VSC_XML.closeModal();
     updateRow(idx);
@@ -1079,7 +1427,7 @@
       // no modo criação, não exigimos selecionar produto
       const sel = $("mvProduto"); if (sel) sel.value = "";
       const modalTitle = $("mvTitulo"); if (modalTitle) modalTitle.textContent = "Criar produto e definir conversão";
-      const btnOk = $("mvConfirmar"); if (btnOk) btnOk.textContent = "Criar + Vincular";
+      const btnOk = $("btnConfirmarVinculo"); if (btnOk) btnOk.textContent = "Criar + Vincular";
       return;
     }
 
@@ -1176,10 +1524,116 @@
       if (!it.vinculoProdutoId || it.vinculoTipo === "CRIADO") continue;
       const p = findProdById(prods, it.vinculoProdutoId); if (!p) continue;
       const ant = Number(p.custo_real_cents || p.custo_base_cents || 0);
-      const nov = Number(it.custoRealCents || it.vUnCents || 0);
+      const nov = Number(it.custoRealCents || it.vUnEstoqueCents || it.vUnCents || 0);
       if (Math.abs(nov - ant) > 1) alt.push({ produto: p, item: it, custoAnterior: ant, custoNovo: nov });
     }
     return alt;
+  }
+
+  async function carregarEstadoImportacao(nfe, opts) {
+    opts = opts || {};
+    State.reviewMode = !!opts.reviewMode;
+    State.reviewRecord = opts.reviewRecord || null;
+    State.reviewOriginalNfe = opts.reviewOriginalNfe || null;
+    State.reviewContaStrategy = null;
+    State.nfe = nfe; State.items = nfe.items;
+    State.fornecedorId = await resolveFornecedor(nfe.emitente);
+    const produtos = await loadProdutos();
+    for (const it of State.items) {
+      aplicarConversao(it, null);
+      const histItem = State.reviewMode ? getReviewItemHint(State.reviewRecord, it) : null;
+      if (histItem && histItem.produto_id) {
+        const ph = findProdById(produtos, histItem.produto_id);
+        if (ph) {
+          it.vinculoProdutoId = getProdId(ph);
+          it.vinculoAuto = true;
+          it.vinculoTipo = "REVISAO_HISTORICO";
+          it._vinculoNome = ph.nome || "";
+          if (histItem.conv_fator && Number(histItem.conv_fator) > 0) it.convFator = Number(histItem.conv_fator);
+          aplicarConversao(it, ph);
+          if (histItem.conv_fator && Number(histItem.conv_fator) > 0 && it.convRequired) {
+            it.convFator = Number(histItem.conv_fator);
+            it.qtdEstoqueNum = (Number(it.qtdNum || 0) || 0) * it.convFator;
+            it.vUnEstoqueCents = it.convFator ? Math.round(Number(it.vUnCents || 0) / it.convFator) : Number(it.vUnCents || 0);
+            it.convRequired = false;
+            it.convOk = true;
+          }
+          continue;
+        }
+      }
+      if (it.ean) {
+        const mp = vmapGet(it.ean);
+        if (mp) {
+          const p = findProdById(produtos, mp);
+          if (p) { it.vinculoProdutoId = getProdId(p); it.vinculoAuto = true; it.vinculoTipo = State.reviewMode ? "REVISAO_VMAP" : "VMAP"; it._vinculoNome = p.nome||""; aplicarConversao(it,p); continue; }
+        }
+      }
+      if (it.ean) {
+        const p = findProdByEAN(produtos, it.ean);
+        if (p) { it.vinculoProdutoId = getProdId(p); it.vinculoAuto = true; it.vinculoTipo = State.reviewMode ? "REVISAO_EAN" : "EAN_EXATO"; it._vinculoNome = p.nome||""; vmapSet(it.ean, getProdId(p)); aplicarConversao(it,p); continue; }
+      }
+      const m = findBestSim(produtos, it.nome, 0.95);
+      if (m) { it._simProdutoId = getProdId(m.produto); it._simScore = m.sim; it.vinculoTipo = "PENDENTE_SIM"; it._vinculoNome = m.produto.nome||""; continue; }
+      it.vinculoTipo = null;
+    }
+    calcRateio(State.items, nfe.totais.rateioCents);
+    renderResumo(nfe, State.fornecedorId);
+    renderItens();
+    const cr = $("cardResultados"); if (cr) cr.style.display = "block";
+    const autoN = State.items.filter(i => i.vinculoAuto).length;
+    const simN = State.items.filter(i => i.vinculoTipo === "PENDENTE_SIM").length;
+    const pendN = State.items.filter(i => !i.vinculoProdutoId && i.vinculoTipo !== "PENDENTE_SIM").length;
+    const btnF = $("btnFinalizar");
+    if (btnF && State.reviewMode) btnF.textContent = "✓  FINALIZAR REVISÃO";
+    toast(`${State.reviewMode ? "Revisão aberta" : "Analisado"}: ${nfe.items.length} itens — ${autoN} auto-vinculado(s), ${simN} para confirmar, ${pendN} pendente(s).`, 6000);
+  }
+
+  async function abrirRevisaoImportacao(nfe) {
+    const hist = getImportHistoryByChave(nfe && nfe.chave);
+    await carregarEstadoImportacao(nfe, { reviewMode: true, reviewRecord: hist, reviewOriginalNfe: hist && hist.nfe ? hist.nfe : null });
+  }
+  VSC_XML.abrirRevisaoImportacao = abrirRevisaoImportacao;
+
+  async function readXmlFileToText(file) {
+    if (!file) return "";
+    if (typeof file.text === "function") return await file.text();
+    return await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result || ""));
+      reader.onerror = () => reject(reader.error || new Error("Falha ao ler arquivo XML"));
+      reader.readAsText(file);
+    });
+  }
+
+  async function carregarArquivoXmlSelecionado() {
+    const fileInput = $("xmlFile");
+    const target = $("inputXml");
+    const file = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+    if (!file) return false;
+    try {
+      const text = await readXmlFileToText(file);
+      if (target) target.value = text || "";
+      toast(`Arquivo carregado: ${file.name || "XML"}.`, 3500);
+      return true;
+    } catch (err) {
+      console.error("ERRO_CARREGAR_XML:", err);
+      toast("Falha ao ler o arquivo XML selecionado.");
+      return false;
+    }
+  }
+
+  function limparTelaImportacao(opts) {
+    const resetInput = !opts || opts.resetInput !== false;
+    const inpXml = $("inputXml"); if (inpXml && resetInput) inpXml.value = "";
+    const fInp = $("xmlFile"); if (fInp) fInp.value = "";
+    const rN = $("resumoNfe"); if (rN) { rN.style.display = "none"; rN.innerHTML = ""; }
+    const iW = $("itensWrap"); if (iW) { iW.style.display = "none"; iW.innerHTML = ""; }
+    const cR = $("cardResultados"); if (cR) cR.style.display = "none";
+    const bF = $("btnFinalizar"); if (bF) { bF.style.display = "none"; bF.disabled = false; bF.textContent = "✓ FINALIZAR IMPORTAÇÃO"; }
+    const mv = $("modalVinculo"); if (mv) mv.style.display = "none";
+    const mr = $("modalRevisaoPreco"); if (mr) mr.style.display = "none";
+    State.nfe = null; State.items = []; State.fornecedorId = null; State.reviewMode = false; State.reviewRecord = null; State.reviewOriginalNfe = null; State.reviewContaStrategy = null;
+    State._editingItemIdx = null; State._priceQueue = []; State._priceQueueIdx = null;
   }
 
   // ============================================================
@@ -1192,35 +1646,25 @@
     if (!doc) { toast("XML inválido ou corrompido."); return; }
     const nfe = extractNfe(doc);
     if (!nfe || !nfe.items.length) { toast("NF-e sem itens detectados."); return; }
-    if (nfe.chave && isDuplicate(nfe.chave)) {
-      toast("⛔ NF-e já importada! Chave: ..." + nfe.chave.slice(-8)); return;
+    const duplicada = nfe.chave && await isDuplicate(nfe.chave);
+    if (duplicada) {
+      showEnterpriseAlert("warn", "NF-e já importada", "Esta chave já foi importada anteriormente. Deseja abrir a revisão desta importação para conferir vínculos, valores, conversão e conta a pagar sem duplicar estoque?", [
+        { label: "Cancelar", kind: "default", onClick: () => { const ov=document.getElementById("vscEnterpriseAlertOverlay"); if(ov) ov.__blocking=false; } },
+        { label: "Revisar importação", kind: "primary", onClick: async () => {
+            const ov=document.getElementById("vscEnterpriseAlertOverlay"); if(ov) ov.__blocking=false;
+            try { await abrirRevisaoImportacao(nfe); }
+            catch (err) {
+              console.error("ERRO_ABRIR_REVISAO:", err);
+              showEnterpriseAlert("error","Falha ao abrir revisão","Não foi possível abrir a revisão desta importação.",[{label:"OK",kind:"primary",onClick:()=>{const ov2=document.getElementById("vscEnterpriseAlertOverlay"); if(ov2) ov2.__blocking=false;}}],{blocking:true,autoHideMs:0});
+            }
+          } }
+      ], { blocking: true, autoHideMs: 0 });
+      return;
     }
     const btnA = $("btnAnalisar");
     if (btnA) { btnA.disabled = true; btnA.textContent = "Analisando…"; }
     try {
-      State.nfe = nfe; State.items = nfe.items;
-      State.fornecedorId = await resolveFornecedor(nfe.emitente);
-      const produtos = await loadProdutos();
-      for (const it of State.items) {
-        aplicarConversao(it, null);
-        // A) VMap
-        if (it.ean) { const mp = vmapGet(it.ean); if (mp) { const p = findProdById(produtos, mp); if (p) { it.vinculoProdutoId = getProdId(p); it.vinculoAuto = true; it.vinculoTipo = "VMAP"; it._vinculoNome = p.nome||""; aplicarConversao(it,p); continue; } } }
-        // B) EAN exato
-        if (it.ean) { const p = findProdByEAN(produtos, it.ean); if (p) { it.vinculoProdutoId = getProdId(p); it.vinculoAuto = true; it.vinculoTipo = "EAN_EXATO"; it._vinculoNome = p.nome||""; vmapSet(it.ean, getProdId(p)); aplicarConversao(it,p); continue; } }
-        // C) Similaridade ≥ 95% → pendente_sim (usuário confirma pelo botão na linha)
-        const m = findBestSim(produtos, it.nome, 0.95);
-        if (m) { it._simProdutoId = getProdId(m.produto); it._simScore = m.sim; it.vinculoTipo = "PENDENTE_SIM"; it._vinculoNome = m.produto.nome||""; continue; }
-        // D) Sem match → pendente (2 botões inline na linha)
-        it.vinculoTipo = null;
-      }
-      calcRateio(State.items, nfe.totais.rateioCents);
-      renderResumo(nfe, State.fornecedorId);
-      renderItens();
-      const cr = $("cardResultados"); if (cr) cr.style.display = "block";
-      const autoN = State.items.filter(i => i.vinculoAuto).length;
-      const simN = State.items.filter(i => i.vinculoTipo === "PENDENTE_SIM").length;
-      const pendN = State.items.filter(i => !i.vinculoProdutoId && i.vinculoTipo !== "PENDENTE_SIM").length;
-      toast(`Analisado: ${nfe.items.length} itens — ${autoN} auto-vinculado(s), ${simN} para confirmar, ${pendN} pendente(s).`, 6000);
+      await carregarEstadoImportacao(nfe, { reviewMode: false, reviewRecord: null, reviewOriginalNfe: null });
     } finally {
       if (btnA) { btnA.disabled = false; btnA.textContent = "ANALISAR NOTA FISCAL"; }
     }
@@ -1272,14 +1716,30 @@
     const btnF = $("btnFinalizar");
     if (btnF) { btnF.disabled = true; btnF.textContent = "Finalizando..."; }
     try {
+      const wasReview = !!State.reviewMode;
       const alterados = await verificarCustos(items);
-      // Grava histórico
+      if (State.reviewMode) {
+        const existenteConta = await findContaPagarByChave(safeTrim(nfe && nfe.chave || ""));
+        const contaPaga = !!(existenteConta && (safeTrim(existenteConta.status) === "pago" || Number(existenteConta.pago_centavos || 0) >= Number(existenteConta.valor_centavos || 0)));
+        if (contaPaga && !State.reviewContaStrategy) {
+          showEnterpriseAlert("warn", "Conta a pagar já está paga", formatContaReviewMessage(existenteConta), [
+            { label: "Manter dados originais", kind: "default", onClick: async () => { const ov=document.getElementById("vscEnterpriseAlertOverlay"); if(ov) ov.__blocking=false; State.reviewContaStrategy = "keep_original"; await VSC_XML.finalizar(); } },
+            { label: "Atualizar mantendo pagamento", kind: "primary", onClick: async () => { const ov=document.getElementById("vscEnterpriseAlertOverlay"); if(ov) ov.__blocking=false; State.reviewContaStrategy = "update_keep_payment"; await VSC_XML.finalizar(); } }
+          ], { blocking: true, autoHideMs: 0 });
+          return;
+        }
+      }
       const reg = {
-        id: uuidv4(), created_at: nowISO(), tipo: "importacao_xml_nfe",
+        id: State.reviewMode && State.reviewRecord && State.reviewRecord.id ? State.reviewRecord.id : uuidv4(),
+        created_at: State.reviewMode && State.reviewRecord && State.reviewRecord.created_at ? State.reviewRecord.created_at : nowISO(),
+        updated_at: nowISO(),
+        revised_at: State.reviewMode ? nowISO() : null,
+        tipo: "importacao_xml_nfe",
         fornecedor_id: State.fornecedorId||null,
+        review_mode: !!State.reviewMode,
         nfe: { chave: nfe.chave, numero: nfe.numero, emissao: nfe.emissao, emitente: nfe.emitente, totais: nfe.totais },
         itens: items.map(it => ({
-          nItem: it.nItem, produto_id: it.vinculoProdutoId, ean: it.ean, descricao_xml: it.nome,
+          nItem: it.nItem, cProd: it.cProd || "", produto_id: it.vinculoProdutoId, ean: it.ean, descricao_xml: it.nome,
           qtd: it.qtdNum, qtd_estoque: it.qtdEstoqueNum||it.qtdNum, unidade: it.unidade,
           un_estoque: it.unEstoque||it.unidade, conv_fator: it.convFator||1,
           custo_cents: it.vUnCents, custo_real_cents: it.custoRealCents||it.vUnCents,
@@ -1287,22 +1747,39 @@
           lote: it.lote||null, dVal: it.dVal||null, vinculo_tipo: it.vinculoTipo
         }))
       };
-      const hist = loadLS("vsc_importacoes_xml_v1"); hist.unshift(reg); saveLS("vsc_importacoes_xml_v1", hist);
-      for (const it of items) await atualizarProduto(it);
-      await criarContaPagar(nfe, State.fornecedorId);
-      // Reset
-      State.nfe = null; State.items = []; State.fornecedorId = null;
-      const inpXml = $("inputXml"); if (inpXml) inpXml.value = "";
-      const fInp = $("xmlFile"); if (fInp) fInp.value = "";
-      const rN = $("resumoNfe"); if (rN) { rN.style.display="none"; rN.innerHTML=""; }
-      const iW = $("itensWrap"); if (iW) { iW.style.display="none"; iW.innerHTML=""; }
-      const cR = $("cardResultados"); if (cR) cR.style.display = "none";
-      const bF = $("btnFinalizar"); if (bF) bF.style.display = "none";
+      const resultIds = [];
+      for (const it of items) {
+        const r = State.reviewMode ? await revisarProduto(nfe, it) : await atualizarProduto(nfe, it);
+        if (r && (r.mov_id || r.produto_id)) resultIds.push(r.mov_id || r.produto_id);
+      }
+      let contaGerada = null;
+      if (State.reviewMode) {
+        contaGerada = await revisarContaPagar(nfe, State.fornecedorId, State.reviewContaStrategy || "update_keep_payment");
+      } else {
+        contaGerada = await criarContaPagar(nfe, State.fornecedorId);
+      }
+      if (contaGerada && contaGerada.id) resultIds.push(contaGerada.id);
+      if (State.reviewMode) replaceImportHistoryById(reg);
+      else { const hist = loadLS("vsc_importacoes_xml_v1"); hist.unshift(reg); saveLS("vsc_importacoes_xml_v1", hist); }
+      try {
+        if (!State.reviewMode && window.VSC_IMPORT_LEDGER && typeof window.VSC_IMPORT_LEDGER.makePayloadHash === "function" && typeof window.VSC_IMPORT_LEDGER.markImported === "function") {
+          const payload_hash = await window.VSC_IMPORT_LEDGER.makePayloadHash(reg);
+          await window.VSC_IMPORT_LEDGER.markImported({
+            key: "xml_nfe::" + safeTrim(nfe.chave || (nfe.numero || reg.id)),
+            source_system: "xml_nfe",
+            source_record_key: safeTrim(nfe.chave || (nfe.numero || reg.id)),
+            source_document_hash: safeTrim(nfe.chave || ""),
+            payload_hash,
+            result_ids: resultIds
+          });
+        }
+      } catch (_) {}
+      limparTelaImportacao({ resetInput: true });
       if (alterados.length > 0) {
         abrirModalPrecos(alterados);
-        showEnterpriseAlert("success","Importacao concluida","Importacao concluida. Ha "+alterados.length+" produto(s) com custo alterado para revisao.",[{label:"OK",kind:"primary",onClick:()=>{const ov=document.getElementById("vscEnterpriseAlertOverlay"); if(ov) ov.__blocking=false;}}],{blocking:false,autoHideMs:5000});
+        showEnterpriseAlert("success", wasReview ? "Revisão concluída" : "Importacao concluida", (wasReview ? "Revisão concluída." : "Importacao concluida.") + " Ha "+alterados.length+" produto(s) com custo alterado para revisao.",[{label:"OK",kind:"primary",onClick:()=>{const ov=document.getElementById("vscEnterpriseAlertOverlay"); if(ov) ov.__blocking=false;}}],{blocking:false,autoHideMs:5000});
       } else {
-        showEnterpriseAlert("success","Importacao concluida","Estoque, custos e conta a pagar atualizados.",[{label:"OK",kind:"primary",onClick:()=>{const ov=document.getElementById("vscEnterpriseAlertOverlay"); if(ov) ov.__blocking=false;}}],{blocking:false,autoHideMs:3500});
+        showEnterpriseAlert("success", wasReview ? "Revisão concluída" : "Importacao concluida", wasReview ? "Produtos, fornecedor e conta a pagar revisados sem duplicar estoque." : "Estoque, custos e conta a pagar atualizados.",[{label:"OK",kind:"primary",onClick:()=>{const ov=document.getElementById("vscEnterpriseAlertOverlay"); if(ov) ov.__blocking=false;}}],{blocking:false,autoHideMs:3500});
       }
     } catch(err) {
       console.error("ERRO_FINALIZAR:", err);
@@ -1321,6 +1798,8 @@
   function init() {
     const btnA = $("btnAnalisar"); if (btnA) btnA.addEventListener("click", () => VSC_XML.analisar());
     const btnF = $("btnFinalizar"); if (btnF) btnF.addEventListener("click", () => VSC_XML.finalizar());
+    const btnL = document.getElementById("btnLimparTela"); if (btnL) btnL.addEventListener("click", () => { limparTelaImportacao({ resetInput: true }); toast("Tela de importacao limpa.", 2500); });
+    const xmlFile = $("xmlFile"); if (xmlFile) xmlFile.addEventListener("change", async () => { await carregarArquivoXmlSelecionado(); });
 
     // Delegação de ações inline na tabela
     document.addEventListener("click", e => {

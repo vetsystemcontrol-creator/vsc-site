@@ -154,6 +154,7 @@ function normalizePix(tipo, chave){
       "cnpj", "razao_social", "nome_fantasia", "ie", "im", "cnae", "abertura", "regime",
       "telefone", "celular", "email", "site", "pix_tipo", "pix_nome", "pix_chave",
       "cep", "uf", "logradouro", "numero", "complemento", "bairro", "cidade", "ibge",
+      "crmv", "crmv_uf",
       "obs"
     ];
   }
@@ -300,6 +301,9 @@ function normalizePix(tipo, chave){
   // =========================
   function getStoredEmpresa(){
     try{
+      if(window.VSC_DB && typeof window.VSC_DB.getEmpresaSnapshot === "function"){
+        return window.VSC_DB.getEmpresaSnapshot({ preferIdb:false, hydrateLocalStorage:false });
+      }
       var raw = localStorage.getItem(LS_KEY);
       if(!raw) return {};
       var o = JSON.parse(raw);
@@ -307,21 +311,152 @@ function normalizePix(tipo, chave){
     }catch(e){ return {}; }
   }
 
-  function setStoredEmpresa(o){
+  // =========================
+  // IDB — persistência offline-first (empresa)
+  // Usa VSC_DB canônico (vsc_db / store "empresa")
+  // keyPath id = "empresa_local" (registro único por instalação)
+  // =========================
+  var IDB_STORE = "empresa";
+  var IDB_KEY   = "empresa_local";
+
+  async function _saveEmpresaToIDB(o){
     try{
+      var vscDb = _getVSC_DB();
+      if(!vscDb || typeof vscDb.openDB !== "function") return false;
+      var db = await vscDb.openDB();
+      try{
+        await new Promise(function(resolve, reject){
+          try{
+            var t = db.transaction([IDB_STORE], "readwrite");
+            var st = t.objectStore(IDB_STORE);
+            var rec = Object.assign({}, o, {
+              id: IDB_KEY,
+              updated_at: new Date().toISOString()
+            });
+            var r = st.put(rec);
+            r.onsuccess = function(){ resolve(true); };
+            r.onerror   = function(){ reject(r.error || new Error("IDB put error")); };
+          }catch(e){ reject(e); }
+        });
+        return true;
+      }finally{ try{ db.close(); }catch(_){} }
+    }catch(e){
+      console.warn("[EMPRESA] _saveEmpresaToIDB erro:", e);
+      return false;
+    }
+  }
+
+  async function _loadEmpresaFromIDB(){
+    try{
+      var vscDb = _getVSC_DB();
+      if(!vscDb || typeof vscDb.openDB !== "function") return null;
+      var db = await vscDb.openDB();
+      try{
+        return await new Promise(function(resolve, reject){
+          try{
+            var t = db.transaction([IDB_STORE], "readonly");
+            var st = t.objectStore(IDB_STORE);
+            var r = st.get(IDB_KEY);
+            r.onsuccess = function(){ resolve(r.result || null); };
+            r.onerror   = function(){ reject(r.error || new Error("IDB get error")); };
+          }catch(e){ reject(e); }
+        });
+      }finally{ try{ db.close(); }catch(_){} }
+    }catch(e){
+      console.warn("[EMPRESA] _loadEmpresaFromIDB erro:", e);
+      return null;
+    }
+  }
+
+
+  function _getVSC_DB() {
+    if (window.VSC_DB && typeof window.VSC_DB.openDB === 'function') return window.VSC_DB;
+    // Tentar pegar do iframe topbar
+    try {
+      const frames = Array.from(document.querySelectorAll('iframe'));
+      for (const f of frames) {
+        const w = f.contentWindow;
+        if (w && w.VSC_DB && typeof w.VSC_DB.openDB === 'function') return w.VSC_DB;
+      }
+    } catch(_) {}
+    // Tentar window.top e window.parent
+    try { if (window.top && window.top.VSC_DB) return window.top.VSC_DB; } catch(_) {}
+    try { if (window.parent && window.parent.VSC_DB) return window.parent.VSC_DB; } catch(_) {}
+    return null;
+  }
+
+function safeUuidV4(){
+  if(window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+  if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  if(typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"){
+    const buf = new Uint8Array(16);
+    crypto.getRandomValues(buf);
+    buf[6] = (buf[6] & 0x0f) | 0x40;
+    buf[8] = (buf[8] & 0x3f) | 0x80;
+    const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+    return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
+  }
+  throw new TypeError("[EMPRESA] ambiente sem CSPRNG para gerar UUID v4.");
+}
+
+  async function _enqueueEmpresaSync(o) {
+    try {
+      const vscDb = _getVSC_DB();
+      if (!vscDb || typeof vscDb.openDB !== 'function') return;
+      var db = await vscDb.openDB();
+      try {
+        await new Promise(function(resolve, reject) {
+          try {
+            var t = db.transaction(['sync_queue'], 'readwrite');
+            var st = t.objectStore('sync_queue');
+            var opId = safeUuidV4();
+            var op = {
+              id: opId,
+              op_id: opId,
+              store: 'empresa',
+              entity: 'empresa',
+              entity_id: IDB_KEY,
+              op: 'upsert',
+              operation: 'upsert',
+              payload: Object.assign({}, o, { id: IDB_KEY }),
+              created_at: new Date().toISOString(),
+              status: 'PENDING'
+            };
+            var r = st.put(op);
+            r.onsuccess = function() { resolve(true); };
+            r.onerror   = function() { reject(r.error); };
+          } catch(e) { reject(e); }
+        });
+      } finally { try { db.close(); } catch(_) {} }
+    } catch(e) {
+      console.warn('[EMPRESA] _enqueueEmpresaSync erro:', e);
+    }
+  }
+
+  async function setStoredEmpresa(o){
+    try{
+      if(window.VSC_DB && typeof window.VSC_DB.saveEmpresaSnapshot === "function"){
+        await window.VSC_DB.saveEmpresaSnapshot(o || {}, { enqueueSync:true, mirrorLocalStorage:true });
+        return true;
+      }
       var meta = { version: 1, savedAt: new Date().toISOString() };
       localStorage.setItem(LS_KEY, JSON.stringify(o || {}));
       localStorage.setItem(LS_META, JSON.stringify(meta));
-      // Compatibilidade (legacy)
       try { localStorage.setItem("empresa_configurada", "1"); } catch (e) { /* ignora */ }
+      var ok = await _saveEmpresaToIDB(o || {});
+      if(!ok) return false;
+      try { await _enqueueEmpresaSync(o || {}); } catch(e) { console.warn("[EMPRESA] enqueue sync warn:", e); }
       return true;
-    }catch(e){ return false; }
+    }catch(e){
+      console.error("[EMPRESA] setStoredEmpresa fail:", e);
+      return false;
+    }
   }
 
-    function saveLocal(extra) {
+  async function saveLocal(extra) {
     try {
       var obj = readForm();
-      var prev = getStoredEmpresa();
+      var prev = await Promise.resolve(getStoredEmpresa());
       // Preservar campos internos (logos/normalizações) que não estão no form
       if(prev && typeof prev === "object"){
         if(typeof prev.__logoA === "string" && !obj.__logoA) obj.__logoA = prev.__logoA;
@@ -407,47 +542,87 @@ function normalizePix(tipo, chave){
         }
       }catch(_e){}
 
-      if(!setStoredEmpresa(obj)){
-        toast("Falha ao salvar localmente.");
+      var saved = await setStoredEmpresa(obj);
+      if(!saved){
+        toast("Falha ao salvar: armazenamento indisponível.");
+        console.error("[EMPRESA] persistência canônica da empresa falhou.");
         return false;
       }
 
-      toast("Empresa salva localmente.");
+      toast("Empresa salva.");
       return true;
     } catch (e) {
-      toast("Falha ao salvar localmente.");
+      console.error("[EMPRESA] saveLocal exception:", e);
+      toast("Falha ao salvar: " + (e && e.message ? e.message : String(e)));
       return false;
     }
   }
 
-  function loadLocal() {
+  async function loadLocal() {
     try {
-      var raw = localStorage.getItem(LS_KEY);
-      if (!raw) { toast("Sem dados locais para carregar."); return false; }
-      var obj = JSON.parse(raw);
+      var obj = null;
+      if(window.VSC_DB && typeof window.VSC_DB.getEmpresaSnapshot === "function"){
+        obj = await window.VSC_DB.getEmpresaSnapshot({ preferIdb:true, hydrateLocalStorage:true });
+      }
+      if (!obj || typeof obj !== "object" || (!obj.nome && !obj.razao_social && !obj.nome_fantasia)) {
+        var raw = localStorage.getItem(LS_KEY);
+        if (raw) {
+          try { obj = JSON.parse(raw); } catch(_) {}
+        }
+      }
+      if (!obj || typeof obj !== "object" || (!obj.nome && !obj.razao_social && !obj.nome_fantasia)) {
+        var idbObj = await _loadEmpresaFromIDB();
+        if (idbObj && typeof idbObj === "object") {
+          obj = idbObj;
+          try {
+            localStorage.setItem(LS_KEY, JSON.stringify(obj));
+            localStorage.setItem("empresa_configurada", "1");
+          } catch(_) {}
+          console.log("[EMPRESA] dados restaurados do IDB para localStorage");
+        }
+      }
+      if (!obj || typeof obj !== "object") {
+        toast("Sem dados cadastrados. Preencha e salve.");
+        return false;
+      }
       applyForm(obj);
-
       if (obj.__logoA) setLogoPreview("logoAPreview", obj.__logoA);
       if (obj.__logoB) setLogoPreview("logoBPreview", obj.__logoB);
-
       toast("Dados carregados.");
       return true;
     } catch (e) {
-      toast("Falha ao carregar dados locais.");
+      toast("Falha ao carregar dados.");
       return false;
     }
   }
 
-  function clearLocal() {
+  async function clearLocal() {
     try {
       localStorage.removeItem(LS_KEY);
       localStorage.removeItem(LS_META);
+      try { localStorage.removeItem("empresa_configurada"); } catch(_) {}
+      if(window.VSC_DB && typeof window.VSC_DB.openDB === "function"){
+        var db = await window.VSC_DB.openDB();
+        try{
+          await new Promise(function(resolve, reject){
+            try{
+              var tx = db.transaction([IDB_STORE], "readwrite");
+              var st = tx.objectStore(IDB_STORE);
+              var req = st.delete(IDB_KEY);
+              req.onsuccess = function(){ resolve(true); };
+              req.onerror = function(){ reject(req.error || new Error("empresa_delete_failed")); };
+            }catch(e){ reject(e); }
+          });
+        } finally { try { db.close(); } catch(_){} }
+        try { window.dispatchEvent(new CustomEvent("vsc:empresa-updated", { detail: { snapshot: {} } })); } catch(_) {}
+      }
       applyForm({});
       setLogoPreview("logoAPreview", null);
       setLogoPreview("logoBPreview", null);
       toast("Dados locais removidos.");
       return true;
     } catch (e) {
+      console.error("[EMPRESA] clearLocal fail:", e);
       toast("Falha ao limpar dados locais.");
       return false;
     }
@@ -744,7 +919,7 @@ function normalizePix(tipo, chave){
     if(btnSalvar){
       btnSalvar.addEventListener("click", function(){
         if(window.__VSC_EMPRESA__ && window.__VSC_EMPRESA__.saveLocal){
-          window.__VSC_EMPRESA__.saveLocal();
+          Promise.resolve(window.__VSC_EMPRESA__.saveLocal()).catch(function(e){ console.warn("[EMPRESA] saveLocal click fail:", e); });
         }
       }, false);
     }
@@ -752,7 +927,7 @@ function normalizePix(tipo, chave){
     if(btnRecarregar){
       btnRecarregar.addEventListener("click", function(){
         if(window.__VSC_EMPRESA__ && window.__VSC_EMPRESA__.loadLocal){
-          window.__VSC_EMPRESA__.loadLocal();
+          Promise.resolve(window.__VSC_EMPRESA__.loadLocal()).catch(function(e){ console.warn("[EMPRESA] loadLocal click fail:", e); });
         }
       }, false);
     }
@@ -760,7 +935,7 @@ function normalizePix(tipo, chave){
     if(btnLimpar){
       btnLimpar.addEventListener("click", function(){
         if(window.__VSC_EMPRESA__ && window.__VSC_EMPRESA__.clearLocal){
-          window.__VSC_EMPRESA__.clearLocal();
+          Promise.resolve(window.__VSC_EMPRESA__.clearLocal()).catch(function(e){ console.warn("[EMPRESA] clearLocal click fail:", e); });
         }
       }, false);
     }
@@ -770,7 +945,7 @@ function normalizePix(tipo, chave){
       form.addEventListener("submit", function(e){
         try{ e.preventDefault(); }catch(_e){}
         if(window.__VSC_EMPRESA__ && window.__VSC_EMPRESA__.saveLocal){
-          window.__VSC_EMPRESA__.saveLocal();
+          Promise.resolve(window.__VSC_EMPRESA__.saveLocal()).catch(function(err){ console.warn("[EMPRESA] saveLocal submit fail:", err); });
         }
       }, false);
 
@@ -807,8 +982,12 @@ function normalizePix(tipo, chave){
     maskDate(byId("abertura"));
     maskPhone(byId("celular"));
 
-    // Auto-load inicial
-    window.__VSC_EMPRESA__ && window.__VSC_EMPRESA__.loadLocal && window.__VSC_EMPRESA__.loadLocal();
+    // Auto-load inicial (async: tenta localStorage, fallback IDB)
+    if (window.__VSC_EMPRESA__ && typeof window.__VSC_EMPRESA__.loadLocal === "function") {
+      Promise.resolve(window.__VSC_EMPRESA__.loadLocal()).catch(function(e){
+        console.warn("[EMPRESA] loadLocal error:", e);
+      });
+    }
   }
 
   document.addEventListener("DOMContentLoaded", function(){

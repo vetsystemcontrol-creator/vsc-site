@@ -4,14 +4,22 @@
 
 // ---- Util: UUID v4 (browser crypto) ----
 function vsc_uuidv4(){
-  if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-  // fallback seguro para browsers antigos
-  const a = crypto.getRandomValues(new Uint8Array(16));
-  a[6] = (a[6] & 0x0f) | 0x40;
-  a[8] = (a[8] & 0x3f) | 0x80;
-  const h = [...a].map(b=>b.toString(16).padStart(2,'0')).join('');
-  return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
-}
+    try{
+      if(window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    }catch(_){}
+    try{ if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); }catch(_){}
+    try{
+      if(typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"){
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+        return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
+      }
+    }catch(_){}
+    throw new TypeError("[ANIMAIS] ambiente sem CSPRNG para gerar UUID v4.");
+  }
 function isoNow(){ return new Date().toISOString(); }
 
 // ---- LocalStorage keys (canônico) ----
@@ -42,6 +50,43 @@ function lsWrite(key, obj){
 
 // ---- DOM ----
 const $ = (id)=>document.getElementById(id);
+
+function fmtDate(v){
+  const s = String(v || '').trim();
+  if(!s) return '—';
+  const br = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if(br) return s;
+  const iso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if(iso) return `${iso[3]}/${iso[2]}/${iso[1]}`;
+  const d = new Date(s);
+  if(Number.isNaN(d.getTime())) return s;
+  const dd = String(d.getDate()).padStart(2,'0');
+  const mm = String(d.getMonth()+1).padStart(2,'0');
+  const yy = d.getFullYear();
+  return `${dd}/${mm}/${yy}`;
+}
+
+function normalizeDateDigits(v){
+  return String(v || '').replace(/\D/g, '').slice(0, 8);
+}
+
+function maskDateInputValue(v){
+  const digits = normalizeDateDigits(v);
+  if(!digits) return '';
+  if(digits.length <= 2) return digits;
+  if(digits.length <= 4) return `${digits.slice(0,2)}/${digits.slice(2)}`;
+  return `${digits.slice(0,2)}/${digits.slice(2,4)}/${digits.slice(4,8)}`;
+}
+
+function normalizeBirthValue(v){
+  const masked = maskDateInputValue(v);
+  const m = masked.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  if(!m) return masked;
+  const dd = Number(m[1]), mm = Number(m[2]), yy = Number(m[3]);
+  const d = new Date(yy, mm - 1, dd);
+  if(d.getFullYear() !== yy || d.getMonth() !== (mm - 1) || d.getDate() !== dd) return masked;
+  return `${String(dd).padStart(2,'0')}/${String(mm).padStart(2,'0')}/${String(yy)}`;
+}
 
 // ==========================================================
 // MODAL PREMIUM PADRÃO (substitui alert/confirm) — v1
@@ -394,6 +439,7 @@ async function vsc_onFotoFileChange(){
   try{
     if(file.size > (12 * 1024 * 1024)){
       vsc_clearFoto();
+    renderAnimalHistoryPanel(null);
       await (window.VSC_UI && window.VSC_UI.alert ? window.VSC_UI.alert("Arquivo muito grande (>12MB). Use uma foto menor.") : Promise.resolve());
       return;
     }
@@ -402,6 +448,7 @@ async function vsc_onFotoFileChange(){
     vsc_setFotoUI(dataUrl);
   }catch(err){
     vsc_clearFoto();
+    renderAnimalHistoryPanel(null);
     await (window.VSC_UI && window.VSC_UI.alert ? window.VSC_UI.alert(err && err.message ? err.message : "Não foi possível processar a foto.") : Promise.resolve());
   }
 }
@@ -443,6 +490,9 @@ function escapeHtml(s){
 // STATE
 // ==========================================================
 let st_animais  = [];
+let st_vitals_history = [];
+let st_animal_vaccines = [];
+let st_atendimentos = [];
 let st_racas    = [];
 let st_pelagens = [];
 let st_especies = [];
@@ -678,8 +728,40 @@ function normalize(){
 }
 
 function refreshCombos(){
+  const current = {
+    raca: $("fRaca")?.value || "",
+    pelagem: $("fPelagem")?.value || "",
+    especie: $("fEspecie")?.value || "",
+    cliente: $("fCliente")?.value || "",
+    ativo: $("fAtivo")?.value || ""
+  };
+
   setSelectOptions($("fRaca"), st_racas, { includeAll:true, allLabel:"Todas" });
   setSelectOptions($("fPelagem"), st_pelagens, { includeAll:true, allLabel:"Todas" });
+  setSelectOptions($("fEspecie"), st_especies, { includeAll:true, allLabel:"Todas" });
+
+  const fCliente = $("fCliente");
+  if(fCliente){
+    const clientsSorted = [...(st_clientes||[])]
+      .filter(c => c && !c.deleted && String(c.id || '').trim())
+      .sort((a,b)=>String(a?.nome||"").localeCompare(String(b?.nome||""), "pt-BR", {sensitivity:"base"}));
+    fCliente.innerHTML = '';
+    const first = document.createElement('option');
+    first.value = '';
+    first.textContent = 'Todos';
+    fCliente.appendChild(first);
+    const seen = new Set();
+    clientsSorted.forEach(c=>{
+      const id = String(c?.id || '').trim();
+      const nome = String(c?.nome || c?.razao_social || '(sem nome)').trim();
+      if(!id || seen.has(id)) return;
+      seen.add(id);
+      const o = document.createElement('option');
+      o.value = id;
+      o.textContent = nome;
+      fCliente.appendChild(o);
+    });
+  }
 
   const fAt = $("fAtivo");
   if(fAt){
@@ -730,7 +812,8 @@ function refreshCombos(){
 
   const cid = $("aClienteId");
   if(cid){
-    const clientsSorted = [...(st_clientes||[])].sort((a,b)=>String(a?.nome||"").localeCompare(String(b?.nome||""), "pt-BR", {sensitivity:"base"}));
+    const clientsSorted = [...(st_clientes||[])].filter(c => c && String(c?.id||'').trim()).sort((a,b)=>String(a?.nome||"").localeCompare(String(b?.nome||""), "pt-BR", {sensitivity:"base"}));
+    const prev = cid.value || '';
     cid.innerHTML="";
     const first = document.createElement("option");
     first.value=""; first.textContent="(selecione)";
@@ -738,34 +821,143 @@ function refreshCombos(){
     clientsSorted.forEach(c=>{
       const o=document.createElement("option");
       o.value = c?.id || "";
-      o.textContent = c?.nome || "(sem nome)";
+      o.textContent = c?.nome || c?.razao_social || "(sem nome)";
       cid.appendChild(o);
     });
+    cid.value = prev;
   }
+
+  if($("fRaca")) $("fRaca").value = current.raca;
+  if($("fPelagem")) $("fPelagem").value = current.pelagem;
+  if($("fEspecie")) $("fEspecie").value = current.especie;
+  if($("fCliente")) $("fCliente").value = current.cliente;
+  if($("fAtivo")) $("fAtivo").value = current.ativo;
 }
 
 function applyFilters(items){
   const q = ($("q")?.value||"").trim().toLowerCase();
   const fRaca = $("fRaca")?.value || "";
   const fPel  = $("fPelagem")?.value || "";
+  const fEsp  = $("fEspecie")?.value || "";
+  const fCli  = $("fCliente")?.value || "";
   const fAt   = $("fAtivo")?.value || "";
 
   return (items||[]).filter(a=>{
     const nome = String(a?.nome||"").toLowerCase();
     const micro= String(a?.microchip||"").toLowerCase();
     const pass = String(a?.passaporte||"").toLowerCase();
+    const tutor= String(animalTutorNome(a)||"").toLowerCase();
+    const especieNome = String(getNomeCatalogById(st_especies, a?.especie_id)||"").toLowerCase();
+    const racaNome = String(getNomeCatalogById(st_racas, a?.raca_id)||"").toLowerCase();
+    const pelNome = String(getNomeCatalogById(st_pelagens, a?.pelagem_id)||"").toLowerCase();
 
-    if (q && !(nome.includes(q) || micro.includes(q) || pass.includes(q))) return false;
+    if (q && !(nome.includes(q) || micro.includes(q) || pass.includes(q) || tutor.includes(q) || especieNome.includes(q) || racaNome.includes(q) || pelNome.includes(q))) return false;
     if (fRaca && a?.raca_id !== fRaca) return false;
     if (fPel  && a?.pelagem_id !== fPel) return false;
+    if (fEsp  && a?.especie_id !== fEsp) return false;
+    if (fCli){
+      const animalCli = String(a?.cliente_id || a?.tutor_id || a?.proprietario_id || '');
+      if(animalCli !== fCli) return false;
+    }
 
     if (fAt !== ""){
-      const isAt = (a?.ativo===true || a?.ativo===1 || a?.ativo==="1");
+      const isAt = !(a?.ativo===false || a?.ativo===0 || a?.ativo==="0");
       if (fAt==="1" && !isAt) return false;
       if (fAt==="0" && isAt) return false;
     }
     return true;
   });
+}
+
+function calcIdadeTxt(nasc){
+  const s = String(nasc||"").trim();
+  if(!s) return "—";
+  const m = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  let d = null;
+  if(m) d = new Date(Number(m[3]), Number(m[2])-1, Number(m[1]));
+  else if(/^\d{4}-\d{2}-\d{2}$/.test(s)) { const p=s.split('-'); d = new Date(Number(p[0]), Number(p[1])-1, Number(p[2])); }
+  if(!d || isNaN(d)) return "—";
+  const now = new Date();
+  let years = now.getFullYear() - d.getFullYear();
+  let months = now.getMonth() - d.getMonth();
+  if(now.getDate() < d.getDate()) months -= 1;
+  if(months < 0){ years -= 1; months += 12; }
+  if(years > 0) return years + 'a' + (months>0 ? ' ' + months + 'm' : '');
+  return Math.max(months,0) + 'm';
+}
+function animalTutorNome(a){
+  const c = (st_clientes||[]).find(x => x && x.id === (a?.cliente_id||a?.tutor_id||a?.proprietario_id));
+  return c ? String(c.nome||'—') : '—';
+}
+function getAnimalVitalsHistory(animalId){
+  return (st_vitals_history||[]).filter(x => String(x?.animal_id||'') === String(animalId||'')).sort((a,b)=>String(b?.recorded_at||'').localeCompare(String(a?.recorded_at||'')));
+}
+function getAnimalVaccines(animalId){
+  return (st_animal_vaccines||[]).filter(x => String(x?.animal_id||'') === String(animalId||'')).sort((a,b)=>String(b?.data_aplicacao||'').localeCompare(String(a?.data_aplicacao||'')));
+}
+function getAnimalLastAtendimento(animalId){
+  const rows = (st_atendimentos||[]).filter(x => Array.isArray(x?.animal_ids) && x.animal_ids.map(String).includes(String(animalId||''))).sort((a,b)=>String(b?.data_atendimento||b?.created_at||'').localeCompare(String(a?.data_atendimento||a?.created_at||'')));
+  return rows[0] || null;
+}
+function getAnimalClinicalStatus(animalId){
+  const at = getAnimalLastAtendimento(animalId);
+  if(!at) return 'Sem histórico';
+  const status = String(at.status||'').toLowerCase();
+  if(status === 'em_atendimento') return 'Em tratamento';
+  if(status === 'finalizado') return 'Estável';
+  if(status === 'cancelado') return 'Cancelado';
+  return status ? status.replace(/_/g,' ') : 'Sem status';
+}
+function openAnimalHistoryModal(){
+  const bd = document.getElementById('bdAnimalHistory');
+  if(bd) bd.classList.add('open');
+}
+function closeAnimalHistoryModal(){
+  const bd = document.getElementById('bdAnimalHistory');
+  if(bd) bd.classList.remove('open');
+}
+function renderAnimalHistoryPanel(animalId){
+  const vit = document.getElementById('animalHistoryVitals');
+  const vac = document.getElementById('animalHistoryVaccines');
+  const title = document.getElementById('animalHistoryTitle');
+  const name = document.getElementById('animalHistoryName');
+  const meta = document.getElementById('animalHistoryMeta');
+  const tutor = document.getElementById('animalHistoryTutor');
+  const lastAt = document.getElementById('animalHistoryLastAt');
+  const weight = document.getElementById('animalHistoryWeight');
+  const status = document.getElementById('animalHistoryStatus');
+  if(!vit || !vac || !title || !name || !meta || !tutor || !lastAt || !weight || !status) return;
+  if(!animalId){
+    title.textContent = 'Histórico do animal';
+    name.textContent = '—';
+    meta.textContent = 'Nenhum animal selecionado.';
+    tutor.textContent = '—';
+    lastAt.textContent = '—';
+    weight.textContent = '—';
+    status.textContent = '—';
+    vit.innerHTML = '<div class="historyEmpty">Nenhum animal selecionado.</div>';
+    vac.innerHTML = '<div class="historyEmpty">Nenhum animal selecionado.</div>';
+    openAnimalHistoryModal();
+    return;
+  }
+  const animal = (st_animais || []).find(a => String(a?.id||'') === String(animalId||'')) || null;
+  const hv = getAnimalVitalsHistory(animalId).slice(0,6);
+  const vc = getAnimalVaccines(animalId).slice(0,6);
+  const ultimo = getAnimalLastAtendimento(animalId);
+  const ultimaPesagem = hv.find(v => v && (v.peso || v.peso === 0)) || null;
+  const especie = getNomeCatalogById(st_especies, animal?.especie_id) || 'Espécie não informada';
+  const raca = getNomeCatalogById(st_racas, animal?.raca_id) || 'Raça não informada';
+  const pelagem = getNomeCatalogById(st_pelagens, animal?.pelagem_id) || 'Pelagem não informada';
+  title.textContent = 'Histórico clínico';
+  name.textContent = animal?.nome || 'Animal sem nome';
+  meta.textContent = `${especie} · ${raca} · ${pelagem} · ${calcIdadeTxt(animal?.nascimento)}`;
+  tutor.textContent = animalTutorNome(animal);
+  lastAt.textContent = ultimo ? fmtDate(ultimo.data_atendimento || ultimo.created_at) : 'Sem atendimento';
+  weight.textContent = ultimaPesagem && (ultimaPesagem.peso || ultimaPesagem.peso === 0) ? `${String(ultimaPesagem.peso).replace('.',',')} kg` : 'Sem registro';
+  status.textContent = getAnimalClinicalStatus(animalId);
+  vit.innerHTML = hv.length ? hv.map(v => `<div style="padding:12px 0;border-bottom:1px solid #e2e8f0;"><b>${fmtDate(v.recorded_at||v.updated_at||'')}</b><div style="margin-top:4px;">${[v.peso||v.peso===0?('Peso '+String(v.peso).replace('.',',')+' kg'):'', v.temp||v.temp===0?('T° '+String(v.temp).replace('.',',')+'°C'):'', v.fc||v.fc===0?('FC '+v.fc):'', v.fr||v.fr===0?('FR '+v.fr):'', v.observacoes?escapeHtml(v.observacoes):''].filter(Boolean).join(' · ') || 'Sem sinais vitais preenchidos'}</div></div>`).join('') : '<div class="historyEmpty">Nenhum histórico clínico.</div>';
+  vac.innerHTML = vc.length ? vc.map(v => `<div style="padding:12px 0;border-bottom:1px solid #e2e8f0;"><b>${escapeHtml(v.vacina_nome||'Vacina')}</b><div style="margin-top:4px;">${fmtDate(v.data_aplicacao||'')} ${v.proxima_dose ? ' · Próx.: ' + fmtDate(v.proxima_dose) : ''}</div></div>`).join('') : '<div class="historyEmpty">Nenhuma vacina registrada.</div>';
+  openAnimalHistoryModal();
 }
 
 // ==========================================================
@@ -810,7 +1002,7 @@ if(window.VSC_UI && window.VSC_UI.alert){
       vscSnack("ERRO: Banco offline não carregou (VSC_DB). Módulo bloqueado.", "err");
     }
 
-    const ids = ["btnNovo","btnLimpar","q","fRaca","fPelagem","fAtivo"];
+    const ids = ["btnNovo","btnLimpar","q","fRaca","fPelagem","fEspecie","fCliente","fAtivo"];
     for(let i=0;i<ids.length;i++){
       const el = document.getElementById(ids[i]);
       if(el) el.disabled = true;
@@ -820,7 +1012,11 @@ if(window.VSC_UI && window.VSC_UI.alert){
 
   const db = await window.VSC_DB.openDB();
   try{
-    const tx = db.transaction(["animais_master"], "readonly");
+    const stores = ["animais_master"];
+    if(db.objectStoreNames.contains("animal_vitals_history")) stores.push("animal_vitals_history");
+    if(db.objectStoreNames.contains("animal_vaccines")) stores.push("animal_vaccines");
+    if(db.objectStoreNames.contains("atendimentos_master")) stores.push("atendimentos_master");
+    const tx = db.transaction(stores, "readonly");
     const st = tx.objectStore("animais_master");
     const all = await new Promise((res, rej) => {
       const rq = st.getAll();
@@ -829,6 +1025,9 @@ if(window.VSC_UI && window.VSC_UI.alert){
     });
 
     st_animais = (Array.isArray(all) ? all : []).filter(a => !(a && a.deleted === true));
+    try{ st_vitals_history = stores.includes("animal_vitals_history") ? await new Promise((res,rej)=>{ const rq = tx.objectStore("animal_vitals_history").getAll(); rq.onsuccess=()=>res(rq.result||[]); rq.onerror=()=>rej(rq.error); }).catch(()=>[]) : []; }catch(_){ st_vitals_history=[]; }
+    try{ st_animal_vaccines = stores.includes("animal_vaccines") ? await new Promise((res,rej)=>{ const rq = tx.objectStore("animal_vaccines").getAll(); rq.onsuccess=()=>res(rq.result||[]); rq.onerror=()=>rej(rq.error); }).catch(()=>[]) : []; }catch(_){ st_animal_vaccines=[]; }
+    try{ st_atendimentos = stores.includes("atendimentos_master") ? await new Promise((res,rej)=>{ const rq = tx.objectStore("atendimentos_master").getAll(); rq.onsuccess=()=>res(rq.result||[]); rq.onerror=()=>rej(rq.error); }).catch(()=>[]) : []; }catch(_){ st_atendimentos=[]; }
     // empty-state / recovery (enterprise)
     try{
       const box = document.getElementById("vscAnimaisRecovery");
@@ -872,6 +1071,10 @@ function render(){
   if(!tb) return;
 
   tb.innerHTML = "";
+  const resultCount = document.getElementById("resultCount");
+  if(resultCount) resultCount.textContent = `${list.length} de ${all.length} registro(s)`;
+  const tbEmpty = document.getElementById("tbEmpty");
+  if(tbEmpty) tbEmpty.style.display = list.length ? "none" : "block";
 
   list.forEach(a=>{
     const tr = document.createElement("tr");
@@ -880,7 +1083,7 @@ function render(){
     const nomeSafe = escapeHtml(a?.nome || "");
     const isInativo = (a?.ativo===false || a?.ativo===0 || a?.ativo==="0");
 
-    const foto = String(a?.foto_data || "").trim();
+    const foto = String(a?.foto_data || a?.foto || a?.image || a?.imagem || "").trim();
     const hasFoto = !!foto;
     const ini = (String(a?.nome||"").trim().slice(0,1) || "🐴").toUpperCase();
 
@@ -901,31 +1104,66 @@ function render(){
     `;
     tr.appendChild(tdNome);
 
+    const tdTutor = document.createElement("td");
+    tdTutor.textContent = animalTutorNome(a);
+    tr.appendChild(tdTutor);
+
+    const h = getAnimalVitalsHistory(a?.id);
+    const lastVital = h[0] || null;
+    const lastAt = getAnimalLastAtendimento(a?.id);
+
+    const tdIdade = document.createElement("td");
+    tdIdade.className = 'col-hide-md';
+    tdIdade.textContent = calcIdadeTxt(a?.nascimento);
+    tr.appendChild(tdIdade);
+
+    const tdPeso = document.createElement("td");
+    tdPeso.className = 'col-hide-md';
+    tdPeso.textContent = lastVital && lastVital.peso ? String(lastVital.peso).replace('.',',') + ' kg' : '—';
+    tr.appendChild(tdPeso);
+
+    const tdUlt = document.createElement("td");
+    tdUlt.className = 'col-hide-lg';
+    tdUlt.textContent = lastAt ? fmtDate(lastAt.data_atendimento || lastAt.created_at) : '—';
+    tr.appendChild(tdUlt);
+
+    const tdStc = document.createElement("td");
+    tdStc.className = 'col-hide-lg';
+    tdStc.textContent = getAnimalClinicalStatus(a?.id);
+    tr.appendChild(tdStc);
+
     const tdR = document.createElement("td");
+    tdR.className = 'col-hide-lg';
     tdR.textContent = getNomeCatalogById(st_racas, a?.raca_id) || "-";
     tr.appendChild(tdR);
 
     const tdP = document.createElement("td");
+    tdP.className = 'col-hide-xl';
     tdP.textContent = getNomeCatalogById(st_pelagens, a?.pelagem_id) || "-";
     tr.appendChild(tdP);
 
     const tdM = document.createElement("td");
+    tdM.className = 'col-hide-xl';
     tdM.textContent = a?.microchip || "-";
     tr.appendChild(tdM);
 
     const tdPa = document.createElement("td");
+    tdPa.className = 'col-hide-xl';
     tdPa.textContent = a?.passaporte || "-";
     tr.appendChild(tdPa);
 
     const tdA = document.createElement("td");
+    tdA.className = 'col-actions';
     tdA.innerHTML = `
-      <div style="display:flex; gap:8px; flex-wrap:wrap">
-        <button class="btn btnMini btnGhost" data-act="edit" data-id="${a?.id}">Alterar</button>
-        <button class="btn btnMini ${isInativo ? "btnPrimary" : "btnWarn"}"
+      <div class="vsc-animal-actions-row">
+        <button class="btn btnMini btnGhost" type="button" data-act="history" data-id="${a?.id}">Histórico</button>
+        <button class="btn btnMini ${isInativo ? "btnPrimary" : "btnWarn"}" type="button"
                 data-act="toggle" data-id="${a?.id}">
           ${isInativo ? "Ativar" : "Inativar"}
         </button>
-        <button class="btn btnMini btnDanger" data-act="del" data-id="${a?.id}">Excluir</button>
+        <button class="btn btnMini btnGhost vsc-gear-trigger" type="button"
+                data-act="gear" data-id="${a?.id}"
+                aria-label="Mais ações" title="Mais ações">⚙</button>
       </div>
     `;
     tr.appendChild(tdA);
@@ -935,10 +1173,107 @@ function render(){
 }
 
 // (continua na PARTE 3/4)
+function ensureAnimalActionsMenuStyles(){
+  if(document.getElementById("vsc-animal-actions-menu-style")) return;
+  const st = document.createElement("style");
+  st.id = "vsc-animal-actions-menu-style";
+  st.textContent = `
+    .vsc-animal-actions-row{ display:flex; justify-content:flex-end; align-items:center; gap:8px; flex-wrap:nowrap; white-space:nowrap; min-width:0; }
+    .vsc-gear-trigger{ min-width:42px; padding-left:10px !important; padding-right:10px !important; }
+    /* Painel singleton appendado ao body — escapa de qualquer overflow/stacking context */
+    #vsc-gear-panel{ position:fixed; display:none; flex-direction:column; gap:8px; min-width:148px; padding:8px; border:1px solid #dbe1ea; border-radius:12px; background:#fff; box-shadow:0 12px 28px rgba(15,23,42,.18); z-index:99999; }
+    #vsc-gear-panel.open{ display:flex; }
+    #vsc-gear-panel .btn{ width:100%; justify-content:flex-start; }
+  `;
+  document.head.appendChild(st);
+}
+
 // ==========================================================
 // WIRE UI
 // ==========================================================
 function wireUI(){
+  ensureAnimalActionsMenuStyles();
+
+  // ── Painel singleton appendado ao body ──────────────────────────────────────
+  // Escapa de qualquer overflow/stacking context da tabela.
+  // Um único #vsc-gear-panel reutilizado por todas as linhas.
+  let _gearPanel = null;
+  let _gearActiveId = null;
+
+  function _getGearPanel(){
+    if(_gearPanel) return _gearPanel;
+    _gearPanel = document.createElement("div");
+    _gearPanel.id = "vsc-gear-panel";
+    _gearPanel.innerHTML =
+      '<button class="btn btnMini btnGhost" type="button" id="vsc-gear-edit">Alterar</button>' +
+      '<button class="btn btnMini btnDanger" type="button" id="vsc-gear-del">Excluir</button>';
+    document.body.appendChild(_gearPanel);
+
+    // Ações do painel — chama funções do módulo diretamente
+    _gearPanel.addEventListener("click", (ev)=>{
+      ev.stopPropagation();
+      const btn = ev.target.closest("button");
+      if(!btn || !_gearActiveId) return;
+      const id = _gearActiveId;
+      _closeGearPanel();
+      if(btn.id === "vsc-gear-edit") openAnimalModal(id, { mode:"EDIT", openHistory:false });
+      if(btn.id === "vsc-gear-del")  delAnimal(id);
+    });
+
+    return _gearPanel;
+  }
+
+  function _openGearPanel(trigger, id){
+    const panel = _getGearPanel();
+    _gearActiveId = id;
+    const rect = trigger.getBoundingClientRect();
+    // Mostrar brevemente para medir largura real
+    panel.style.visibility = "hidden";
+    panel.classList.add("open");
+    const pw = panel.offsetWidth || 148;
+    panel.style.visibility = "";
+    // Posição: abaixo do trigger, alinhado à direita
+    let top  = rect.bottom + 6;
+    let left = rect.right - pw;
+    if(left < 8) left = 8;
+    // Garantir que não sai pela base da viewport
+    if(top + 120 > window.innerHeight) top = rect.top - 120;
+    panel.style.top  = top + "px";
+    panel.style.left = left + "px";
+  }
+
+  function _closeGearPanel(){
+    if(!_gearPanel) return;
+    _gearPanel.classList.remove("open");
+    _gearActiveId = null;
+  }
+
+  // Abrir painel ao clicar na engrenagem
+  document.addEventListener("click", (ev)=>{
+    const gear = ev.target.closest(".vsc-gear-trigger");
+    if(gear){
+      ev.stopPropagation();
+      const id = gear.dataset.id;
+      const panel = _getGearPanel();
+      // Toggle: fechar se já está aberto para este id
+      if(panel.classList.contains("open") && _gearActiveId === id){
+        _closeGearPanel(); return;
+      }
+      _openGearPanel(gear, id);
+      return;
+    }
+    // Clicar fora fecha
+    if(!ev.target.closest("#vsc-gear-panel")) _closeGearPanel();
+  }, true);
+
+  // Fechar ao scroll ou resize
+  window.addEventListener("scroll", _closeGearPanel, { passive:true, capture:true });
+  window.addEventListener("resize", _closeGearPanel, { passive:true });
+
+  document.addEventListener("keydown", (ev)=>{
+    if(ev.key === "Escape") _closeGearPanel();
+  });
+
   // recovery buttons (empty-state)
   const btnEmptyNovo = document.getElementById("btnAnimaisNovoFromEmpty");
   if(btnEmptyNovo){
@@ -1000,6 +1335,8 @@ function wireUI(){
   const q = $("q");
   const fR = $("fRaca");
   const fP = $("fPelagem");
+  const fE = $("fEspecie");
+  const fC = $("fCliente");
   const fA = $("fAtivo");
   const lim = $("btnLimpar");
   const novo = $("btnNovo");
@@ -1008,15 +1345,30 @@ function wireUI(){
   q && q.addEventListener("input", render);
   fR && fR.addEventListener("change", render);
   fP && fP.addEventListener("change", render);
+  fE && fE.addEventListener("change", render);
+  fC && fC.addEventListener("change", render);
   fA && fA.addEventListener("change", render);
 
   lim && lim.addEventListener("click", ()=>{
     if(q) q.value="";
     if(fR) fR.value="";
     if(fP) fP.value="";
+    if(fE) fE.value="";
+    if(fC) fC.value="";
     if(fA) fA.value="";
     render();
   });
+
+  const nasc = $("aNasc");
+  if(nasc && !nasc.__vscMasked){
+    nasc.__vscMasked = true;
+    nasc.setAttribute('inputmode', 'numeric');
+    nasc.setAttribute('maxlength', '10');
+    nasc.addEventListener('input', ()=>{
+      nasc.value = maskDateInputValue(nasc.value);
+    });
+    nasc.addEventListener('blur', ()=>{ nasc.value = normalizeBirthValue(nasc.value); });
+  }
 
   novo && novo.addEventListener("click", ()=>openAnimalModal(null));
 
@@ -1026,9 +1378,17 @@ function wireUI(){
     if(!btn) return;
     const act = btn.getAttribute("data-act");
     const id  = btn.getAttribute("data-id");
-    if(act==="edit"){ openAnimalModal(id); return; }
+    if(act==="history"){ renderAnimalHistoryPanel(id); return; }
+    if(act==="edit"){ openAnimalModal(id, { mode:"EDIT", openHistory:false }); return; }
     if(act==="toggle"){ toggleAnimal(id); return; }
     if(act==="del"){ delAnimal(id); return; }
+  });
+
+  const btnHistoryClose = document.getElementById("btnAnimalHistoryClose");
+  btnHistoryClose && btnHistoryClose.addEventListener("click", closeAnimalHistoryModal);
+  const bdAnimalHistory = document.getElementById("bdAnimalHistory");
+  bdAnimalHistory && bdAnimalHistory.addEventListener("click", (ev)=>{
+    if(ev.target === bdAnimalHistory) closeAnimalHistoryModal();
   });
 
   // botões catálogo (grid)
@@ -1036,6 +1396,8 @@ function wireUI(){
   const bp = $("btnCadPelagensGrid");
   br && br.addEventListener("click", ()=>openCatalog("racas"));
   bp && bp.addEventListener("click", ()=>openCatalog("pelagens"));
+  $("btnCadRacasModal") && $("btnCadRacasModal").addEventListener("click", ()=>openCatalog("racas"));
+  $("btnCadPelagensModal") && $("btnCadPelagensModal").addEventListener("click", ()=>openCatalog("pelagens"));
 
   // fechar/cancelar modal animal
   $("btnCancelarAnimal") && $("btnCancelarAnimal").addEventListener("click", closeAnimalModal);
@@ -1076,7 +1438,8 @@ function wireUI(){
 // ==========================================================
 // MODAL ANIMAL
 // ==========================================================
-function openAnimalModal(id){
+function openAnimalModal(id, opts){
+  const options = opts || {};
   editingAnimalId = id || null;
 
   if(editingAnimalId){
@@ -1085,8 +1448,8 @@ function openAnimalModal(id){
 
     $("mAnimalTitle") && ($("mAnimalTitle").textContent = "Alterar Animal");
 
-    // CANÔNICO: abrir em VISUALIZAÇÃO
-    __vsc_animal_applyMode("VIEW");
+    const requestedMode = String(options.mode || "VIEW").toUpperCase();
+    __vsc_animal_applyMode(requestedMode === "EDIT" ? "EDIT" : "VIEW");
 
     $("aNome") && ($("aNome").value = a.nome || "");
     $("aEspecie") && ($("aEspecie").value = a.especie_id || "");
@@ -1097,7 +1460,7 @@ function openAnimalModal(id){
       if(["FEMEA","MATRIZ","GARANHAO","CASTRADO"].includes(sx)) return sx;
       return "";
     })());
-    $("aNasc") && ($("aNasc").value = a.nascimento || "");
+    $("aNasc") && ($("aNasc").value = normalizeBirthValue(a.nascimento || ""));
     $("aRaca") && ($("aRaca").value = a.raca_id || "");
     $("aPelagem") && ($("aPelagem").value = a.pelagem_id || "");
     $("aMicrochip") && ($("aMicrochip").value = a.microchip || "");
@@ -1108,6 +1471,11 @@ function openAnimalModal(id){
 
     // FOTO
     vsc_setFotoUI(a.foto_data || "");
+    if(options.openHistory === true){
+      renderAnimalHistoryPanel(editingAnimalId);
+    }else{
+      closeAnimalHistoryModal();
+    }
   }else{
     $("mAnimalTitle") && ($("mAnimalTitle").textContent = "Novo Animal");
 
@@ -1127,6 +1495,7 @@ function openAnimalModal(id){
     $("aObs") && ($("aObs").value = "");
 
     vsc_clearFoto();
+    renderAnimalHistoryPanel(null);
   }
 
   $("bdAnimal") && $("bdAnimal").classList.add("open");
@@ -1208,7 +1577,7 @@ async function saveAnimal(){
       nome,
       especie_id: $("aEspecie")?.value || "",
       sexo: $("aSexo")?.value || "",
-      nascimento: ($("aNasc")?.value||"").trim(),
+      nascimento: normalizeBirthValue(($("aNasc")?.value||"").trim()),
       raca_id: $("aRaca")?.value || "",
       pelagem_id: $("aPelagem")?.value || "",
       microchip: ($("aMicrochip")?.value||"").trim(),
@@ -1231,7 +1600,7 @@ async function saveAnimal(){
       nome,
       especie_id: $("aEspecie")?.value || "",
       sexo: $("aSexo")?.value || "",
-      nascimento: ($("aNasc")?.value||"").trim(),
+      nascimento: normalizeBirthValue(($("aNasc")?.value||"").trim()),
       raca_id: $("aRaca")?.value || "",
       pelagem_id: $("aPelagem")?.value || "",
       microchip: ($("aMicrochip")?.value||"").trim(),
@@ -1323,19 +1692,56 @@ async function delAnimal(id){
       throw new Error("VSC_DB.upsertWithOutbox não disponível (vsc_db.js não carregou).");
     }
 
-    await window.VSC_DB.upsertWithOutbox(
-      "animais_master",
-      updated.id,
-      updated,
-      "animais"
-    );
+    // ── Soft-delete local (IDB) - sempre permitido para ADMIN/MASTER ──
+    // Para sincronizar a remoção ao D1 (banco mãe), exige confirmação MASTER.
+    // Literatura: "Distributed Systems - Martin Fowler" + LGPD Art.16 + OWASP re-autenticação.
+    const db = await window.VSC_DB.openDB();
+    await new Promise(function(res,rej){
+      const tx = db.transaction(["animais_master"],"readwrite");
+      const req = tx.objectStore("animais_master").put(updated);
+      req.onsuccess = ()=>res(); req.onerror = ()=>rej(req.error);
+    });
+    db.close();
 
     st_animais.splice(idx, 1);
     render();
-    vscSnack("Animal excluído.", "warn");
+
+    // Verificar se é MASTER para propagar ao D1
+    let isMaster = false;
+    try{ await window.VSC_AUTH.requireRole("MASTER"); isMaster = true; }catch(_){}
+
+    if(!isMaster){
+      const senha = window.prompt("Para remover do banco central (D1), informe a senha MASTER. Em branco = cancelar.");
+      if(senha){
+        try{
+          // verificação simplificada via IDB auth_users
+          const db2 = await window.VSC_DB.openDB();
+          const users = await new Promise(function(res,rej){
+            const tx=db2.transaction(["auth_users"],"readonly");
+            const req=tx.objectStore("auth_users").getAll();
+            req.onsuccess=()=>res(req.result||[]); req.onerror=()=>rej(req.error);
+          });
+          db2.close();
+          const masterUser = users.find(u=>u&&String(u.role||"").toUpperCase()==="MASTER");
+          if(masterUser && (masterUser.password===senha||masterUser.password_hash===senha||
+            (window.VSC_AUTH.verifyPassword&&await window.VSC_AUTH.verifyPassword(masterUser,senha)))){
+            isMaster = true;
+          } else {
+            vscSnack("Senha MASTER incorreta. Animal ocultado localmente, não removido do D1.", "warn");
+          }
+        }catch(e){ console.warn("[ANIMAIS] verify master:", e); }
+      }
+    }
+
+    if(isMaster){
+      await window.VSC_DB.upsertWithOutbox("animais_master", updated.id, updated, "animais");
+      vscSnack("Animal removido do sistema e do banco central.", "warn");
+    } else {
+      vscSnack("Animal ocultado localmente. Use conta MASTER para remover do banco central.", "warn");
+    }
   }catch(e){
     vscToast("err", String("[ANIMAIS] Falha ao excluir via VSC_DB:", e), {ms:3200});
-if(window.VSC_UI && window.VSC_UI.alert){
+    if(window.VSC_UI && window.VSC_UI.alert){
       await window.VSC_UI.alert("ERRO ao excluir (veja o console). " + (e && e.message ? e.message : e), "Erro");
     }
   }

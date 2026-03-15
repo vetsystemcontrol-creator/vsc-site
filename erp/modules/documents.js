@@ -21,10 +21,22 @@
   };
 
   function nowISO(){ return new Date().toISOString(); }
-  function uuid(){ 
-    if(crypto && typeof crypto.randomUUID === "function") return crypto.randomUUID();
-    // fail-closed: sem UUID criptográfico, não prosseguir
-    throw new Error("[VSC_DOCS] Ambiente sem crypto.randomUUID()");
+  function uuid(){
+    try{
+      if(window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    }catch(_){}
+    try{ if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); }catch(_){}
+    try{
+      if(typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"){
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+        return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
+      }
+    }catch(_){}
+    throw new TypeError("[DOCS] ambiente sem CSPRNG para gerar UUID v4.");
   }
 
   function mustHaveDb(){

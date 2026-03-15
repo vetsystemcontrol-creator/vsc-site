@@ -73,16 +73,21 @@
   }
 
   function uuidv4(){
-    // RFC4122 v4 (browser-safe)
-    if (typeof crypto !== "undefined" && crypto.randomUUID) return crypto.randomUUID();
-    const rnd = (n)=>Math.floor(Math.random()*n);
-    const hex = (n)=>n.toString(16).padStart(2,"0");
-    const arr = new Uint8Array(16);
-    for(let i=0;i<16;i++) arr[i]=rnd(256);
-    arr[6] = (arr[6] & 0x0f) | 0x40;
-    arr[8] = (arr[8] & 0x3f) | 0x80;
-    const b = Array.from(arr).map(hex).join("");
-    return `${b.slice(0,8)}-${b.slice(8,12)}-${b.slice(12,16)}-${b.slice(16,20)}-${b.slice(20)}`;
+    try{
+      if(window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    }catch(_){}
+    try{ if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); }catch(_){}
+    try{
+      if(typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"){
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+        return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
+      }
+    }catch(_){}
+    throw new TypeError("[VSC_CORE] ambiente sem CSPRNG para gerar UUID v4.");
   }
 
   function cents(n){
@@ -237,7 +242,7 @@
       entity_id: String(entity_id),
       payload_json: JSON.stringify(payload),
       attempts: 0,
-      status: "pendente",
+      status: "PENDING",
       last_error: null,
       created_at: now,
       updated_at: now,

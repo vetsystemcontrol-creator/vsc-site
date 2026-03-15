@@ -113,26 +113,21 @@ function calcLockMs(fails){
   function nowMs(){ return Date.now(); }
 
   function uuid(){
-    try{ if(crypto && typeof crypto.randomUUID === "function") return crypto.randomUUID(); }catch(_){}
-    // fallback não-cripto (último recurso). Ideal: crypto.randomUUID().
-try{
-  const buf = new Uint8Array(16);
-  crypto.getRandomValues(buf);
-  buf[6] = (buf[6] & 0x0f) | 0x40;
-  buf[8] = (buf[8] & 0x3f) | 0x80;
-  const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
-  return [
-    hex.slice(0,8),
-    hex.slice(8,12),
-    hex.slice(12,16),
-    hex.slice(16,20),
-    hex.slice(20)
-  ].join("-");
-}catch(_){}
-return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c)=>{
-  const r = Math.random()*16|0, v = (c==="x") ? r : (r&0x3|0x8);
-  return v.toString(16);
-});
+    try{
+      if(window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    }catch(_){}
+    try{ if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); }catch(_){}
+    try{
+      if(typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"){
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+        return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
+      }
+    }catch(_){}
+    throw new TypeError("[AUTH] ambiente sem CSPRNG para gerar UUID v4.");
   }
 
   function $(id){ return document.getElementById(id); }
@@ -627,6 +622,33 @@ async function ensureBootstrapUsers(){
 
     let total = await countUsers();
     if(total > 0){
+      // Se o store USERS tem registros mas nenhum usuário "logável" (username ativo),
+      // tratamos como DB efetivamente vazio/corrompido e forçamos bootstrap do master.
+      // Isso evita tela de login sem opções ("Selecione...") por registros fantasma/legado.
+      try{
+        const dbx = await openDB();
+        try{
+          const hasLoginable = await new Promise((resolve) => {
+            const txx = dbx.transaction([S_USERS], "readonly");
+            const stx = txx.objectStore(S_USERS);
+            const rq2 = stx.openCursor();
+            rq2.onerror = () => resolve(false);
+            rq2.onsuccess = () => {
+              const cur2 = rq2.result;
+              if(!cur2) return resolve(false);
+              const v2 = cur2.value || {};
+              const un2 = String(v2.username||"").trim();
+              const stt2 = String(v2.status||"ACTIVE").toUpperCase();
+              if(un2 && stt2 === "ACTIVE") return resolve(true);
+              cur2.continue();
+            };
+          });
+          if(!hasLoginable){
+            total = 0; // força o caminho de bootstrap abaixo
+          }
+        } finally { try{ dbx.close(); }catch(_){} }
+      }catch(_){ /* best-effort */ }
+
       // Sanear usuário fantasma: versões antigas criavam 'admin' automaticamente.
       // Se já existem usuários reais (além de master/admin), desativamos 'admin' bootstrap.
       try{

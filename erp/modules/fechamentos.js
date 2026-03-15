@@ -20,6 +20,55 @@
 
 (function(){
   "use strict";
+  // ── Sync helpers ─────────────────────────────────────────────────────────
+  function _getVSC_DB() {
+    if (window.VSC_DB) return window.VSC_DB;
+    try {
+      for (const f of document.querySelectorAll('iframe')) {
+        if (f.contentWindow && f.contentWindow.VSC_DB) return f.contentWindow.VSC_DB;
+      }
+      if (window.parent && window.parent !== window && window.parent.VSC_DB) return window.parent.VSC_DB;
+    } catch(_) {}
+    return null;
+  }
+
+  function _enqueueSync(store, obj) {
+    try {
+      const vdb = _getVSC_DB();
+      if (!vdb || typeof vdb.openDB !== 'function') return;
+      vdb.openDB().then(db => {
+        if (!db.objectStoreNames.contains('sync_queue')) return;
+        const opId = safeUuidV4();
+        const tx = db.transaction('sync_queue', 'readwrite');
+        tx.objectStore('sync_queue').add({
+          id: opId, op_id: opId,
+          store, entity: store,
+          entity_id: String(obj && obj.id ? obj.id : opId),
+          op: 'upsert', action: 'upsert',
+          payload: obj,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+          status: 'PENDING'
+        });
+      }).catch(() => {});
+    } catch(_) {}
+  }
+function safeUuidV4(){
+  if(window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+  if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  if(typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"){
+    const buf = new Uint8Array(16);
+    crypto.getRandomValues(buf);
+    buf[6] = (buf[6] & 0x0f) | 0x40;
+    buf[8] = (buf[8] & 0x3f) | 0x80;
+    const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+    return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
+  }
+  throw new TypeError("[FECHAMENTOS] ambiente sem CSPRNG para gerar UUID v4.");
+}
+
+
+
 
   const $ = (id)=>document.getElementById(id);
   const esc = (s)=>String(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\"/g,"&quot;").replace(/'/g,"&#39;");
@@ -414,7 +463,7 @@
       .reduce((acc,a)=>acc+totalAtendimentoCents(a),0);
 
     return {
-      id: (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ("fech_" + Math.random().toString(16).slice(2) + Date.now()),
+      id: safeUuidV4(),
       created_at: now,
       updated_at: now,
       status: "rascunho",
@@ -492,7 +541,7 @@
       }
 
       // Criar AR (título)
-      const arId = (window.VSC_UTILS && window.VSC_UTILS.uuidv4) ? window.VSC_UTILS.uuidv4() : ((window.crypto&&crypto.randomUUID)?crypto.randomUUID():("ar_"+Date.now()));
+      const arId = safeUuidV4();
       const titulo = {
         id: arId,
         tipo: "RECEBER",
@@ -505,6 +554,9 @@
         vencimento: f.vencimento || ymdToday(),
         valor_centavos: total,
         saldo_centavos: total,
+        valor_original_centavos: total,            // [FIX C-04] lido por dashboard e normalizeTitulo
+        documento: f.cliente_doc || "",             // [FIX C-04] lido na impressão
+        status: total > 0 ? "aberto" : "pago",     // [FIX C-04] status calculado inicial
         forma_pagamento_preferida: f.forma_pagamento_preferida || null,
         condicao_pagamento: f.condicao_pagamento || null,
         parcelas: f.parcelas || 1,
@@ -520,6 +572,7 @@
         updated_at: isoNow()
       };
       stAR.put(titulo);
+      _enqueueSync('contas_receber', titulo);
 
       // Marcar atendimentos
       for(const id of atdIds){
@@ -532,6 +585,7 @@
         rec.financeiro_gerado = true;
         rec.updated_at = isoNow();
         stA.put(rec);
+        _enqueueSync('atendimentos_master', rec);
       }
 
       // Atualizar fechamento
@@ -541,6 +595,7 @@
       f.emitido_em = isoNow();
       f.updated_at = isoNow();
       stF.put(f);
+      _enqueueSync('fechamentos', f);
 
       await txDone(tx);
 

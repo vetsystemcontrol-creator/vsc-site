@@ -35,30 +35,55 @@
   const isoNow = () => new Date().toISOString();
   const todayYMD = () => new Date().toISOString().slice(0, 10);
 
-  // Normaliza data para <input type="date"> (YYYY-MM-DD).
-  // Aceita ISO completo, YYYY-MM-DD, Date, ou null.
-  function toYMD(v){
-    if(!v) return "";
-    if(v instanceof Date){
-      if(Number.isNaN(v.getTime())) return "";
-      return v.toISOString().slice(0,10);
-    }
+  function parseDateFlexible(v){
+    if(!v) return null;
+    if(v instanceof Date) return Number.isNaN(v.getTime()) ? null : v;
     const s = String(v).trim();
-    if(!s) return "";
-    // já é YYYY-MM-DD
-    if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+    if(!s) return null;
+    if(/^\d{4}-\d{2}-\d{2}$/.test(s)){
+      const d = new Date(s + 'T12:00:00');
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+    const br = s.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+    if(br){
+      const d = new Date(`${br[3]}-${br[2]}-${br[1]}T12:00:00`);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
+    const shortBr = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2})$/);
+    if(shortBr){
+      const year = Number(shortBr[3]) + 2000;
+      const mm = String(shortBr[2]).padStart(2,'0');
+      const dd = String(shortBr[1]).padStart(2,'0');
+      const d = new Date(`${year}-${mm}-${dd}T12:00:00`);
+      return Number.isNaN(d.getTime()) ? null : d;
+    }
     const d = new Date(s);
-    if(Number.isNaN(d.getTime())) return "";
-    return d.toISOString().slice(0,10);
+    return Number.isNaN(d.getTime()) ? null : d;
+  }
+
+  // Normaliza data para <input type="date"> (YYYY-MM-DD).
+  function toYMD(v){
+    const d = parseDateFlexible(v);
+    return d ? d.toISOString().slice(0,10) : "";
   }
   const todayYear = () => new Date().getFullYear();
 
   function uuidv4() {
-    if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
-    const a = crypto.getRandomValues(new Uint8Array(16));
-    a[6] = (a[6] & 0x0f) | 0x40; a[8] = (a[8] & 0x3f) | 0x80;
-    const h = [...a].map(b => b.toString(16).padStart(2, "0")).join("");
-    return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
+    try {
+      if (window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    } catch (_) {}
+    try { if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); } catch (_) {}
+    try {
+      if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b => b.toString(16).padStart(2, "0")).join("");
+        return [hex.slice(0, 8), hex.slice(8, 12), hex.slice(12, 16), hex.slice(16, 20), hex.slice(20)].join("-");
+      }
+    } catch (_) {}
+    throw new TypeError("[ATENDIMENTOS] ambiente sem CSPRNG para gerar UUID v4.");
   }
 
   function toNumPt(s) {
@@ -76,12 +101,36 @@
   }
 
   function fmtDate(iso) {
-    if (!iso) return "—";
-    // new Date(x) NÃO lança exceção quando inválido; vira "Invalid Date".
-    // Blindagem SGQT: nunca permitir "Invalid Date" no documento.
-    const d = new Date(iso);
-    if (Number.isNaN(d.getTime())) return "—";
+    const d = parseDateFlexible(iso);
+    if (!d) return "—";
     try { return d.toLocaleDateString("pt-BR"); } catch (_) { return "—"; }
+  }
+
+  function fmtDateTime(iso) {
+    const d = parseDateFlexible(iso);
+    if (!d) return "—";
+    try { return d.toLocaleString("pt-BR"); } catch (_) { return "—"; }
+  }
+
+  function addDaysYMD(ymd, days){
+    const d = parseDateFlexible(ymd || todayYMD()) || new Date();
+    d.setDate(d.getDate() + Number(days || 0));
+    return d.toISOString().slice(0,10);
+  }
+
+  function boolish(v){
+    if (typeof v === "boolean") return v;
+    const s = norm(v);
+    return ["1","true","sim","yes","ativo","enabled"].includes(s);
+  }
+
+  function pickFirstNonEmpty(){
+    for (const v of arguments){
+      if (v == null) continue;
+      if (Array.isArray(v) && v.length) return v[0];
+      if (String(v).trim()) return v;
+    }
+    return "";
   }
 
   
@@ -197,6 +246,9 @@
     wireIntInput("v_fc", { min: 0, allowEmpty:true });
     wireIntInput("v_fr", { min: 0, allowEmpty:true });
     wireDecimalInput("v_peso", 1, { min: 0, allowEmpty:true });
+
+    // Campos financeiros
+    wireDecimalInput("financeDecisionEntryAmount", 2, { min: 0, allowEmpty:true });
 
     // Campos readonly monetários são calculados via JS (não edita)
   }
@@ -323,16 +375,49 @@
     snack("Anexos adicionados. Preencha as descrições e clique em Salvar.", "ok");
   }
 
-  function openAttachmentInNewTab(att){
-    if(!att || !att.dataUrl) return;
+  async function openAttachmentInNewTab(att){
+    if(!att) return;
+
+    // Se tem dataUrl local, abre direto
+    if(att.dataUrl){
+      _renderAttachWindow(att, att.dataUrl);
+      return;
+    }
+
+    // Sem dataUrl — busca do R2
+    if(!att.synced_to_r2){ snack("Anexo sem dados locais e não sincronizado com o servidor.", "err"); return; }
+    if(!ATD.atendimento_id){ snack("ID do atendimento não encontrado.", "err"); return; }
+
+    snack("Baixando anexo do servidor...", "ok");
+    try {
+      const base = (location.hostname==='127.0.0.1'||location.hostname==='localhost')
+        ? 'https://app.vetsystemcontrol.com.br' : '';
+      const url = `${base}/api/attachments?action=download&atendimento_id=${encodeURIComponent(ATD.atendimento_id)}&attachment_id=${encodeURIComponent(att.id)}`;
+      const res = await fetch(url, { headers: getAttachmentAuthHeaders() });
+      if(!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(blob);
+      });
+      // Salva localmente para próxima vez
+      att.dataUrl = dataUrl;
+      _renderAttachWindow(att, dataUrl);
+    } catch(e) {
+      snack("Erro ao baixar anexo: " + (e.message||"erro"), "err");
+    }
+  }
+
+  function _renderAttachWindow(att, dataUrl){
     const attWin = window.open("about:blank", "_blank");
     if(!attWin){ snack("Pop-up bloqueado. Libere pop-ups para visualizar anexos.", "warn"); return; }
     const title = esc(att.name || "Anexo");
     const isPdf = String(att.mime||"") === "application/pdf";
     const body = isPdf
-      ? `<embed src="${att.dataUrl}" type="application/pdf" style="width:100%;height:100vh;"/>`
-      : `<img src="${att.dataUrl}" style="max-width:100%;height:auto;display:block;margin:0 auto;"/>`;
-
+      ? `<embed src="${dataUrl}" type="application/pdf" style="width:100%;height:100vh;"/>`
+      : `<img src="${dataUrl}" style="max-width:100%;height:auto;display:block;margin:0 auto;"/>`;
     attWin.document.open();
     attWin.document.write(`<!doctype html><html><head><meta charset="utf-8"><title>${title}</title></head><body style="margin:0;padding:0;background:#111;color:#fff;">${body}</body></html>`);
     attWin.document.close();
@@ -418,16 +503,89 @@ function wireAttachListInteractions(db){
     return u8;
   }
 
+  function resolveEmpresaNome(src){
+    if(!src || typeof src !== "object") return "";
+    return String(src.nome || src.razao_social || src.nome_fantasia || src.fantasia || src.empresa_nome || "").trim();
+  }
+
+  function resolveEmpresaLogoA(src){
+    if(!src || typeof src !== "object") return "";
+    return String(
+      src.__logoA ||
+      src.logoA ||
+      src.logo_a ||
+      src.logo_a_dataurl ||
+      src.logo_a_dataUrl ||
+      src.logo_a_dataURL ||
+      src.logoAUrl ||
+      src.logo_url_a ||
+      src.empresa_logo_a ||
+      src.logo ||
+      ""
+    ).trim();
+  }
+
+  function resolveEmpresaLogoB(src){
+    if(!src || typeof src !== "object") return "";
+    return String(
+      src.__logoB ||
+      src.logoB ||
+      src.logo_b ||
+      src.logo_b_dataurl ||
+      src.logo_b_dataUrl ||
+      src.logo_b_dataURL ||
+      src.logoBUrl ||
+      src.logo_url_b ||
+      src.empresa_logo_b ||
+      ""
+    ).trim();
+  }
+
+  function resolvePreferredCompanyPrintLogo(src){
+    const logoA = resolveEmpresaLogoA(src);
+    if(logoA) return logoA;
+    return resolveEmpresaLogoB(src);
+  }
+
+  function getAttachmentId(att){
+    if(!att || typeof att !== "object") return "";
+    return String(att.id || att.attachment_id || att.uuid || att.key || att.file_id || "").trim();
+  }
+
+  function getAttachmentName(att, fallback){
+    if(!att || typeof att !== "object") return String(fallback || "");
+    return String(att.name || att.nome || att.filename || att.file_name || att.originalname || att.titulo || fallback || "").trim();
+  }
+
+  function getAttachmentMime(att){
+    if(!att || typeof att !== "object") return "";
+    return String(att.mime || att.mime_type || att.contentType || att.type || att.content_type || "").trim();
+  }
+
+  function getAttachmentSize(att){
+    if(!att || typeof att !== "object") return 0;
+    return Number(att.size || att.tamanho || att.size_bytes || 0) || 0;
+  }
+
+  function normalizeInlineAttachmentData(att){
+    if(!att || typeof att !== "object") return "";
+    const direct = att.dataUrl || att.dataURL || att.data_base64 || att.base64 || att.file_base64 || att.blob_base64 || "";
+    if(!direct) return "";
+    const text = String(direct).trim();
+    if(!text) return "";
+    if(/^data:/i.test(text)) return text;
+    const mime = String(att.mime || att.mime_type || 'application/octet-stream').trim() || 'application/octet-stream';
+    return `data:${mime};base64,${text.replace(/^base64,/i,'')}`;
+  }
+
   async function getEmpresaLogoAFromLocalStorage(){
     try{
-      // Prioridade: snapshot JSON da empresa (quando existe)
       const j = localStorage.getItem("vsc_empresa_v1") || localStorage.getItem("VSC_EMPRESA_V1") || "";
       if(j){
         const o = JSON.parse(j);
-        const a = o.__logoA || o.logoA || o.logo_a || o.logo_a_dataurl || o.logo_a_dataUrl || o.logo_a_dataURL || o.logo_data_url || o.logoDataUrl || o.logoCliente || o.logo_cliente;
-        if(a) return String(a);
+        const a = resolveEmpresaLogoA(o);
+        if(a) return a;
       }
-      // Alternativos
       const direct = localStorage.getItem("vsc_empresa_logoA") || localStorage.getItem("vsc_empresa_logo_a") || localStorage.getItem("VSC_EMPRESA_LOGO_A") || "";
       if(direct) return String(direct);
       return "";
@@ -436,45 +594,385 @@ function wireAttachListInteractions(db){
     }
   }
 
+  async function getEmpresaLogoBFromLocalStorage(){
+    try{
+      const j = localStorage.getItem("vsc_empresa_v1") || localStorage.getItem("VSC_EMPRESA_V1") || "";
+      if(j){
+        const o = JSON.parse(j);
+        const b = resolveEmpresaLogoB(o);
+        if(b) return b;
+      }
+      const direct = localStorage.getItem("vsc_empresa_logoB") || localStorage.getItem("vsc_empresa_logo_b") || localStorage.getItem("VSC_EMPRESA_LOGO_B") || "";
+      if(direct) return String(direct);
+      return "";
+    }catch(_){
+      return "";
+    }
+  }
+
 async function loadEmpresaSnapshot(db){
-    // tenta achar dados da empresa em stores comuns; fallback para vazio
-    const candidates = ["empresa_master","empresa","empresa_config","config_empresa"];
-    for(const st of candidates){
-      if(hasStore(db, st)){
-        const all = await idbGetAll(db, st);
-        const r = (Array.isArray(all) ? all : [])[0];
-        if(r) return {
-          nome: r.nome || r.razao_social || r.fantasia || "",
-          cnpj: r.cnpj || r.doc || "",
-          endereco: r.endereco || r.endereco_completo || "",
-          telefone: r.telefone || r.fone || "",
-          email: r.email || "",
-          // Logos (enterprise): tenta vários campos + localStorage (fonte canônica offline-first)
-          __logoA: (r.__logoA || r.logoA || r.logo_a || r.logo_a_dataurl || r.logo_a_dataUrl || r.logo_a_dataURL || r.logo_data_url || r.logoDataUrl || r.logoCliente || r.logo_cliente || "") || (await getEmpresaLogoAFromLocalStorage()),
-          pix_chave: (r.pix_chave || r.chave_pix || r.pixKey || r.pix || r.pix_chave_copia_cola || "") || (await getEmpresaPixFromLocalStorage()),
-        };
+    try{
+      if(window.VSC_DB && typeof window.VSC_DB.getEmpresaSnapshot === "function"){
+        const canonical = await window.VSC_DB.getEmpresaSnapshot({ preferIdb:true, hydrateLocalStorage:true });
+        if(canonical && typeof canonical === "object"){
+          return Object.assign({ nome:'', razao_social:'', nome_fantasia:'', cnpj:'', endereco:'', telefone:'', email:'', __logoA:'', __logoB:'', pix_chave:'' }, canonical);
+        }
+      }
+    }catch(_){ }
+    function asObject(v){
+      if(!v) return null;
+      if(typeof v === 'object') return v;
+      if(typeof v === 'string'){
+        try{
+          const parsed = JSON.parse(v);
+          if(parsed && typeof parsed === 'object') return parsed;
+        }catch(_){ }
+      }
+      return null;
+    }
+
+    function scoreEmpresaCandidate(src){
+      if(!src || typeof src !== 'object') return 0;
+      let score = 0;
+      if(resolveEmpresaNome(src)) score += 4;
+      if(resolveEmpresaLogoA(src) || resolveEmpresaLogoB(src)) score += 3;
+      if(src.cnpj || src.doc) score += 2;
+      if(src.email) score += 1;
+      if(src.telefone || src.celular || src.fone) score += 1;
+      if(src.pix_chave || src.chave_pix || src.pix || src.pixKey) score += 1;
+      return score;
+    }
+
+    function normalizeEmpresaRecord(src){
+      const data = src && typeof src === 'object' ? src : {};
+      return Object.assign({}, data, {
+        nome: resolveEmpresaNome(data),
+        razao_social: String(data.razao_social || data.nome || ''),
+        nome_fantasia: String(data.nome_fantasia || data.fantasia || data.nome || ''),
+        cnpj: data.cnpj || data.doc || '',
+        endereco: data.endereco || data.endereco_completo || [data.logradouro, data.numero, data.bairro, data.cidade, data.uf].filter(Boolean).join(' • '),
+        cidade: data.cidade || '',
+        uf: data.uf || '',
+        cep: data.cep || '',
+        telefone: data.telefone || data.fone || data.celular || data.whatsapp || '',
+        email: data.email || data.email_comercial || '',
+        site: data.site || '',
+        crmv: data.crmv || '',
+        __logoA: resolveEmpresaLogoA(data),
+        __logoB: resolveEmpresaLogoB(data),
+        pix_tipo: data.pix_tipo || data.pixTipo || '',
+        pix_nome: data.pix_nome || data.pixNome || data.favorecido_pix || '',
+        pix_chave: data.pix_chave || data.chave_pix || data.pixKey || data.pix || data.pix_chave_copia_cola || '',
+        pix_chave_norm: data.pix_chave_norm || ''
+      });
+    }
+
+    const picks = [];
+    const candidateStores = ["empresa_master","empresa","empresa_config","config_empresa","sys_meta"];
+    for(const st of candidateStores){
+      if(!hasStore(db, st)) continue;
+      try{
+        const rows = await idbGetAll(db, st);
+        for(const row of (Array.isArray(rows) ? rows : [])){
+          const rawCandidates = [row];
+          for(const key of ['value','valor','data','payload','content','json','meta']){
+            const parsed = asObject(row && row[key]);
+            if(parsed) rawCandidates.push(parsed);
+          }
+          for(const raw of rawCandidates){
+            const normalized = normalizeEmpresaRecord(raw);
+            if(scoreEmpresaCandidate(normalized) > 0) picks.push(normalized);
+          }
+        }
+      }catch(_){ }
+    }
+
+    if(hasStore(db,"config_params")){
+      try{
+        const rows = await idbGetAll(db,"config_params");
+        function getKey(k){
+          const r = (rows || []).find(x => String(x && (x.key || x.nome || x.name || x.id || '')) === k);
+          return r ? String(r.value || r.valor || r.data || '') : '';
+        }
+        const keysToParse = [
+          'vsc_empresa_v1','VSC_EMPRESA_V1','empresa','empresa_snapshot','empresa_dados','empresa_configurada_dados'
+        ];
+        for(const key of keysToParse){
+          const parsed = asObject(getKey(key));
+          if(parsed){
+            const normalized = normalizeEmpresaRecord(parsed);
+            if(scoreEmpresaCandidate(normalized) > 0) picks.push(normalized);
+          }
+        }
+        const flat = normalizeEmpresaRecord({
+          nome: getKey('empresa_nome') || getKey('razao_social') || getKey('nome_fantasia') || '',
+          razao_social: getKey('razao_social') || '',
+          nome_fantasia: getKey('nome_fantasia') || '',
+          cnpj: getKey('empresa_cnpj') || getKey('cnpj') || '',
+          endereco: getKey('empresa_endereco') || getKey('endereco') || '',
+          telefone: getKey('empresa_telefone') || getKey('telefone') || '',
+          email: getKey('empresa_email') || getKey('email') || '',
+          __logoA: getKey('empresa_logo_a') || getKey('logo_a') || getKey('vsc_empresa_logo_a') || '',
+          __logoB: getKey('empresa_logo_b') || getKey('logo_b') || getKey('vsc_empresa_logo_b') || '',
+          pix_tipo: getKey('pix_tipo') || '',
+          pix_nome: getKey('pix_nome') || '',
+          pix_chave: getKey('pix_chave') || getKey('chave_pix') || getKey('pix') || ''
+        });
+        if(scoreEmpresaCandidate(flat) > 0) picks.push(flat);
+      }catch(_){ }
+    }
+
+    try{
+      const raw = localStorage.getItem("vsc_empresa_v1");
+      const parsed = asObject(raw);
+      if(parsed){
+        const normalized = normalizeEmpresaRecord(parsed);
+        if(scoreEmpresaCandidate(normalized) > 0) picks.push(normalized);
+      }
+    }catch(_){ }
+
+    const best = picks.sort((a,b) => scoreEmpresaCandidate(b) - scoreEmpresaCandidate(a))[0] || {};
+    return Object.assign({
+      nome:'', razao_social:'', nome_fantasia:'', cnpj:'', endereco:'', telefone:'', email:'', __logoA:'', __logoB:'', pix_chave:''
+    }, best, {
+      __logoA: best.__logoA || (await getEmpresaLogoAFromLocalStorage()),
+      __logoB: best.__logoB || (await getEmpresaLogoBFromLocalStorage()),
+      pix_chave: best.pix_chave || (await getEmpresaPixFromLocalStorage())
+    });
+  }
+
+
+
+  function getAttachmentPrintBaseUrls(){
+    const isLocalHost = location.hostname === "127.0.0.1" || location.hostname === "localhost";
+    const bases = [];
+    if(isLocalHost){
+      bases.push("https://app.vetsystemcontrol.com.br");
+    } else {
+      bases.push("");
+    }
+    return Array.from(new Set(bases.filter(Boolean).concat(isLocalHost ? [] : [""])));
+  }
+
+  async function blobToDataUrl(blob){
+    return await new Promise((resolve, reject) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(String(fr.result || ""));
+      fr.onerror = () => reject(fr.error || new Error("blob_to_dataurl_failed"));
+      fr.readAsDataURL(blob);
+    });
+  }
+
+  function mergeAttachmentLists(primary, secondary){
+    const out = [];
+    const seen = new Set();
+    const all = [Array.isArray(primary) ? primary : [], Array.isArray(secondary) ? secondary : []];
+    for(const list of all){
+      for(const item of list){
+        if(!item) continue;
+        const key = String(item.id || item.attachment_id || item.uuid || item.key || item.name || '').trim();
+        if(key && seen.has(key)) continue;
+        if(key) seen.add(key);
+        out.push(Object.assign({}, item));
       }
     }
-    // fallback: config_params
-    if(hasStore(db,"config_params")){
-      const rows = await idbGetAll(db,"config_params");
-      function getKey(k){ const r = rows.find(x=>String(x.key||x.nome||"")==k); return r? String(r.value||""):""; }
-      return {
-        nome: getKey("empresa_nome") || getKey("razao_social") || "",
-        cnpj: getKey("empresa_cnpj") || getKey("cnpj") || "",
-        endereco: getKey("empresa_endereco") || getKey("endereco") || "",
-        telefone: getKey("empresa_telefone") || getKey("telefone") || "",
-        email: getKey("empresa_email") || getKey("email") || "",
-        __logoA: getKey("empresa_logo_a") || getKey("logo_a") || (await getEmpresaLogoAFromLocalStorage()),
-        pix_chave: getKey("pix_chave") || getKey("chave_pix") || getKey("pix") || (await getEmpresaPixFromLocalStorage()),
-      };
+    return out;
+  }
+
+  async function hydrateAttachmentFromLocalStores(db, atendimentoId, att){
+    const inline = normalizeInlineAttachmentData(att);
+    if(inline) return inline;
+
+    const attId = getAttachmentId(att);
+    const attName = getAttachmentName(att);
+    const currentList = Array.isArray(ATD.attachments) ? ATD.attachments : [];
+    const byCurrent = currentList.find(x => x && getAttachmentId(x) === attId)
+      || currentList.find(x => x && getAttachmentName(x) === attName);
+    const currentInline = normalizeInlineAttachmentData(byCurrent);
+    if(currentInline) return currentInline;
+
+    if(att && typeof Blob !== 'undefined'){
+      const blobLike = att.file_blob || att.blob || att.fileBlob || null;
+      if(blobLike instanceof Blob){
+        try{ return await blobToDataUrl(blobLike); }catch(_){ }
+      }
     }
-    return { nome:"", cnpj:"", endereco:"", telefone:"", email:"" };
+
+    if(db && hasStore(db, 'attachments_queue')){
+      try{
+        const rows = await idbGetAll(db, 'attachments_queue');
+        const row = (rows || []).find(x => x && String(x.attachment_id || x.id || '') === attId)
+          || (rows || []).find(x => x && String(x.filename || x.name || '') === attName);
+        const rowInline = normalizeInlineAttachmentData(row);
+        if(rowInline) return rowInline;
+      }catch(_){ }
+    }
+
+    if(db && atendimentoId && hasStore(db, 'atendimentos_master')){
+      try{
+        const rec = await idbGet(db, 'atendimentos_master', atendimentoId);
+        const rows = Array.isArray(rec && rec.attachments) ? rec.attachments : [];
+        const row = rows.find(x => x && getAttachmentId(x) === attId)
+          || rows.find(x => x && getAttachmentName(x) === attName);
+        const rowInline = normalizeInlineAttachmentData(row);
+        if(rowInline) return rowInline;
+      }catch(_){ }
+    }
+
+    if(db && hasStore(db, 'documents_store')){
+      try{
+        const rows = await idbGetAll(db, 'documents_store');
+        const match = (rows || []).find(x => x && String(x.entity_id || '') === String(atendimentoId) && String(x.entity_type || '').toLowerCase().includes('atendimento') && (
+          String(x.id || '') === attId ||
+          String(x.file_name || x.filename || '') === attName
+        ));
+        if(match){
+          const docInline = normalizeInlineAttachmentData(match);
+          if(docInline) return docInline;
+          if(typeof Blob !== 'undefined'){
+            const blobLike = match.file_blob || match.blob || null;
+            if(blobLike instanceof Blob){
+              try{ return await blobToDataUrl(blobLike); }catch(_){ }
+            }
+          }
+        }
+      }catch(_){ }
+    }
+
+    return '';
+  }
+
+  async function hydrateAttachmentsForPrint(db, atendimento){
+    if(!atendimento || !Array.isArray(atendimento.attachments) || !atendimento.attachments.length) return atendimento;
+    const tenant = localStorage.getItem("vsc_tenant") || localStorage.getItem("VSC_TENANT") || "tenant-default";
+    const atendimentoId = atendimento.atendimento_id || atendimento.id || "";
+    if(!atendimentoId) return atendimento;
+
+    const bases = getAttachmentPrintBaseUrls();
+    const hydrated = [];
+    for(const src of atendimento.attachments){
+      const att = src ? Object.assign({}, src) : src;
+      if(!att){ hydrated.push(att); continue; }
+
+      const localInline = await hydrateAttachmentFromLocalStores(db, atendimentoId, att);
+      if(localInline){
+        att.dataUrl = localInline;
+        hydrated.push(att);
+        continue;
+      }
+
+      const possibleUrls = [
+        att.url,
+        att.download_url,
+        att.downloadUrl,
+        att.r2_url,
+        att.file_url,
+        att.src,
+        att.preview_url,
+        att.public_url
+      ].filter(Boolean);
+
+      let done = false;
+
+      for(const rawUrl of possibleUrls){
+        try{
+          const url = String(rawUrl);
+          if((location.hostname === '127.0.0.1' || location.hostname === 'localhost') && /^\/api\/attachments/i.test(url)) continue;
+          const res = await fetch(url, { credentials:"include" });
+          if(!res.ok) throw new Error(`HTTP ${res.status}`);
+          const blob = await res.blob();
+          att.dataUrl = await blobToDataUrl(blob);
+          att.mime = att.mime || blob.type || "";
+          done = true;
+          break;
+        }catch(_err){}
+      }
+
+      const attId = getAttachmentId(att);
+      if(!done && attId){
+        const candidates = [];
+        for(const currentBase of bases){
+          candidates.push(`${currentBase}/api/attachments?action=download&disposition=inline&atendimento_id=${encodeURIComponent(atendimentoId)}&attachment_id=${encodeURIComponent(attId)}`);
+        }
+        for(const url of candidates){
+          try{
+            const currentBase = url.startsWith('https://') ? new URL(url).origin : '';
+            const res = await fetch(url, {
+              headers: getAttachmentAuthHeaders(),
+              credentials: currentBase ? "omit" : "include"
+            });
+            if(!res.ok) throw new Error(`HTTP ${res.status}`);
+            const blob = await res.blob();
+            att.dataUrl = await blobToDataUrl(blob);
+            att.mime = att.mime || blob.type || "";
+            done = true;
+            break;
+          }catch(_err){}
+        }
+
+        if(!done){
+          for(const currentBase of bases){
+            try{
+              const listUrl = `${currentBase}/api/attachments?action=list&atendimento_id=${encodeURIComponent(atendimentoId)}`;
+              const listRes = await fetch(listUrl, {
+                headers: getAttachmentAuthHeaders(),
+                credentials: currentBase ? "omit" : "include"
+              });
+              if(!listRes.ok) continue;
+              const listBody = await listRes.json().catch(() => ({}));
+              const items = Array.isArray(listBody && listBody.items) ? listBody.items : [];
+              const matched = items.find(item => String(item && item.meta && item.meta.attachment_id || '').trim() === attId)
+                || items.find(item => String(item && item.meta && item.meta.filename || '').trim() === getAttachmentName(att));
+              if(!matched) continue;
+              const dl = `${currentBase}/api/attachments?action=download&disposition=inline&atendimento_id=${encodeURIComponent(atendimentoId)}&attachment_id=${encodeURIComponent(attId)}`;
+              const res = await fetch(dl, {
+                headers: getAttachmentAuthHeaders(),
+                credentials: currentBase ? "omit" : "include"
+              });
+              if(!res.ok) continue;
+              const blob = await res.blob();
+              att.dataUrl = await blobToDataUrl(blob);
+              att.mime = att.mime || blob.type || "";
+              done = true;
+              break;
+            }catch(_listErr){}
+          }
+        }
+      }
+
+      if(!done){
+        console.warn("[PRINT][ATTACH] anexo não hidratado para impressão:", getAttachmentName(att) || getAttachmentId(att) || att);
+      }
+      hydrated.push(att);
+    }
+
+    atendimento.attachments = hydrated;
+    return atendimento;
+  }
+
+
+  async function flushRemoteAttachmentStateForPrint(atendimentoId){
+    const syncTasks = [];
+    try{
+      if(window.VSC_RELAY && typeof window.VSC_RELAY.syncNow === "function"){
+        syncTasks.push(window.VSC_RELAY.syncNow({ reason:"print_prepare", atendimentoId: String(atendimentoId || "") }));
+      }
+    }catch(_){ }
+    try{
+      if(window.VSC_ATTACHMENTS_RELAY && typeof window.VSC_ATTACHMENTS_RELAY.syncNow === "function"){
+        syncTasks.push(window.VSC_ATTACHMENTS_RELAY.syncNow());
+      }
+    }catch(_){ }
+    if(!syncTasks.length) return;
+    try{
+      await Promise.allSettled(syncTasks);
+    }catch(_){ }
   }
 
   async function buildPrintData(db){
     // garantir persistência
     await salvar(db, false);
+    await flushRemoteAttachmentStateForPrint(ATD.atendimento_id);
     const rec = await idbGet(db,"atendimentos_master", ATD.atendimento_id);
     if(!rec) throw new Error("Atendimento não encontrado para impressão.");
 
@@ -488,27 +986,49 @@ async function loadEmpresaSnapshot(db){
       ? (await Promise.all(rec.animal_ids.map(id => idbGet(db,"animais_master", id)))).filter(Boolean)
       : [];
 
-    return { empresa, cliente, animais, atendimento: rec, gerado_em: isoNow() };
+    const atendimentoPrint = await hydrateAttachmentsForPrint(db, Object.assign({}, rec, {
+      attachments: mergeAttachmentLists(
+        Array.isArray(ATD.attachments) ? ATD.attachments : [],
+        Array.isArray(rec.attachments) ? rec.attachments : []
+      )
+    }));
+
+    return { empresa, cliente, animais, atendimento: atendimentoPrint, gerado_em: isoNow() };
   }
 
 // SGQT-PRINT-3.0 (Premium Enterprise) — melhor prática: gerar PDF server-side (Chromium headless)
 // e mesclar anexos como páginas reais. Mantém fallback client-side para modo offline.
 // SGQT-PRINT-FRONT-2.0 — Auth headers (enterprise):
 // O backend exige token. Sem isso, cai no fallback client-side (about:blank).
-function getPrintAuthHeaders(){
+function getAttachmentAuthHeaders(extraHeaders){
+  const headers = Object.assign({}, extraHeaders || {});
   try{
-    const token = (window.localStorage && (localStorage.getItem('vsc_local_token') || localStorage.getItem('VSC_LOCAL_TOKEN'))) || '';
-    const h = { "Content-Type": "application/json" };
+    const tenant = (window.localStorage && (localStorage.getItem('vsc_tenant') || localStorage.getItem('VSC_TENANT'))) || 'tenant-default';
+    headers["X-VSC-Tenant"] = String(tenant || 'tenant-default');
+    const token = String(
+      (window.localStorage && (localStorage.getItem('vsc_local_token') || localStorage.getItem('vsc_token'))) ||
+      (window.sessionStorage && (sessionStorage.getItem('vsc_local_token') || sessionStorage.getItem('vsc_token'))) ||
+      ''
+    ).trim();
+    const sessionId = String(
+      (window.localStorage && localStorage.getItem('vsc_session_id')) ||
+      (window.sessionStorage && sessionStorage.getItem('vsc_session_id')) ||
+      ''
+    ).trim();
     if(token){
-      h["X-VSC-Token"] = token;
-      h["Authorization"] = "Bearer " + token;
+      headers["X-VSC-Token"] = token;
+      headers["Authorization"] = `Bearer ${token}`;
     }
-    return h;
+    if(sessionId) headers["X-VSC-Client-Session"] = sessionId;
+    return headers;
   }catch(_){
-    return { "Content-Type": "application/json" };
+    return Object.assign({ "X-VSC-Tenant": "tenant-default" }, extraHeaders || {});
   }
 }
 
+function getPrintAuthHeaders(){
+  return getAttachmentAuthHeaders({ "Content-Type": "application/json" });
+}
 
 function getEmpresaSnapshotForPrint(){
   // Fonte canônica: módulo Empresa salva em localStorage (LS_KEY = "vsc_empresa_v1")
@@ -564,7 +1084,8 @@ function ensurePrintPreviewModal(){
       <div style="padding:10px 12px; border-bottom:1px solid #eee; display:flex; gap:10px; align-items:center;">
         <div style="font-weight:700;">Impressão premium</div>
         <div id="vscPPStatus" style="font-size:12px; color:#555; flex:1;">—</div>
-        <button id="vscPPDownload" class="btn" style="padding:6px 10px;">Baixar PDF</button>
+        <button id="vscPPPrint" class="btn" style="padding:6px 10px;">Imprimir</button>
+        <button id="vscPPDownload" class="btn" style="padding:6px 10px;">Baixar</button>
         <button id="vscPPClose" class="btn" style="padding:6px 10px;">Fechar</button>
       </div>
       <div id="vscPPBody" style="flex:1; background:#f6f6f6; display:flex; align-items:center; justify-content:center;">
@@ -581,10 +1102,12 @@ function ensurePrintPreviewModal(){
   const loaderEl = m.querySelector("#vscPPLoader");
   const errEl = m.querySelector("#vscPPError");
   const btnClose = m.querySelector("#vscPPClose");
+  const btnPrint = m.querySelector("#vscPPPrint");
   const btnDl = m.querySelector("#vscPPDownload");
 
   let currentUrl = "";
-  let currentName = "print-pack.pdf";
+  let currentName = "print-preview.html";
+  let currentMode = "html";
 
   function open(){ m.style.display = "flex"; }
   function close(){
@@ -601,13 +1124,41 @@ function ensurePrintPreviewModal(){
   btnClose.addEventListener("click", (e)=>{ e.preventDefault(); close(); });
   m.addEventListener("click", (e)=>{ if(e.target === m) close(); });
 
+  btnPrint.addEventListener("click", async (e)=>{
+    e.preventDefault();
+    if(!frame || !frame.contentWindow){
+      snack("Pré-visualização ainda não está pronta.", "warn");
+      return;
+    }
+    try{
+      statusEl.textContent = "Preparando impressão…";
+      const w = frame.contentWindow;
+      if(w.__VSC_PRINT_READY__ && typeof w.__VSC_PRINT_READY__.then === "function"){
+        await w.__VSC_PRINT_READY__;
+      }
+      if(typeof w.__VSC_DO_PRINT__ === "function"){
+        await w.__VSC_DO_PRINT__();
+      }else{
+        w.focus();
+        w.print();
+      }
+      statusEl.textContent = currentMode === "html" ? "Pré-visualização local pronta." : "PDF pronto.";
+    }catch(err){
+      console.error("[SGQT-PRINT][BTN] falha ao imprimir preview:", err);
+      snack("Falha ao abrir diálogo de impressão.", "err");
+    }
+  });
+
   btnDl.addEventListener("click", async (e)=>{
     e.preventDefault();
     if(!currentUrl){
-      snack("PDF ainda não está pronto.", "warn");
+      snack("Arquivo ainda não está pronto.", "warn");
       return;
     }
-    // download via <a download>
+    if(currentMode === "html"){
+      snack("Use Imprimir e escolha 'Salvar como PDF' no navegador.", "warn");
+      return;
+    }
     const a = document.createElement("a");
     a.href = currentUrl;
     a.download = currentName || "print-pack.pdf";
@@ -635,11 +1186,22 @@ function ensurePrintPreviewModal(){
       }
     },
     setPdf(url, filename){
-      // troca URL anterior
       try{ if(currentUrl) URL.revokeObjectURL(currentUrl); }catch(_){}
       currentUrl = url;
       currentName = filename || "print-pack.pdf";
+      currentMode = "pdf";
       frame.src = url;
+      frame.style.display = "block";
+      loaderEl.style.display = "none";
+      errEl.style.display = "none";
+    },
+    setHtml(html, filename){
+      try{ if(currentUrl) URL.revokeObjectURL(currentUrl); }catch(_){}
+      currentMode = "html";
+      currentName = filename || "print-preview.html";
+      const blob = new Blob([String(html || "")], { type: "text/html;charset=utf-8" });
+      currentUrl = URL.createObjectURL(blob);
+      frame.src = currentUrl;
       frame.style.display = "block";
       loaderEl.style.display = "none";
       errEl.style.display = "none";
@@ -652,107 +1214,24 @@ function ensurePrintPreviewModal(){
 }
 
 async function openPrintWindow(payload, docType){
-  // SGQT-PRINT-ENTERPRISE (Premium): gerar PDF server-side e exibir em MODAL (sem navegar / sem abrir 2 abas)
-  // Regra: NÃO usar window.location fallback. Se popup for bloqueado, usamos preview/download via Blob.
   const doc = payload || {};
   let html = openPrintWindowClient(payload, docType, { returnHtml: true });
-  // SGQT-PRINT: normalizar HTML (evita MISSING_HTML quando retornar Promise/objeto)
   try{
     if(html && typeof html.then === "function") html = await html;
   }catch(e){
     console.error("[SGQT-PRINT][HTML] falha ao resolver html Promise:", e);
   }
   if(typeof html !== "string") html = (html==null ? "" : String(html));
-  const __htmlLen = (html && html.length) ? html.length : 0;
   if(!html || !html.trim()){
-    console.error("[SGQT-PRINT][HTML] vazio/ausente. len=", __htmlLen);
     const ui = ensurePrintPreviewModal();
-    ui.setState("error", "HTML da impressão está vazio (bloqueado localmente).");
-    snack("Impressão premium: HTML vazio — não foi enviado ao backend.", "err");
+    ui.setState("error", "HTML da impressão está vazio.");
     throw new Error("PRINT_PACK_MISSING_HTML_LOCAL");
   }
-
-
-  // Snapshot canônico da Empresa (offline-first)
-  // - inclui pix_chave, __logoA e __logoB quando existirem
-  var empresaSnap = Object.assign({}, getEmpresaSnapshotForPrint(), doc.empresa || {});
-  if(!empresaSnap.__logoA){
-    try{ empresaSnap.__logoA = await getEmpresaLogoAFromLocalStorage(); }catch(e){}
-  }
-
-  const reqBody = {
-    html: html,
-    html_len: __htmlLen,
-    doc_type: docType,
-    doc_uuid: (doc.atendimento && doc.atendimento.atendimento_id) ? String(doc.atendimento.atendimento_id) : undefined,
-    doc_id: (doc.atendimento && (doc.atendimento.numero || doc.atendimento.id)) ? String(doc.atendimento.numero || doc.atendimento.id) : undefined,
-    empresa: empresaSnap,
-    atendimento: doc.atendimento || {},
-    cliente: doc.cliente || doc.cliente_proprietario || {},
-    pacientes: Array.isArray(doc.animais) ? doc.animais.map(a => ({
-      nome: a && (a.nome || a.name || a.animal_nome || a.paciente_nome || a.id || a._id) ? String(a.nome || a.name || a.animal_nome || a.paciente_nome || a.id || a._id) : ""
-    })).filter(p => p && p.nome) : [],
-    animal: (Array.isArray(doc.animais) && doc.animais[0]) ? { nome: String(doc.animais[0].nome || doc.animais[0].name || doc.animais[0].animal_nome || doc.animais[0].paciente_nome || doc.animais[0].id || doc.animais[0]._id || "") } : (doc.animal || doc.paciente || undefined),
-    front_html: html,
-    attachments: Array.isArray(doc.atendimento && doc.atendimento.attachments) ? doc.atendimento.attachments.map(a => ({
-      name: a.name || a.nome,
-      kind: a.kind || (String(a.mime||"")==="application/pdf" ? "PDF" : "Imagem"),
-      dataUrl: a.dataUrl,
-      mime: a.mime,
-      created_at: a.created_at || a.data || a.ts,
-      descricao: a.descricao || a.description || a.desc || ""
-    })) : [],
-  };
-
   const ui = ensurePrintPreviewModal();
-  ui.setState("loading", "Gerando PDF premium (incluindo anexos)…");
-
-  let r;
-  try{
-    r = await fetch("/api/atendimentos/print-pack", {
-      method: "POST",
-      headers: getPrintAuthHeaders(),
-      credentials: "include",
-      body: JSON.stringify(reqBody)
-    });
-  }catch(e){
-    console.error("[SGQT-PRINT][NET] erro:", e);
-    ui.setState("error", "Falha de rede ao gerar o PDF.");
-    snack("Impressão premium: falha de rede ao chamar /api/atendimentos/print-pack.", "err");
-    throw e;
-  }
-
-  if(!r.ok){
-    let detail = "";
-    try{ detail = await r.text(); }catch(_){ }
-    console.error("[SGQT-PRINT][HTTP] status:", r.status, detail);
-    ui.setState("error", "Backend retornou erro ("+r.status+").");
-    if(r.status === 413){
-      snack("Impressão premium: anexos grandes demais (413). Aumente VSC_PRINT_JSON_LIMIT no backend ou reduza anexos.", "warn");
-    }else if(r.status===401||r.status===403){
-      snack("Impressão premium: token ausente/inválido (401/403). Faça login novamente.", "err");
-    }else{
-      snack("Impressão premium: backend retornou erro ("+r.status+").", "err");
-    }
-    throw new Error("PRINT_PACK_HTTP_"+r.status);
-  }
-  // SGQT-PRINT-10.0 — NO-CACHE: usa sempre o PDF retornado no próprio POST
-  const ct = String(r.headers.get("Content-Type") || "").toLowerCase();
-  if(!ct.includes("application/pdf")){
-    let t = "";
-    try{ t = await r.text(); }catch(_){ }
-    console.error("[SGQT-PRINT][HTTP] resposta não-PDF do backend:", ct, t.slice(0, 400));
-    ui.setState("error", "Backend não retornou PDF. Atualize o backend (server.js) para retornar application/pdf.");
-    throw new Error("PRINT_PACK_NOT_PDF");
-  }
-
-  const blob = await r.blob();
-  const fileName = `print-pack-${String(reqBody.doc_uuid || reqBody.doc_id || reqBody.atendimento?.numero || "atendimento")}.pdf`;
-  const url = URL.createObjectURL(blob);
-  ui.setPdf(url, fileName);
-  ui.setState("ready", "PDF pronto.");
+  ui.setState("loading", "Gerando pré-visualização local...");
+  ui.setHtml(html, `relatorio-${String((doc.atendimento && (doc.atendimento.numero || doc.atendimento.id || doc.atendimento.atendimento_id)) || 'atendimento')}.html`);
+  ui.setState("ready", "Pré-visualização local pronta.");
 }
-
 
 // Fallback (modo offline / compatibilidade legada): impressão client-side (PDF.js + window.print())
 function openPrintWindowClient(payload, docType, opts){
@@ -760,9 +1239,11 @@ function openPrintWindowClient(payload, docType, opts){
 
   const R = payload || {};
   const empresa = R.empresa || {};
-    const logoA = empresa.__logoA || empresa.logoA || empresa.logo_a || empresa.logo_a_dataurl || empresa.logo_a_dataUrl || empresa.logo_a_dataURL || empresa.logo_data_url || empresa.logoDataUrl || empresa.logoCliente || empresa.logo_cliente || "";
+  const logoA = resolveEmpresaLogoA(empresa) || "";
+  const logoB = resolveEmpresaLogoB(empresa) || "";
+  const companyPrintLogo = resolvePreferredCompanyPrintLogo(empresa) || "";
+  const empresaNome = resolveEmpresaNome(empresa) || "Empresa";
   const pixKey = empresa.pix_chave || empresa.chave_pix || empresa.pixKey || empresa.pix || empresa.pix_chave_copia_cola || "";
-  const logoB = empresa.__logoB || empresa.logoB || empresa.logo_b || empresa.logo_b_dataurl || empresa.logo_b_dataUrl || empresa.logo_b_dataURL || "";
   const atd = R.atendimento || {};
   const cli = R.cliente || {};
   const animais = Array.isArray(R.animais) ? R.animais : [];
@@ -811,89 +1292,68 @@ function openPrintWindowClient(payload, docType, opts){
     (vet.crmv_uf && vet.crmv_num) ? ("CRMV-"+vet.crmv_uf+" Nº "+vet.crmv_num) : ""
   ].filter(Boolean).join(" — ");
 
-  const css = `
-:root{--text:#0f172a;--muted:#64748b;--bd:#e2e8f0;}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);margin:0;background:#fff;}
-.page{max-width:920px;margin:0 auto;padding:24px 26px 36px;}
-.sheet{position:relative;}
-.sheet + .sheet{margin-top:18px;}
-.hdr{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;border-bottom:2px solid var(--bd);padding-bottom:14px;margin-bottom:16px;}
-.hdr-left{display:flex;gap:14px;align-items:flex-start;}
+  const institutionalCss = (window.VSCPrintTemplate && typeof window.VSCPrintTemplate.getInstitutionalCss === "function")
+    ? window.VSCPrintTemplate.getInstitutionalCss()
+    : ``;
 
-.sysBrand{display:flex;gap:8px;align-items:center;}
-.sysIcon svg{height:34px;width:auto;display:block;}
-.sysName{line-height:1.05}
-.sysMain{font-size:13px;font-weight:900;letter-spacing:-.02em;}
-.sysSub{font-size:11px;color:var(--muted);font-weight:800;}
-.logoA{width:54px;height:54px;object-fit:contain;border:none;border-radius:0;margin:0;}
-.hdr h1{font-size:16px;margin:0;font-weight:900;letter-spacing:-.02em;}
-.small{font-size:12px;color:var(--muted);line-height:1.35;}
-.box{border:1px solid var(--bd);border-radius:12px;padding:12px 14px;margin:12px 0;}
+  const css = `
+${institutionalCss}
+:root{--text:#0f172a;--muted:#64748b;--bd:#d8e1ec;--soft:#f8fbfd;--brand:#0f766e;--brand2:#0ea5e9;}
+body{font-family:'DM Sans',system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:var(--text);margin:0;background:#fff;}
+.page{width:190mm;max-width:190mm;margin:0 auto;padding:8mm 8mm 12mm;box-sizing:border-box;}
+.sheet{position:relative;}
+.sheet + .sheet{margin-top:14px;}
+.sheet--attachments{padding-top:4px;}
+.small{font-size:11px;color:var(--muted);line-height:1.45;}
+.box{border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin:10px 0;background:#fff;}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;}
-.val{font-size:13px;font-weight:800;margin-top:2px;}
-.pre{white-space:pre-wrap;font-weight:600;}
-table{width:100%;border-collapse:collapse;margin-top:8px;}
+.lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;font-weight:800;}
+.val{font-size:13px;font-weight:800;margin-top:3px;}
+.pre{white-space:pre-wrap;font-weight:600;line-height:1.55;}
+.table-tight{margin-top:8px;}
+table{width:100%;border-collapse:collapse;margin-top:8px;border-top:1px solid var(--bd);}
 th,td{border-bottom:1px solid var(--bd);padding:8px 10px;font-size:12.5px;vertical-align:top;}
-th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;text-align:left;}
+th{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;text-align:left;}
 .right{text-align:right;}
 .tot{display:flex;justify-content:flex-end;margin-top:10px;}
 .tot .box{min-width:320px;}
-.section-title{margin-top:18px;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#0b1220;}
+.section-title{margin-top:18px;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:#0f766e;}
 img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid var(--bd);border-radius:10px;}
 .pdf-loading{font-size:12px;color:var(--muted);padding:10px 0;}
 .muted{color:var(--muted);}
-
-/* Marca d'água (somente relatório) */
-.wmLocal{
-  position:absolute; inset:0;
-  display:flex; align-items:center; justify-content:center;
-  pointer-events:none; user-select:none;
-  z-index:0;
-}
-.wmLocal img{
-  width:62%;
-  max-width:560px;
-  border:none !important;
-  border-radius:0 !important;
-  margin:0 !important;
-  opacity:.08;
-  filter:grayscale(1);
-  object-fit:contain;
-}
+.att{margin:12px 0;padding:12px 14px;border:1px solid var(--bd);border-radius:12px;}
+.att--pdf{padding-bottom:10px;}
+.att-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px;}
+.att-title{font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:.06em;color:#334155;}
+.att-kind{font-size:11px;color:var(--muted);font-weight:800;white-space:nowrap;}
+.att-desc-wrap{margin-top:10px;padding-top:10px;border-top:1px dashed #cbd5e1;}
+.att-desc-label{font-size:10px;color:#64748b;text-transform:uppercase;letter-spacing:.09em;font-weight:800;margin-bottom:5px;}
+.att-desc{font-size:12px;color:#0f172a;white-space:pre-wrap;line-height:1.45;}
+.att-nodata{font-size:12px;color:#92400e;background:#fff7ed;padding:8px 10px;border-radius:8px;margin-top:6px;border:1px solid #fed7aa;}
+.wmLocal{position:absolute; inset:0; display:flex; align-items:center; justify-content:center; pointer-events:none; user-select:none; z-index:0;}
+.wmLocal img{width:62%;max-width:560px;border:none !important;border-radius:0 !important;margin:0 !important;opacity:.06;filter:grayscale(1);object-fit:contain;}
 .sheetContent{position:relative; z-index:1;}
-
 .footer{display:none;}
-
 @media print{
-  @page{ size:A4; margin:12mm 12mm 30mm 12mm; } /* reserva espaço p/ rodapé fixo */
+  @page{ size:A4; margin:10mm 10mm 22mm 10mm; }
   .no-print{display:none !important;}
   body{margin:0;}
   .page{max-width:none;padding:0;}
-  .box{break-inside:avoid;}
-  .attachments{break-inside:auto;}
-  .att{break-inside:avoid;}
-  .att-media{break-inside:avoid;}
-  .att-media img{max-height:250mm;}
-  .pdf-pages img{break-inside:avoid; break-after:page;}
-  .pdf-pages img:last-child{break-after:auto;}
-
-  table{break-inside:auto;}
-  tr{break-inside:avoid;}
-  img{break-inside:avoid;}
+  .box,.att-media,tr,canvas{break-inside:avoid;page-break-inside:avoid;}
   .sheet{padding:0;}
-  .sheet + .sheet{break-before:page; margin-top:0;}
-  .footer{
-    display:block;
-    position:fixed; left:0; right:0; bottom:0;
-    padding:4mm 12mm 3mm;
-    font-size:10px; color:var(--muted);
-    background:#fff;
-  }
-  .footer .row{display:flex;justify-content:space-between;gap:10px;align-items:flex-end;}
-  .pnum:before{content:"Página " counter(page) " de " counter(pages);} 
+  .sheet + .sheet{break-before:page;page-break-before:always;margin-top:0;}
+  .att{break-inside:auto;page-break-inside:auto;}
+  .att--image,.att--missing,.att-head,.att-desc-wrap{break-inside:avoid;page-break-inside:avoid;}
+  .pdf-block,.pdf-pages{break-inside:auto;page-break-inside:auto;}
+  .pdf-page{display:flex;justify-content:center;margin:0 0 8mm;break-inside:avoid;page-break-inside:avoid;}
+  .pdf-page:last-child{margin-bottom:0;}
+  .pdf-page img{display:block;margin:0 auto;border:1px solid var(--bd);border-radius:8px;max-width:100%;width:auto;height:auto;max-height:220mm;}
+  .att-inline-image{max-width:100%;width:auto;height:auto;max-height:220mm;margin:0 auto;}
+  .footer{display:block;position:fixed;left:0;right:0;bottom:0;border-top:1px solid var(--bd);padding:2.5mm 10mm;font-size:9px;color:var(--muted);background:#fff;}
+  .footer .row{display:flex;justify-content:space-between;gap:10px;align-items:center;}
 }
   `;
+
 
   const rowsFinanceiro = itens.length ? itens.map(it=>{
     const sub = (Number(it.qtd||0)*Number(it.vu||0));
@@ -926,29 +1386,64 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
 
   const attHtml = ((docType === "clinico") || (docType === "clinico_financeiro")) ? (
     atts.length ? atts.map((a, idx)=>{
-      const isPdf = String(a.mime||"")==="application/pdf";
-      const name = esc(a.name||("Anexo "+(idx+1)));
+      const mime = String(getAttachmentMime(a) || "").toLowerCase();
+      const attNameRaw = getAttachmentName(a, "Anexo " + (idx+1));
+      const isPdf = mime === "application/pdf" || /\.pdf$/i.test(String(attNameRaw||""));
+      const name = esc(attNameRaw);
+      const hasData = !!normalizeInlineAttachmentData(a);
+      const sizeNum = getAttachmentSize(a);
+      const sizeKb = sizeNum ? Math.round(sizeNum/1024) + " KB" : "";
+      const desc = esc(a.descricao || a.description || a.desc || "—");
+      if(!hasData){
+        return `
+          <section class="att att--missing">
+            <div class="att-head">
+              <div class="att-title">${name}</div>
+              <div class="att-kind">${isPdf ? "PDF" : "Imagem"}${sizeKb ? ` • ${sizeKb}` : ""}</div>
+            </div>
+            <div class="att-nodata">⚠ O arquivo não pôde ser carregado para a impressão.</div>
+            <div class="att-desc-wrap">
+              <div class="att-desc-label">Descrição clínica do anexo</div>
+              <div class="att-desc">${desc}</div>
+            </div>
+          </section>
+        `;
+      }
       if(isPdf){
         return `
-          <section class="att">
-            <div class="att-title">${name} • PDF</div>
-            <div class="no-print small"><a href="${a.dataUrl}" target="_blank" rel="noopener">Abrir PDF em nova aba</a></div>
+          <section class="att att--pdf">
+            <div class="att-head">
+              <div class="att-title">${name}</div>
+              <div class="att-kind">PDF${sizeKb ? ` • ${sizeKb}` : ""}</div>
+            </div>
+            <div class="att-desc-wrap">
+              <div class="att-desc-label">Descrição clínica do anexo</div>
+              <div class="att-desc">${desc}</div>
+            </div>
             <div class="pdf-block att-media" data-idx="${idx}">
               <div class="pdf-loading">Renderizando PDF para impressão…</div>
-              <div class="pdf-pages" data-name="${name}" data-dataurl="${a.dataUrl}"></div>
+              <div class="pdf-pages" data-name="${name}" data-dataurl="${normalizeInlineAttachmentData(a)}"></div>
             </div>
-            ${a.descricao ? `<div class="att-desc">${esc(a.descricao)}</div>` : ``}
           </section>
         `;
       }
       return `
-        <section class="att">
-          <div class="att-title">${name} • Imagem</div>
-          <div class="att-media"><img src="${a.dataUrl}" alt="${name}"/></div>${a.descricao ? `<div class="att-desc">${esc(a.descricao)}</div>` : ``}
+        <section class="att att--image">
+          <div class="att-head">
+            <div class="att-title">${name}</div>
+            <div class="att-kind">Imagem${sizeKb ? ` • ${sizeKb}` : ""}</div>
+          </div>
+          <div class="att-media">
+            <img class="att-inline-image" data-anexo="1" src="${normalizeInlineAttachmentData(a)}" alt="${name}" style="max-width:100%;display:block;margin:0 auto;border:1px solid #e2e8f0;border-radius:8px;" />
+          </div>
+          <div class="att-desc-wrap">
+            <div class="att-desc-label">Descrição clínica do anexo</div>
+            <div class="att-desc">${desc}</div>
+          </div>
         </section>
       `;
     }).join("")
-    : `<div class="small muted">Nenhum anexo.</div>`
+    : `<div class="small muted">Nenhum anexo clínico registrado.</div>`
   ) : "";
 
   const vitalsHtml = (animais.length ? animais : (Array.isArray(atd.animal_ids) ? atd.animal_ids.map(id=>({id, nome:id})) : [])).map(a=>{
@@ -961,24 +1456,45 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     </div>`;
   }).join("");
 
-  const bodyClinicoMain = `
+  const headerHtml = (window.VSCPrintTemplate && typeof window.VSCPrintTemplate.renderInstitutionalHeader === "function")
+    ? window.VSCPrintTemplate.renderInstitutionalHeader({
+        systemLogoSrc: location.origin + '/assets/brand/vsc-logo-horizontal.png',
+        systemLogoFallback: '<div class="kado-fallback-system">Vet System Control</div>',
+        companyLogoHtml: companyPrintLogo
+          ? `<img class="kado-company-logo" src="${companyPrintLogo}" alt="Logo institucional da empresa"/>`
+          : `<div class="kado-company-logo-fallback"></div>`,
+        companyName: esc(empresaNome),
+        companyMetaHtml: [
+          empresa.cnpj ? `<div>CNPJ: ${esc(empresa.cnpj)}</div>` : "",
+          empresa.email ? `<div>${esc(empresa.email)}</div>` : "",
+          pixKey ? `<div>PIX: ${esc([empresa.pix_tipo || empresa.pixTipo || '', pixKey, empresa.pix_nome || empresa.pixNome || empresa.favorecido_pix || ''].filter(Boolean).join(' • '))}</div>` : ""
+        ].filter(Boolean).join(""),
+        documentTitle: esc(DOC_LABEL),
+        documentMetaHtml: [
+          `<div><b>Nº:</b> ${esc(atd.numero||"—")}</div>`,
+          `<div><b>Status:</b> ${esc(atd.status||"—")}</div>`,
+          `<div><b>Data de emissão:</b> ${esc(fmtDate(R.gerado_em))}</div>`,
+          `<div><b>Paciente(s):</b> ${esc(animaisTxt||"—")}</div>`
+        ].join("")
+      })
+    : '';
 
-    <div class="box">
-      <div class="grid">
-        <div>
-          <div class="lbl">Cliente / Proprietário</div>
-          <div class="val">${esc(cli.nome||cli.razao_social||atd.cliente_label||"—")}</div>
-          <div class="small">${esc([cli.doc||cli.cnpj||cli.cpf||"", cli.telefone||cli.fone||"", cli.email||""].filter(Boolean).join(" • "))}</div>
-          <div class="small">${esc([cli.endereco||"", cli.cidade||"", cli.uf||"", cli.cep? ("CEP: "+cli.cep):""].filter(Boolean).join(" • "))}</div>
-        </div>
-        <div>
-          <div class="lbl">Paciente(s)</div>
-          <div class="val">${esc(animaisTxt||"—")}</div>
-          <div class="small"><strong>Data:</strong> ${esc(fmtDate(atd.created_at))}</div>
-          <div class="small"><strong>Veterinário:</strong> ${esc(vetLine||"—")}</div>
-        </div>
-      </div>
-    </div>
+  const bodyClinicoMain = (window.VSCPrintTemplate && typeof window.VSCPrintTemplate.renderClinicalInstitutionalCover === "function")
+    ? window.VSCPrintTemplate.renderClinicalInstitutionalCover({
+        spec: esc(DOC_SPEC),
+        originLine1: 'Vet System Control • ERP Equine',
+        originLine2: 'Documento operacional para atendimento, balcão e auditoria clínica.',
+        clientLabel: 'Cliente / Proprietário',
+        clientValue: esc(cli.nome||cli.razao_social||atd.cliente_label||"—"),
+        patientLabel: 'Paciente(s)',
+        patientValue: esc(animaisTxt||"—"),
+        vetLabel: 'Veterinário / Responsável',
+        vetValue: esc(vetLine||"—"),
+        attachmentsLabel: 'Anexos clínicos',
+        attachmentsValue: esc(String(atts.length || 0)),
+        dateLabel: 'Data',
+        dateValue: esc(fmtDate(atd.created_at))
+      }) + `
 
     <div class="section-title">Sinais vitais</div>
     ${vitalsHtml || `<div class="small muted">Nenhum sinal vital registrado.</div>`}
@@ -993,14 +1509,16 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     <div class="box"><div class="pre">${esc(atd.cli_evolucao || "—")}</div></div>
 
     <div class="section-title">Procedimentos / Materiais / Itens utilizados (sem valores)</div>
-    <table>
+    <table class="table-tight">
       <thead><tr>
         <th style="width:110px;">Tipo</th><th>Descrição</th>
         <th style="width:70px;" class="right">Qtd</th>
       </tr></thead>
       <tbody>${rowsClinico}</tbody>
     </table>
-  `;
+  `
+    : ``;
+
 
   const bodyClinicoAttachments = `
     <div class="section-title">Anexos</div>
@@ -1026,22 +1544,6 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
   ` : ``;
 
   const bodyFinanceiro = `
-    <div class="box">
-      <div class="grid">
-        <div>
-          <div class="lbl">Cliente / Proprietário</div>
-          <div class="val">${esc(cli.nome||cli.razao_social||atd.cliente_label||"—")}</div>
-          <div class="small">${esc([cli.doc||cli.cnpj||cli.cpf||"", cli.telefone||cli.fone||""].filter(Boolean).join(" • "))}</div>
-        </div>
-        <div>
-          <div class="lbl">Referência</div>
-          <div class="val">${esc(animaisTxt||"—")}</div>
-          <div class="small"><strong>Data:</strong> ${esc(fmtDate(atd.created_at))}</div>
-          <div class="small"><strong>Atendente/Vet:</strong> ${esc(vetLine||"—")}</div>
-        </div>
-      </div>
-    </div>
-
     <div class="section-title">Lançamentos</div>
     <table>
       <thead><tr>
@@ -1117,32 +1619,9 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       </div>
 
       <div class="sheet sheet--main">
-        ${(docType === "clinico" && logoB) ? `<div class="wmLocal"><img src="${logoB}" alt="Marca d'água"/></div>` : ``}
+        ${(docType === "clinico" && companyPrintLogo) ? `<div class="wmLocal"><img src="${companyPrintLogo}" alt="Marca d'água"/></div>` : ``}
         <div class="sheetContent">
-          <div class="hdr">
-            <div class="hdr-left">
-              <div class="sysBrand">
-                <div class="sysIcon">${SYSTEM_LOGO_SVG}</div>
-                <div class="sysName">
-                  <div class="sysMain">Vet System Control</div>
-                  <div class="sysSub">| Equine</div>
-                </div>
-              </div>
-              ${logoA ? `<img class="logoA" src="${logoA}" alt="Logo A"/>` : ``}
-              <div>
-                <h1>${esc(DOC_LABEL)}</h1>
-                <div class="small">
-                  <div><strong>Nº:</strong> <span class="muted">${esc(atd.numero||"—")}</span></div>
-                  <div><strong>Status:</strong> <span class="muted">${esc(atd.status||"—")}</span></div>
-                  <div><strong>Gerado em:</strong> <span class="muted">${esc(fmtDate(R.gerado_em))}</span></div>
-                </div>
-              </div>
-            </div>
-            <div class="small" style="text-align:right;">
-              <div style="font-weight:900;color:#0b1220;">${esc(empresa.nome||empresa.nome_fantasia||empresa.razao_social||"")}</div>
-              ${empLine ? `<div>${empLine}</div>`:""}
-            </div>
-          </div>
+          ${headerHtml}
 
           ${(docType === "financeiro") ? bodyFinanceiro : (docType === "prescricao") ? bodyPrescricao : (docType === "clinico_financeiro") ? bodyClinicoFinanceiro : bodyClinicoMain}
         </div>
@@ -1199,10 +1678,13 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
             canvas.height = Math.floor(viewport.height);
             var ctx = canvas.getContext('2d', { alpha: false });
             await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+            var wrapper = document.createElement('div');
+            wrapper.className = 'pdf-page';
             var img = document.createElement('img');
             img.alt = 'PDF página ' + p;
             img.src = canvas.toDataURL('image/png');
-            frag.appendChild(img);
+            wrapper.appendChild(img);
+            frag.appendChild(wrapper);
           }
           container.innerHTML = '';
           container.appendChild(frag);
@@ -1265,19 +1747,47 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
           }catch(_e){}
         }
 
-        window.addEventListener('load', async function(){
-          // 1) Renderizar PDFs (se houver) e inserir como imagens (efeito "escaneado")
-          try{ await renderAllPdfs(); } catch(e){}
+        // Renderiza imagens grandes via canvas (evita travamento)
+        async function renderCanvasImages(){
+          var canvases = Array.from(document.querySelectorAll('.att-img-canvas'));
+          for(var cv of canvases){
+            var src = cv.getAttribute('data-src');
+            if(!src) continue;
+            try{
+              var MAX_W = 900, MAX_H = 1200;
+              var img = new Image();
+              await new Promise(function(res,rej){ img.onload=res; img.onerror=rej; img.src=src; });
+              var w = img.naturalWidth, h = img.naturalHeight;
+              var scale = Math.min(1, MAX_W/w, MAX_H/h);
+              cv.width = Math.floor(w*scale);
+              cv.height = Math.floor(h*scale);
+              var ctx = cv.getContext('2d');
+              ctx.drawImage(img, 0, 0, cv.width, cv.height);
+            }catch(e){ cv.style.display='none'; }
+          }
+        }
 
-          // 1b) Renderizar QR PIX (se houver)
+        // Preenche número de páginas no rodapé (Chrome não suporta counter(pages) em about:blank)
+        function fillPageNumbers(){
+          try{
+            var body = document.body;
+            var pageH = 1122; // altura aproximada A4 a 96dpi (297mm)
+            var total = Math.max(1, Math.ceil(body.scrollHeight / pageH));
+            document.querySelectorAll('.pnum').forEach(function(el, i){
+              el.textContent = 'Página ' + (i+1) + ' de ' + total;
+            });
+          }catch(_){}
+        }
+
+                async function preparePrintDocument(){
+          try{ await renderCanvasImages(); } catch(e){}
+          try{ await renderAllPdfs(); } catch(e){}
           try{ renderPixQr(); } catch(e){}
 
-          // 2) Aguardar carregamento/decodificação de todas as imagens antes de imprimir
           async function waitForImages(timeoutMs){
             timeoutMs = timeoutMs || 12000;
             var imgs = Array.from(document.images || []);
             if(!imgs.length) return true;
-
             function one(img){
               return new Promise(function(resolve){
                 if(img.complete && img.naturalWidth > 0) return resolve(true);
@@ -1287,26 +1797,13 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
                 function bad(){ if(done) return; done=true; clearTimeout(to); resolve(false); }
                 img.addEventListener('load', ok, { once:true });
                 img.addEventListener('error', bad, { once:true });
-
-                // decode() melhora confiabilidade (Chrome/Edge)
-                try{
-                  if(typeof img.decode === 'function'){
-                    img.decode().then(ok).catch(function(){ /* mantém listeners */ });
-                  }
-                }catch(_){}
+                try{ if(typeof img.decode === 'function') img.decode().then(ok).catch(function(){}); }catch(_){ }
               });
             }
-
-            // Aguarda todas (não falha se alguma demorar/erro; apenas segue)
-            try{
-              await Promise.all(imgs.map(one));
-              return true;
-            }catch(_e){
-              return false;
-            }
+            try{ await Promise.all(imgs.map(one)); }catch(_){ }
+            return true;
           }
 
-          // 3) Gerar hash de auditoria (integridade)
           try{
             var audit = ${JSON.stringify({
               spec: DOC_SPEC,
@@ -1321,31 +1818,28 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
             var el = document.getElementById('docHash');
             if(el) el.textContent = h ? h : '(indisponível neste navegador)';
           }catch(_e){}
-
-          // 4) Esperar fontes (evita glitches de render) e dar 2 frames para layout estabilizar
-          try{
-            if(document.fonts && document.fonts.ready) { await document.fonts.ready; }
-          }catch(_){}
-
-          try{ await waitForImages(12000); }catch(_){}
-
+          try{ if(document.fonts && document.fonts.ready) { await document.fonts.ready; } }catch(_){ }
+          try{ await waitForImages(12000); }catch(_){ }
+          try{ fillPageNumbers(); }catch(_){ }
           await new Promise(function(r){ requestAnimationFrame(function(){ requestAnimationFrame(r); }); });
-
-          // 5) Imprimir somente após anexos prontos
+          return true;
+        }
+        window.__VSC_PRINT_READY__ = preparePrintDocument();
+        window.__VSC_DO_PRINT__ = async function(){
+          await window.__VSC_PRINT_READY__;
           window.focus();
           window.print();
-        });      })();
+        };
+      })();
     </script>
   </body></html>`;
 
   if(opts.returnHtml) return html;
-
-  const w = window.open("", "_blank");
-  if(!w){ snack("Pop-up bloqueado. Libere pop-ups para imprimir.", "warn"); return; }
-
-  w.document.open();
-  w.document.write(html);
-  w.document.close();
+  const ui = ensurePrintPreviewModal();
+  ui.setState("loading", "Gerando pré-visualização local...");
+  ui.setHtml(html, `relatorio-${String(atd.numero || atd.id || 'atendimento')}.html`);
+  ui.setState("ready", "Pré-visualização local pronta.");
+  return;
 }
 
   async function imprimirAtendimento(db, docType){
@@ -1424,7 +1918,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       if(b.id === "btnPrintClinico") type = "clinico";
       else if(b.id === "btnPrintPrescricao") type = "prescricao";
       else if(b.id === "btnPrintFinanceiro") type = "financeiro";
-      else if(b.id === "btnPrintClinicoFinanceiro") type = "clinico_financeiro";
+      else if(b.id === "btnPrintClinicoFinanceiro" || b.id === "btnPrintCompleto") type = "clinico_financeiro";
 
       // fallback por texto
       if(!type){
@@ -1686,13 +2180,18 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       return `ATD-${year}-${Date.now().toString().slice(-5)}`;
     }
 
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       try {
         const tx = db.transaction([STORE], "readwrite");
         const st = tx.objectStore(STORE);
         const rq = st.get(KEY);
         rq.onsuccess = () => {
-          const current = rq.result || { key: KEY, value: 0, year: year };
+          const current = rq.result || { id: KEY, key: KEY, value: 0, year: year };
+          // Compatibilidade: a store usa keyPath "id", mas mantemos também "key"
+          // para leitura legada e para evitar DataError ao salvar o contador.
+          current.id = KEY;
+          current.key = KEY;
+
           // Resetar se virou ano
           if (Number(current.year || 0) !== year) {
             current.value = 0;
@@ -1727,17 +2226,44 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
   function statusLabel(s) { return STATUS_LABELS[s] || s; }
 
   function updateStatusBadges(status) {
+    const resolved = status || "orcamento";
     ["uiStatusBadge", "uiStatusBadge2"].forEach(id => {
       const el = $(id);
       if (!el) return;
-      el.className = "sbadge sbadge--" + (status || "orcamento");
-      el.textContent = statusLabel(status);
+      el.className = "sbadge sbadge--" + resolved;
+      el.textContent = statusLabel(resolved);
     });
+    setText('uiHeroStatus', statusLabel(resolved), 'Orçamento');
+    setText('uiSummaryStatus', statusLabel(resolved), 'Orçamento');
+    const flowMap = {
+      orcamento: 'Fluxo inicial sem movimentação financeira automática.',
+      em_atendimento: 'Atendimento em execução com prontuário e itens em andamento.',
+      finalizado: 'Prontuário concluído e pronto para faturamento ou fechamento.'
+    };
+    setText('uiSummaryFlow', flowMap[resolved] || 'Prontuário em atualização.', 'Fluxo inicial sem movimentação.');
     const sel = $("status");
-    if (sel) sel.value = status || "orcamento";
+    if (sel) sel.value = resolved;
+    refreshFinalizadoActionButtons();
+  }
+
+  function refreshFinalizadoActionButtons(){
+    const isFinalizado = String(ATD.status || "") === "finalizado";
+    ["btnAlterarFinalizadoTop","btnAlterarFinalizado"].forEach(id => {
+      const b = $(id);
+      if(!b) return;
+      b.style.display = isFinalizado ? "" : "none";
+      b.disabled = !ATD.atendimento_id;
+    });
+    ["btnFinalizarTop","btnFinalizar"].forEach(id => {
+      const b = $(id);
+      if(!b) return;
+      b.style.display = isFinalizado ? "none" : "";
+    });
   }
 
   // ─── Estado do módulo ─────────────────────────────────────────────────
+  let _dbRef = null;
+
   const ATD = {
     atendimento_id: null,
     numero: "",
@@ -1751,6 +2277,9 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     animal_ids: [],
     vitals_by_animal: {},
     vitals_active_animal_id: "",
+    vitals_prefill_by_animal: {},
+    vitals_prefill_pending_by_animal: {},
+    vitals_prefill_dirty_by_animal: {},
     itens: [],
     desconto_tipo: "R$",
     desconto_valor: 0,
@@ -1760,10 +2289,24 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     // estoque: IDs de atendimento que já movimentaram
     estoque_movimentado: false,
     financeiro_gerado: false,
+    financeiro_fechamento_modo: "aberto",
+    financeiro_fechamento_label: "Em aberto",
+    financeiro_tipo_pagamento: "definir_depois",
+    financeiro_preferencia_pagamento: "definir_depois",
+    financeiro_condicao_pagamento: "avista",
+    financeiro_baixa_modo: "manual",
+    financeiro_vencimento: "",
+    financeiro_parcelas: 1,
+    financeiro_intervalo_dias: 30,
+    financeiro_valor_entrada: 0,
+    financeiro_tipo_cobranca: "avulsa",
+    financeiro_aceita_parcial: "sim",
+    financeiro_prazo_custom_dias: 0,
     cr_id: null, // ID do título em contas_receber
     created_at: null,
     updated_at: null,
-    attachments: []
+    attachments: [],
+    vaccine_events: []
   };
 
   // ─── LISTA DE ATENDIMENTOS ────────────────────────────────────────────
@@ -1876,6 +2419,70 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
+  async function resolveLaunchContext(db) {
+    try {
+      const qs = new URLSearchParams(window.location.search || "");
+      const queryCtx = {
+        id: String(qs.get("id") || "").trim(),
+        numero: String(qs.get("numero") || "").trim(),
+        origem: String(qs.get("origem") || "").trim()
+      };
+
+      let sessionCtx = null;
+      try {
+        const raw = sessionStorage.getItem("vsc_atendimento_launch_ctx");
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") sessionCtx = parsed;
+        }
+      } catch (_) { sessionCtx = null; }
+
+      const finalCtx = {
+        id: queryCtx.id || String(sessionCtx?.id || "").trim(),
+        numero: queryCtx.numero || String(sessionCtx?.numero || "").trim(),
+        origem: queryCtx.origem || String(sessionCtx?.origem || "").trim()
+      };
+
+      if (!finalCtx.id && !finalCtx.numero) return null;
+
+      let found = null;
+
+      if (finalCtx.id) {
+        found = await idbGet(db, "atendimentos_master", finalCtx.id);
+      }
+
+      if (!found && finalCtx.numero) {
+        const pool = (_listaCache && _listaCache.length) ? _listaCache : await idbGetAll(db, "atendimentos_master");
+        found = pool.find((row) => String(row?.numero || row?.numero_atendimento || "").trim() === finalCtx.numero) || null;
+      }
+
+      if (!found) {
+        console.warn("[ATD][DEEPLINK] Atendimento não localizado para contexto de abertura.", finalCtx);
+        return { ctx: finalCtx, rec: null };
+      }
+
+      console.info("[ATD][DEEPLINK] Atendimento resolvido via contexto de abertura.", {
+        id: finalCtx.id || found.id || "",
+        numero: finalCtx.numero || found.numero || "",
+        origem: finalCtx.origem || "dashboard"
+      });
+      return { ctx: finalCtx, rec: found };
+    } catch (e) {
+      console.warn("[ATD][DEEPLINK] Falha ao resolver contexto de abertura:", e);
+      return null;
+    }
+  }
+
+  function consumeLaunchContext() {
+    try { sessionStorage.removeItem("vsc_atendimento_launch_ctx"); } catch (_) {}
+    try {
+      const url = new URL(window.location.href);
+      ["id", "numero", "origem"].forEach((k) => url.searchParams.delete(k));
+      const next = url.pathname + (url.searchParams.toString() ? ("?" + url.searchParams.toString()) : "") + (url.hash || "");
+      window.history.replaceState({}, document.title, next);
+    } catch (_) {}
+  }
+
   async function carregarNoFormulario(db, rec) {
     // Recarregar cache de clientes e animais para lookup
     await loadClientesCache(db);
@@ -1920,6 +2527,9 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     ATD.animal_ids = Array.isArray(rec.animal_ids) ? [...rec.animal_ids] : [];
     ATD.vitals_by_animal = rec.vitals_by_animal || {};
     ATD.vitals_active_animal_id = rec.vitals_active_animal_id || "";
+    ATD.vitals_prefill_by_animal = {};
+    ATD.vitals_prefill_pending_by_animal = {};
+    ATD.vitals_prefill_dirty_by_animal = {};
     ATD.itens = Array.isArray(rec.itens) ? [...rec.itens] : [];
     ATD.desconto_tipo = rec.totals?.desconto_tipo || "R$";
     ATD.desconto_valor = rec.totals?.desconto_valor || 0;
@@ -1928,10 +2538,25 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     ATD.deslocamento = rec.totals?.deslocamento || 0;
     ATD.estoque_movimentado = !!rec.estoque_movimentado;
     ATD.financeiro_gerado = !!rec.financeiro_gerado;
+    ATD.financeiro_fechamento_modo = rec.financeiro_fechamento_modo || (ATD.financeiro_gerado ? "gerar_agora" : "aberto");
+    ATD.financeiro_fechamento_label = rec.financeiro_fechamento_label || (ATD.financeiro_gerado ? "Gerado agora" : "Em aberto");
+    ATD.financeiro_observacao = rec.financeiro_observacao || "";
+    ATD.financeiro_tipo_pagamento = rec.financeiro_tipo_pagamento || rec.financeiro_preferencia_pagamento || "definir_depois";
+    ATD.financeiro_preferencia_pagamento = rec.financeiro_preferencia_pagamento || rec.financeiro_tipo_pagamento || "definir_depois";
+    ATD.financeiro_condicao_pagamento = rec.financeiro_condicao_pagamento || "avista";
+    ATD.financeiro_baixa_modo = rec.financeiro_baixa_modo || "manual";
+    ATD.financeiro_vencimento = rec.financeiro_vencimento || rec.data_atendimento || todayYMD();
+    ATD.financeiro_parcelas = Math.max(1, Number(rec.financeiro_parcelas || 1));
+    ATD.financeiro_intervalo_dias = Math.max(0, Number(rec.financeiro_intervalo_dias ?? 30));
+    ATD.financeiro_valor_entrada = Number(rec.financeiro_valor_entrada || 0);
+    ATD.financeiro_tipo_cobranca = rec.financeiro_tipo_cobranca || "avulsa";
+    ATD.financeiro_aceita_parcial = rec.financeiro_aceita_parcial || "sim";
+    ATD.financeiro_prazo_custom_dias = Math.max(0, Number(rec.financeiro_prazo_custom_dias || 0));
     ATD.cr_id = rec.cr_id || null;
     ATD.created_at = rec.created_at || null;
     // Anexos
     ATD.attachments = Array.isArray(rec.attachments) ? [...rec.attachments] : [];
+    ATD.vaccine_events = Array.isArray(rec.vaccine_events) ? [...rec.vaccine_events] : [];
     renderAttachPills();
 
 
@@ -1969,6 +2594,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     updateStatusBadges(ATD.status);
     updateEditorTitle();
     renderLista(db); // atualizar seleção ativa na lista
+    renderExecutivePanels(db).catch(()=>{});
   }
 
   // ─── LOOKUP CLIENTE ───────────────────────────────────────────────────
@@ -2061,13 +2687,279 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
 
   function uiSetCliente(label) {
     $("uiClienteNome") && ($("uiClienteNome").textContent = label || "—");
+    $("uiHeroClienteLine") && ($("uiHeroClienteLine").textContent = label || "—");
   }
 
   function uiSetAnimalResumo(label) {
     $("uiAnimal") && ($("uiAnimal").textContent = label || "—");
+    $("uiHeroAnimalLine") && ($("uiHeroAnimalLine").textContent = label || "—");
     const side = $("uiAnimalSide");
     if (side) { side.textContent = label || ""; side.style.display = label ? "" : "none"; }
   }
+
+
+  function calcIdadeAprox(nascimento){
+    const d = parseDateFlexible(nascimento);
+    if(!d) return "Idade não informada";
+    const now = new Date();
+    let years = now.getFullYear() - d.getFullYear();
+    let months = now.getMonth() - d.getMonth();
+    if(now.getDate() < d.getDate()) months -= 1;
+    if(months < 0){ years -= 1; months += 12; }
+    if(years > 0) return years + (years === 1 ? " ano" : " anos");
+    if(months > 0) return months + (months === 1 ? " mês" : " meses");
+    return "< 1 mês";
+  }
+
+  async function getCatalogName(db, store, id){
+    try{
+      if(!db || !id || !hasStore(db, store)) return "";
+      const rec = await idbGet(db, store, id);
+      return String(rec?.nome || rec?.descricao || "").trim();
+    }catch(_){ return ""; }
+  }
+
+  async function getAnimalProfile(db){
+    try{
+      const rawId = String((ATD.animal_ids||[])[0] || "");
+      if(!db || !hasStore(db, "animais_master")) return null;
+      let rec = null;
+      if(rawId) rec = await idbGet(db, "animais_master", rawId);
+      if(!rec){
+        const all = await idbGetAll(db, "animais_master");
+        const firstName = String((ATD.animais_snapshot && ATD.animais_snapshot[0] && ATD.animais_snapshot[0].nome) || '').trim().toLowerCase();
+        if(firstName){
+          rec = (Array.isArray(all)?all:[]).find(x => x && String(x.nome || '').trim().toLowerCase() === firstName) || null;
+        }
+      }
+      if(!rec) return null;
+      const animalId = String(rec.id || rawId || "");
+      const especie = await getCatalogName(db, "animais_especies", rec.especie_id);
+      const raca = await getCatalogName(db, "animais_racas", rec.raca_id);
+      const nascimento = rec.nascimento || rec.data_nascimento || rec.nascimento_data || rec.nascimento_em || rec.dt_nascimento || rec.birth_date || "";
+      return {
+        id: animalId,
+        nome: String(rec.nome || "Paciente não selecionado"),
+        foto: String(rec.foto_data || rec.foto || rec.image || rec.imagem || ""),
+        especie,
+        raca,
+        sexo: String(rec.sexo || "").trim(),
+        idade: calcIdadeAprox(nascimento),
+        nascimento,
+        pelagem: await getCatalogName(db, "animais_pelagens", rec.pelagem_id),
+      };
+    }catch(_){ return null; }
+  }
+
+  async function getRecentAtendimentosForAnimal(db, animalId){
+    try{
+      if(!db || !animalId || !hasStore(db, "atendimentos_master")) return [];
+      const all = await idbGetAll(db, "atendimentos_master");
+      return (Array.isArray(all)?all:[])
+        .filter(r => r && Array.isArray(r.animal_ids) && r.animal_ids.map(String).includes(String(animalId)))
+        .sort((a,b)=> String(b.data_atendimento || b.created_at || "").localeCompare(String(a.data_atendimento || a.created_at || "")))
+        .slice(0,6);
+    }catch(_){ return []; }
+  }
+
+  function renderFinanceiroResumo(){
+    const badge = $("uiFinanceiroBadge");
+    const resumo = $("uiResumoFinanceiro");
+    const resumoBox = $("uiResumoFinanceiroBox");
+    const heroFinanceiro = $("uiHeroFinanceiro");
+    const total = fmtBRL(Math.max(0, itensSubtotal() - calcDesconto(itensSubtotal()) + (ATD.deslocamento||0)));
+    const itensCount = String((ATD.itens||[]).length || 0);
+    $("uiResumoItens") && ($("uiResumoItens").textContent = itensCount);
+    $("uiResumoTotal") && ($("uiResumoTotal").textContent = total);
+    $("uiSummaryItens") && ($("uiSummaryItens").textContent = itensCount);
+    $("uiSummaryItensTxt") && ($("uiSummaryItensTxt").textContent = (ATD.itens||[]).length ? 'Produtos, serviços e exames lançados.' : 'Sem produtos ou serviços.');
+    const label = ATD.financeiro_gerado ? "Gerado agora" : (ATD.financeiro_fechamento_label || "Em aberto");
+    if(resumo) resumo.textContent = label;
+    if(resumoBox) resumoBox.textContent = label;
+    $("uiSummaryFinanceiro") && ($("uiSummaryFinanceiro").textContent = label);
+    $("uiSummaryFinanceiroTxt") && ($("uiSummaryFinanceiroTxt").textContent = ATD.financeiro_gerado ? 'Título já lançado em contas a receber.' : 'Definido no fluxo de finalização.');
+    if(badge){
+      badge.className = 'hero-pill' + (ATD.financeiro_gerado ? '' : ' info');
+      badge.textContent = ATD.financeiro_gerado ? 'Financeiro gerado agora' : ('Financeiro em aberto • ' + label);
+    }
+    if(heroFinanceiro){
+      heroFinanceiro.className = 'hero-pill' + (ATD.financeiro_gerado ? '' : ' info');
+      heroFinanceiro.textContent = ATD.financeiro_gerado ? 'Financeiro gerado agora' : ('Financeiro em aberto • ' + label);
+    }
+    $("uiHeroTotal") && ($("uiHeroTotal").textContent = total);
+  }
+
+  function renderPrescriptionSummary(){
+    const box = $("uiRxSummary");
+    if(!box) return;
+    const itens = Array.isArray(ATD.itens) ? ATD.itens : [];
+    if(!itens.length){
+      box.innerHTML = '<div class="atd-empty-soft">Nenhum item clínico lançado ainda.</div>';
+      return;
+    }
+    box.innerHTML = itens.slice(0,8).map(it => {
+      const tipo = String(it.tipo || 'ITEM').toUpperCase();
+      const qtd = Number(it.qtd || 0);
+      const title = esc(String(it.desc || it.nome || 'Item sem descrição'));
+      const sub = esc(tipo + (it.vu ? ' • ' + fmtBRL(it.vu) : ''));
+      return `<div class="rx-item"><div style="min-width:0;"><div class="rx-item__title">${title}</div><div class="rx-item__sub">${sub}</div></div><div class="rx-item__qty">${qtd > 0 ? qtd + 'x' : '—'}</div></div>`;
+    }).join('');
+  }
+
+  function renderTimelineResumo(){
+    const box = $("uiTimelineResumo");
+    if(!box) return;
+    const itens = [];
+    itens.push({t:'Prontuário', s: ATD.numero ? ('Número ' + ATD.numero) : 'Novo atendimento em elaboração'});
+    itens.push({t:'Status atual', s: statusLabel(ATD.status)});
+    itens.push({t:'Fechamento financeiro', s: ATD.financeiro_gerado ? 'Título gerado em Contas a Receber' : (ATD.financeiro_fechamento_label || 'Em aberto')});
+    box.innerHTML = itens.map(i => `<div class="mini-item"><div class="mini-item__main"><div class="mini-item__title">${esc(i.t)}</div><div class="mini-item__sub">${esc(i.s)}</div></div></div>`).join('');
+  }
+
+  function setText(id, value, fallback){
+    const el = $(id);
+    if(el) el.textContent = (value == null || value === "") ? (fallback || "—") : String(value);
+  }
+
+  function resolveCurrentStatusMeta(){
+    const status = String(ATD.status || $("status")?.value || "orcamento");
+    const mapa = {
+      orcamento: 'Fluxo inicial sem movimentação financeira automática.',
+      em_atendimento: 'Atendimento em execução com prontuário e itens em andamento.',
+      finalizado: 'Prontuário concluído e pronto para faturamento ou fechamento.'
+    };
+    return { status, label: statusLabel(status), flow: mapa[status] || 'Prontuário em atualização.' };
+  }
+
+  function getCurrentAnimalName(profile){
+    return String((profile && profile.nome) || (ATD.animais_snapshot && ATD.animais_snapshot[0] && ATD.animais_snapshot[0].nome) || $("uiAnimalSide")?.textContent || "").trim();
+  }
+
+  function getAttachmentStats(){
+    const items = Array.isArray(ATD.attachments) ? ATD.attachments : [];
+    let semDescricao = 0;
+    items.forEach(a => {
+      if(!String(a?.descricao || a?.description || '').trim()) semDescricao += 1;
+    });
+    return { total: items.length, semDescricao };
+  }
+
+  function resolvePreviousWeightFromHistory(hist, currentId){
+    const prev = (Array.isArray(hist) ? hist : []).find(r => String(r?.id || '') !== String(currentId || ''));
+    if(!prev) return { label: '—', dateLabel: '—', raw: null };
+    const vitals = prev.vitals_by_animal || {};
+    let weight = null;
+    Object.keys(vitals).some(k => {
+      const v = vitals[k];
+      const p = Number(v?.peso || 0);
+      if(p > 0){ weight = p; return true; }
+      return false;
+    });
+    if(weight == null) weight = Number(prev?.peso || prev?.peso_anterior || 0) || null;
+    return {
+      label: weight ? String(weight).replace('.',',') + ' kg' : '—',
+      dateLabel: fmtDate(prev.data_atendimento || prev.data || prev.created_at || prev.updated_at),
+      raw: prev
+    };
+  }
+
+  function renderExecutiveSnapshot(profile, hist){
+    const statusMeta = resolveCurrentStatusMeta();
+    const animalName = getCurrentAnimalName(profile) || 'Nenhum animal vinculado.';
+    const attachments = getAttachmentStats();
+    const prevWeight = resolvePreviousWeightFromHistory(hist, ATD.atendimento_id);
+    const dataAtual = fmtDate(ATD.data_atendimento || $("data_atendimento")?.value || ATD.created_at);
+    const delta = String($("v_peso_delta")?.value || '').trim();
+    const alertMessages = [];
+    if(delta && delta !== '—' && !/^\+?0([,.]0+)?\s*kg$/i.test(delta)) alertMessages.push('Variação de peso ' + delta);
+    if(attachments.semDescricao > 0) alertMessages.push('Anexo sem descrição clínica');
+    setText('uiHeroData', dataAtual, 'Data não definida');
+    setText('uiHeroPesoAnterior', prevWeight.label, '—');
+    setText('uiHeroUltimo', prevWeight.dateLabel || '—', '—');
+    setText('uiHeroStatus', statusMeta.label, 'Orçamento');
+    setText('uiSummaryStatus', statusMeta.label, 'Orçamento');
+    setText('uiSummaryFlow', statusMeta.flow, 'Fluxo inicial sem movimentação.');
+    setText('uiSummaryAnimais', String((ATD.animal_ids || []).length || 0), '0');
+    setText('uiSummaryAnimalNome', animalName, 'Nenhum animal vinculado.');
+    setText('uiHeroAnexos', String(attachments.total), '0');
+    setText('uiHeroAlertasQtd', String(alertMessages.length), '0');
+    setText('uiHeroAlertaTexto', alertMessages[0] || 'Sem alertas clínicos automáticos.', 'Sem alertas clínicos automáticos.');
+  }
+
+  async function renderExecutivePanels(db){
+    renderFinanceiroResumo();
+    renderPrescriptionSummary();
+    renderTimelineResumo();
+    const avatar = $("uiHeroAvatar");
+    const nameEl = $("uiHeroName");
+    const registroEl = $("uiHeroRegistro");
+    const metaEl = $("uiHeroMeta");
+    const tutorEl = $("uiHeroTutor");
+    const ultimoEl = $("uiHeroUltimo");
+    const pesoEl = $("uiHeroPesoAnterior");
+    const dataEl = $("uiHeroData");
+    const histEl = $("uiRecentAtendimentos");
+    const alertsEl = $("uiHeroAlerts");
+    const profile = await getAnimalProfile(db);
+    if(profile){
+      if(avatar) avatar.innerHTML = profile.foto && profile.foto.startsWith('data:image/') ? `<img src="${profile.foto}" alt="paciente"/>` : '🐴';
+      if(nameEl) nameEl.textContent = profile.nome;
+      if(registroEl) registroEl.textContent = ATD.numero ? ('Registro clínico • ' + ATD.numero) : 'Registro clínico em criação';
+      const meta = [profile.especie || 'Espécie não informada', profile.raca || 'Raça não informada', profile.idade].filter(Boolean).join(' · ');
+      if(metaEl) metaEl.innerHTML = '<strong>' + esc(meta) + '</strong>';
+    }else{
+      if(avatar) avatar.textContent = '🐴';
+      if(nameEl) nameEl.textContent = 'Paciente não selecionado';
+      if(registroEl) registroEl.textContent = ATD.numero ? ('Registro clínico • ' + ATD.numero) : 'Registro clínico —';
+      if(metaEl) metaEl.textContent = 'Selecione o cliente e o animal para iniciar o atendimento clínico premium.';
+    }
+    if(tutorEl) tutorEl.textContent = ATD.cliente_label || '—';
+    if(dataEl) dataEl.textContent = fmtDate(ATD.data_atendimento || $("data_atendimento")?.value || ATD.created_at) || 'Data não definida';
+    if(pesoEl) pesoEl.textContent = $("v_peso_prev")?.value || '—';
+
+    let hist = [];
+    if(profile?.id) hist = await getRecentAtendimentosForAnimal(db, profile.id);
+    if(ultimoEl){
+      const prev = hist.find(r => String(r.id) !== String(ATD.atendimento_id));
+      ultimoEl.textContent = prev ? fmtDate(prev.data_atendimento || prev.data || prev.created_at || prev.updated_at) : '—';
+    }
+    if(histEl){
+      if(!hist.length){
+        histEl.innerHTML = '<div class="atd-empty-soft">Sem histórico recente para o animal selecionado.</div>';
+      } else {
+        let currentYear = '';
+        histEl.innerHTML = hist.map(r => {
+          const year = String(toYMD(r.data_atendimento || r.created_at || r.updated_at) || '').slice(0,4) || 'Sem data';
+          const titulo = esc(String(r.cli_diagnostico || r.observacoes || statusLabel(r.status || 'orcamento')).slice(0,80) || 'Atendimento sem descrição');
+          const sub = esc((r.status ? statusLabel(r.status) : 'Atendimento') + ' • ' + fmtBRL(r.totals?.total_geral || 0));
+          const prefix = year !== currentYear ? `<div class="history-year">${esc(year)}</div>` : '';
+          currentYear = year;
+          return `${prefix}<div class="history-item history-item--clickable" data-atd-id="${esc(String(r.id || ''))}"><div class="history-item__date">${esc(fmtDate(r.data_atendimento || r.created_at))}</div><div class="history-item__main"><div class="history-item__title">${titulo}</div><div class="history-item__sub">${sub}</div></div><div class="history-item__cta">Abrir</div></div>`;
+        }).join('');
+      }
+    }
+    if(alertsEl){
+      const delta = String($("v_peso_delta")?.value || '').trim();
+      const prev = hist.find(r => String(r.id) !== String(ATD.atendimento_id));
+      const prevDate = parseDateFlexible(prev?.data_atendimento || prev?.data || prev?.created_at || prev?.updated_at);
+      const diasSemConsulta = prevDate ? Math.floor((Date.now() - prevDate.getTime()) / 86400000) : 0;
+      if(delta && delta !== '—' && !delta.startsWith('+') && !delta.startsWith('0')){
+        alertsEl.className = 'hero-pill warn';
+        alertsEl.textContent = 'Atenção: variação de peso ' + delta;
+      } else if ((ATD.attachments||[]).some(a => !String(a?.descricao||a?.description||'').trim())) {
+        alertsEl.className = 'hero-pill warn';
+        alertsEl.textContent = 'Há anexos sem descrição para auditoria clínica';
+      } else if (diasSemConsulta >= 180) {
+        alertsEl.className = 'hero-pill warn';
+        alertsEl.textContent = 'Intervalo clínico elevado • ' + diasSemConsulta + ' dias sem retorno';
+      } else {
+        alertsEl.className = 'hero-pill info';
+        alertsEl.textContent = 'Sem alertas clínicos automáticos';
+      }
+    }
+    renderExecutiveSnapshot(profile, hist);
+  }
+
 
   function wireLookup(getDb) {
     const inp = $("cliente_id");
@@ -2124,7 +3016,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
 
   function avatarHtml(a) {
     try {
-      const foto = String(a?.foto_data || "").trim();
+      const foto = String(a?.foto_data || a?.foto || a?.image || a?.imagem || a?.avatar || "").trim();
       const ini = (String(a?.nome || "").trim().slice(0, 1) || "🐴").toUpperCase();
       if (foto && foto.startsWith("data:image/"))
         return `<img src="${foto}" alt="foto" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" />`;
@@ -2136,10 +3028,28 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     const cid = String(cliente_id || "").trim();
     if (!cid) return [];
     const all = await idbGetAll(db, "animais_master");
-    return (Array.isArray(all) ? all : [])
-      .filter(a => a && !a.deleted && !a.deleted_at && String(a.cliente_id || a.proprietario_id || "") === cid)
-      .map(a => ({ id: String(a.id || ""), nome: String(a.nome || "(sem nome)"), foto_data: String(a.foto_data || ""), ativo: !(a.ativo === false || a.ativo === 0) }))
+    let clienteNome = '';
+    try{
+      if(hasStore(db, 'clientes_master')){
+        const cli = await idbGet(db, 'clientes_master', cid);
+        clienteNome = String(cli?.nome || cli?.razao_social || '').trim().toLowerCase();
+      }
+    }catch(_){ }
+    const items = (Array.isArray(all) ? all : [])
+      .filter(a => {
+        if(!a || a.deleted || a.deleted_at) return false;
+        const animalCli = String(a.cliente_id || a.proprietario_id || a.tutor_id || '');
+        if(animalCli === cid) return true;
+        if(clienteNome){
+          const nomeTutor = String(a.tutor_nome || a.proprietario_nome || a.cliente_nome || a.tutor || '').trim().toLowerCase();
+          if(nomeTutor && nomeTutor === clienteNome) return true;
+        }
+        return false;
+      })
+      .map(a => ({ id: String(a.id || ""), nome: String(a.nome || "(sem nome)"), foto_data: String(a.foto_data || a.foto || a.image || a.imagem || ''), ativo: !(a.ativo === false || a.ativo === 0) }))
       .filter(a => a.id);
+    items.sort((a,b) => String(a.nome||'').localeCompare(String(b.nome||''), 'pt-BR', {sensitivity:'base'}));
+    return items;
   }
 
   function renderPickList() {
@@ -2215,6 +3125,10 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
         applyPickedAnimals(true);
       }
     });
+    $("vscVaccineClose")?.addEventListener("click", closeVaccineModal);
+    $("vscVaccineSkip")?.addEventListener("click", closeVaccineModal);
+    $("vscVaccineSave")?.addEventListener("click", (ev)=>{ ev.preventDefault(); saveVaccineModal(); });
+    $("vscVaccineModal")?.addEventListener("click", (ev)=>{ if (ev.target === $("vscVaccineModal")) closeVaccineModal(); });
     document.addEventListener("change", (ev) => {
       if (ev.target?.id === "vscVitalsAnimalSel") {
         ATD.vitals_active_animal_id = ev.target.value;
@@ -2223,6 +3137,10 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     });
     $("btnVitalsApply")?.addEventListener("click", (ev) => { ev.preventDefault(); applyVitalsFromUI(); });
     $("btnVitalsClear")?.addEventListener("click", (ev) => { ev.preventDefault(); clearVitalsUI(); });
+    VITALS_FIELD_IDS.forEach(id => {
+      $(id)?.addEventListener('input', markVitalsPrefillDirty);
+      $(id)?.addEventListener('change', markVitalsPrefillDirty);
+    });
   }
 
   function applyPickedAnimals(showSnack) {
@@ -2268,6 +3186,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     if (hint) hint.textContent = ids.length ? ids.length + " animal(is) selecionado(s)." : "Selecione um cliente para listar os animais.";
 
     loadVitalsForActiveAnimal();
+    renderExecutivePanels(_dbRef).catch(()=>{});
     if (showSnack) snack("Animais aplicados: " + ids.length + ".", "ok");
   }
 
@@ -2346,26 +3265,184 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     return parts.length ? parts.join(" · ") : "—";
   }
 
-  function loadVitalsForActiveAnimal() {
+  const VITALS_FIELD_IDS = ["v_temp","v_fc","v_fr","v_peso","v_mm","v_trc","v_hid","v_dor"];
+
+  function vitalsMatch(a, b){
+    const va = a || {};
+    const vb = b || {};
+    return ['temp','fc','fr','peso','mm','trc','hid','dor'].every(k => String(va[k] ?? '').trim() === String(vb[k] ?? '').trim());
+  }
+
+  function refreshVitalsResumoStatus(aid){
+    aid = aid || getActiveAnimalIdForVitals();
+    const label = $('uiVitalsResumo');
+    if(!label || !aid) return;
+    const current = ATD.vitals_by_animal[aid] || null;
+    if(current){
+      label.textContent = vitalsResumo(current);
+      return;
+    }
+    const pending = !!ATD.vitals_prefill_pending_by_animal?.[aid];
+    const dirty = !!ATD.vitals_prefill_dirty_by_animal?.[aid];
+    const prefill = ATD.vitals_prefill_by_animal?.[aid] || null;
+    if(pending && prefill){
+      label.textContent = dirty
+        ? 'Histórico ajustado no formulário · salvar ou aplicar para registrar'
+        : 'Histórico carregado · clique Aplicar se os dados permanecerem iguais';
+      return;
+    }
+    label.textContent = prefill ? vitalsResumo(prefill) : '—';
+  }
+
+  function markVitalsPrefillDirty(){
+    const aid = getActiveAnimalIdForVitals();
+    if(!aid || !ATD.vitals_prefill_pending_by_animal?.[aid]) return;
+    const current = vitalsReadFromUI();
+    const original = ATD.vitals_prefill_by_animal?.[aid] || null;
+    ATD.vitals_prefill_dirty_by_animal[aid] = !vitalsMatch(current, original);
+    refreshVitalsResumoStatus(aid);
+  }
+
+  async function fetchVitalsHistory(db, animalId){
+    if(!db || !animalId || !hasStore(db, "animal_vitals_history")) return [];
+    const all = await idbGetAll(db, "animal_vitals_history");
+    return (Array.isArray(all) ? all : []).filter(x => String(x?.animal_id||"") === String(animalId||"")).sort((a,b)=>String(b?.recorded_at||b?.updated_at||"").localeCompare(String(a?.recorded_at||a?.updated_at||"")));
+  }
+
+  function renderVitalsHistoryUI(rows){
+    const box = $("vitalsHistoryList");
+    if(box) box.innerHTML = rows && rows.length ? rows.slice(0,6).map(r => `<div style="padding:8px 0;border-bottom:1px solid #e2e8f0;"><b>${fmtDate(r.recorded_at||r.updated_at||"")}</b><div>${esc(vitalsResumo(r))}</div></div>`).join("") : "Nenhum histórico clínico.";
+    const prev = rows && rows.length ? rows[0] : null;
+    $("v_peso_prev") && ($("v_peso_prev").value = prev && prev.peso ? String(prev.peso).replace('.',',') + ' kg' : '—');
+    const atual = toNumPt($("v_peso")?.value);
+    const delta = (prev && prev.peso && atual) ? (atual - Number(prev.peso)) : null;
+    $("v_peso_delta") && ($("v_peso_delta").value = (delta==null || !isFinite(delta)) ? '—' : ((delta>0?'+':'') + String(delta.toFixed(1)).replace('.',',') + ' kg'));
+    $("v_last_seen") && ($("v_last_seen").value = prev ? fmtDate(prev.recorded_at||prev.updated_at||"") : '—');
+  }
+
+  function vitalsHasContent(v){
+    if(!v) return false;
+    return ['temp','fc','fr','peso','mm','trc','hid','dor'].some(k => {
+      const value = v[k];
+      return value !== '' && value != null && !(typeof value === 'number' && value === 0);
+    });
+  }
+
+  async function persistVitalsSnapshot(db, aid, v, source){
+    if(!db || !aid || !vitalsHasContent(v) || !hasStore(db, 'animal_vitals_history')) return;
+    const id = `${ATD.atendimento_id || 'draft'}::${aid}`;
+    await idbPut(db, 'animal_vitals_history', Object.assign({
+      id,
+      animal_id: aid,
+      atendimento_id: ATD.atendimento_id || null,
+      recorded_at: ATD.data_atendimento ? `${ATD.data_atendimento}T12:00:00` : isoNow(),
+      updated_at: isoNow(),
+      user_id: ATD.responsavel_user_id || null,
+      source: source || 'save'
+    }, v));
+  }
+
+  function captureActiveVitalsFromUI(){
+    const aid = getActiveAnimalIdForVitals();
+    if(!aid) return null;
+    const v = vitalsReadFromUI();
+    const pending = !!ATD.vitals_prefill_pending_by_animal?.[aid];
+    const dirty = !!ATD.vitals_prefill_dirty_by_animal?.[aid];
+    if(vitalsHasContent(v)){
+      if(pending && !dirty){
+        delete ATD.vitals_by_animal[aid];
+        refreshVitalsResumoStatus(aid);
+        return { aid, v:null, skipped_prefill:true };
+      }
+      ATD.vitals_by_animal[aid] = v;
+      delete ATD.vitals_prefill_by_animal[aid];
+      delete ATD.vitals_prefill_pending_by_animal[aid];
+      delete ATD.vitals_prefill_dirty_by_animal[aid];
+      refreshVitalsResumoStatus(aid);
+      return { aid, v };
+    }
+    if(!pending){
+      delete ATD.vitals_by_animal[aid];
+    }
+    refreshVitalsResumoStatus(aid);
+    return { aid, v:null };
+  }
+
+  async function captureAllVitalsForSave(db){
+    const current = captureActiveVitalsFromUI();
+    if(current && current.v){
+      try{ await persistVitalsSnapshot(db, current.aid, current.v, 'save'); }catch(_){ }
+    }
+  }
+
+  async function loadVitalsForActiveAnimal() {
     const aid = getActiveAnimalIdForVitals();
     setVitalsVisible(!!aid);
-    if (!aid) { $("uiVitalsResumo") && ($("uiVitalsResumo").textContent = "—"); return; }
-    const v = ATD.vitals_by_animal[aid] || null;
-    vitalsWriteToUI(v);
-    $("uiVitalsResumo") && ($("uiVitalsResumo").textContent = v ? vitalsResumo(v) : "—");
+    if (!aid) { $('uiVitalsResumo') && ($('uiVitalsResumo').textContent = '—'); renderVitalsHistoryUI([]); renderExecutivePanels(_dbRef).catch(()=>{}); return; }
     renderVitalsAnimalSelector();
+    try{
+      const db = await window.VSC_DB.openDB();
+      const hist = await fetchVitalsHistory(db, aid);
+      const current = ATD.vitals_by_animal[aid] || null;
+      const prefill = !current && hist.length ? hist[0] : null;
+      if(current){
+        vitalsWriteToUI(current);
+        delete ATD.vitals_prefill_by_animal[aid];
+        delete ATD.vitals_prefill_pending_by_animal[aid];
+        delete ATD.vitals_prefill_dirty_by_animal[aid];
+      }else if(prefill){
+        ATD.vitals_prefill_by_animal[aid] = prefill;
+        ATD.vitals_prefill_pending_by_animal[aid] = true;
+        ATD.vitals_prefill_dirty_by_animal[aid] = false;
+        vitalsWriteToUI(prefill);
+      }else{
+        vitalsWriteToUI(null);
+        delete ATD.vitals_prefill_by_animal[aid];
+        delete ATD.vitals_prefill_pending_by_animal[aid];
+        delete ATD.vitals_prefill_dirty_by_animal[aid];
+      }
+      refreshVitalsResumoStatus(aid);
+      renderVitalsHistoryUI(hist);
+      try{ db.close(); }catch(_){}
+    }catch(_){ renderVitalsHistoryUI([]); }
   }
 
-  function applyVitalsFromUI() {
+  async function applyVitalsFromUI() {
     const aid = getActiveAnimalIdForVitals();
-    if (!aid) { snack("Selecione um animal para registrar vitais.", "err"); return; }
+    if (!aid) { snack('Selecione um animal para registrar vitais.', 'err'); return; }
     const v = vitalsReadFromUI();
-    ATD.vitals_by_animal[aid] = v;
-    $("uiVitalsResumo") && ($("uiVitalsResumo").textContent = vitalsResumo(v));
-    snack("Sinais vitais aplicados.", "ok");
+    if(!vitalsHasContent(v) && ATD.vitals_prefill_by_animal[aid]){
+      vitalsWriteToUI(ATD.vitals_prefill_by_animal[aid]);
+      ATD.vitals_by_animal[aid] = Object.assign({}, ATD.vitals_prefill_by_animal[aid], { updated_at: isoNow() });
+    } else {
+      ATD.vitals_by_animal[aid] = v;
+    }
+    delete ATD.vitals_prefill_by_animal[aid];
+    delete ATD.vitals_prefill_pending_by_animal[aid];
+    delete ATD.vitals_prefill_dirty_by_animal[aid];
+    refreshVitalsResumoStatus(aid);
+    try{
+      const db = await window.VSC_DB.openDB();
+      await persistVitalsSnapshot(db, aid, ATD.vitals_by_animal[aid], 'apply');
+      const hist = await fetchVitalsHistory(db, aid);
+      renderVitalsHistoryUI(hist);
+      try{ db.close(); }catch(_){}
+    }catch(_){ }
+    snack('Sinais vitais confirmados para este atendimento.', 'ok');
   }
 
-  function clearVitalsUI() { vitalsWriteToUI(null); $("uiVitalsResumo") && ($("uiVitalsResumo").textContent = "—"); }
+  function clearVitalsUI() {
+    const aid = getActiveAnimalIdForVitals();
+    vitalsWriteToUI(null);
+    if(aid){
+      delete ATD.vitals_by_animal[aid];
+      delete ATD.vitals_prefill_by_animal[aid];
+      delete ATD.vitals_prefill_pending_by_animal[aid];
+      delete ATD.vitals_prefill_dirty_by_animal[aid];
+    }
+    refreshVitalsResumoStatus(aid);
+  }
+
 
   // ─── CATÁLOGO + MODAL ITEM ────────────────────────────────────────────
   const STORE_MAP = {
@@ -2389,6 +3466,8 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
         nome: String(r[cfg.nameField] || ""),
         preco_cents: Number(r[cfg.priceField] || 0),
         tipo,
+        tipo_produto: String(r.tipo_produto || "").toLowerCase(),
+        categoria: String(r.categoria || ""),
         // para produtos: saldo de estoque
         saldo_estoque: r.saldo_estoque != null ? Number(r.saldo_estoque) : null
       })).filter(r => r.id);
@@ -2510,17 +3589,74 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       }
     }
 
-    ATD.itens.push({
+    const newItem = {
       id: uuidv4(),
       tipo,
       desc,
       qtd,
       vu,
-      catalog_id: catalogId
-    });
+      catalog_id: catalogId,
+      tipo_produto: _selectedCatalogItem?.tipo_produto || "",
+      categoria: _selectedCatalogItem?.categoria || ""
+    };
+    ATD.itens.push(newItem);
     renderItens();
     closeItemModal();
     snack("Item adicionado.", "ok");
+    const isVaccine = tipo === "PRODUTO" && (String(newItem.tipo_produto||"").toLowerCase() === "vacina" || String(newItem.categoria||"").toLowerCase().includes("vacin"));
+    if(isVaccine) openVaccineModalForItem(newItem);
+  }
+
+  let _pendingVaccineItem = null;
+
+  function openVaccineModalForItem(item){
+    const m = $("vscVaccineModal"); if(!m) return;
+    _pendingVaccineItem = item || null;
+    $("vac_nome") && ($("vac_nome").value = String(item?.desc || item?.nome || ""));
+    $("vac_data") && ($("vac_data").value = toYMD(ATD.data_atendimento || isoNow()) || todayYMD());
+    $("vac_lote") && ($("vac_lote").value = "");
+    $("vac_proxima") && ($("vac_proxima").value = "");
+    $("vac_obs") && ($("vac_obs").value = "");
+    const aid = getActiveAnimalIdForVitals() || (ATD.animal_ids||[])[0] || "";
+    const an = MODAL_ALL.find(x => String(x.id) === String(aid||""));
+    $("vscVaccineHint") && ($("vscVaccineHint").textContent = aid ? `Registrar aplicação para ${an ? an.nome : 'animal selecionado'}.` : 'Selecione um animal antes de registrar.');
+    m.classList.remove("hidden"); m.setAttribute("aria-hidden","false");
+  }
+
+  function closeVaccineModal(){
+    const m=$("vscVaccineModal"); if(!m) return;
+    m.classList.add("hidden"); m.setAttribute("aria-hidden","true");
+    _pendingVaccineItem = null;
+  }
+
+  async function saveVaccineModal(){
+    const aid = getActiveAnimalIdForVitals() || (ATD.animal_ids||[])[0] || "";
+    if(!aid){ snack("Selecione um animal para registrar a vacina.", "err"); return; }
+    const item = _pendingVaccineItem;
+    if(!item){ closeVaccineModal(); return; }
+    const ev = {
+      id: uuidv4(),
+      item_id: item.id,
+      animal_id: aid,
+      atendimento_id: ATD.atendimento_id || null,
+      produto_id: item.catalog_id || null,
+      vacina_nome: String($("vac_nome")?.value || item.desc || "").trim(),
+      lote: String($("vac_lote")?.value || "").trim(),
+      data_aplicacao: String($("vac_data")?.value || toYMD(ATD.data_atendimento || isoNow()) || "").trim(),
+      proxima_dose: String($("vac_proxima")?.value || "").trim(),
+      observacao: String($("vac_obs")?.value || "").trim(),
+      created_at: isoNow(),
+      user_id: ATD.responsavel_user_id || null
+    };
+    ATD.vaccine_events = (ATD.vaccine_events||[]).filter(v => String(v.item_id||"") !== String(item.id));
+    ATD.vaccine_events.push(ev);
+    try{
+      const db = await window.VSC_DB.openDB();
+      if(hasStore(db, "animal_vaccines")) await idbPut(db, "animal_vaccines", ev);
+      try{ db.close(); }catch(_){}
+    }catch(_){ }
+    closeVaccineModal();
+    snack("Vacinação registrada.", "ok");
   }
 
   function wireItensOnce(getDb) {
@@ -2606,7 +3742,9 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       const ov = $("vscItemActionOverlay");
       const idx = ov?._idx;
       if (Number.isFinite(idx) && idx >= 0 && idx < ATD.itens.length) {
+        const rem = ATD.itens[idx];
         ATD.itens.splice(idx, 1);
+        if(rem && rem.id) ATD.vaccine_events = (ATD.vaccine_events||[]).filter(v => String(v.item_id||"") !== String(rem.id));
         renderItens();
         snack("Item removido.", "ok");
       }
@@ -2689,7 +3827,9 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       // fallback
       const choice = window.confirm(`Deseja EXCLUIR "${desc}"?\n\nOK = Excluir | Cancelar = Alterar`);
       if (choice) {
+        const rem = ATD.itens[idx];
         ATD.itens.splice(idx, 1);
+        if(rem && rem.id) ATD.vaccine_events = (ATD.vaccine_events||[]).filter(v => String(v.item_id||"") !== String(rem.id));
         renderItens();
         snack("Item removido.", "ok");
       } else {
@@ -2742,6 +3882,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     $("ui_desconto_calc") && ($("ui_desconto_calc").textContent = "− " + fmtBRL(desc));
     $("ui_desl_calc") && ($("ui_desl_calc").textContent = "+ " + fmtBRL(desl));
     $("total_geral") && ($("total_geral").textContent = fmtBRL(totalGeral));
+    renderExecutivePanels(_dbRef).catch(()=>{});
   }
 
   function renderItens() {
@@ -2829,38 +3970,92 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     if (!produtosItens.length) return { ok: true, movs: 0 };
     if (!hasStore(db, "produtos_master")) return { ok: false, msg: "Store produtos_master não encontrada." };
 
+    // Usa VSC_ESTOQUE (estoque_core.js) quando disponível — garante ledger correto
+    if (window.VSC_ESTOQUE && typeof window.VSC_ESTOQUE.registrarSaida === "function") {
+      let movs = 0;
+      for (const it of produtosItens) {
+        if (!it.catalog_id || Number(it.qtd||0) <= 0) continue;
+        try {
+          const fn = sentido === "baixar" ? window.VSC_ESTOQUE.registrarSaida : window.VSC_ESTOQUE.registrarEntrada;
+          await fn({
+            produto_id: it.catalog_id,
+            produto_nome: it.desc || "",
+            qtd: Number(it.qtd || 0),
+            origem: "ATENDIMENTO",
+            ref_id: ATD.atendimento_id,
+            ref_numero: ATD.numero || "",
+            responsavel_user_id: ATD.responsavel_user_id || null,
+            custo_unit_cents: Number(it.custo_cents || 0)
+          });
+          movs++;
+        } catch(e) { console.warn("[ATD] VSC_ESTOQUE erro:", it.catalog_id, e); }
+      }
+      _catalogCache["PRODUTO"] = null;
+      return { ok: true, movs };
+    }
+
     let movs = 0;
+    const now = isoNow();
+    const tipoMov = sentido === "baixar" ? "SAIDA" : "ENTRADA";
+
     for (const it of produtosItens) {
       try {
         const prod = await idbGet(db, "produtos_master", it.catalog_id);
         if (!prod) continue;
-        const saldoAtual = Number(prod.saldo_estoque || 0);
         const qty = Number(it.qtd || 0);
-        prod.saldo_estoque = sentido === "baixar"
-          ? Math.max(0, saldoAtual - qty)
-          : saldoAtual + qty;
-        prod.updated_at = isoNow();
+        if (qty <= 0) continue;
+
+        // 1. Atualiza saldo_estoque no produto (cache denormalizado)
+        const saldoAtual = Number(prod.saldo_estoque || 0);
+        const novoSaldo = sentido === "baixar" ? Math.max(0, saldoAtual - qty) : saldoAtual + qty;
+        prod.saldo_estoque = novoSaldo;
+        prod.updated_at = now;
         await idbPut(db, "produtos_master", prod);
+
+        // 2. Atualiza estoque_saldos (fonte canônica, alinhado com importacaoxml)
+        if (hasStore(db, "estoque_saldos")) {
+          try {
+            const saldoKey = String(it.catalog_id) + ":sem-lote";
+            const saldoRec = await idbGet(db, "estoque_saldos", saldoKey);
+            const saldoBase = Number((saldoRec && saldoRec.saldo) || saldoAtual || 0);
+            const novoSaldoRec = sentido === "baixar" ? Math.max(0, saldoBase - qty) : saldoBase + qty;
+            await idbPut(db, "estoque_saldos", Object.assign({}, saldoRec || {}, {
+              id: saldoKey,
+              produto_id: it.catalog_id,
+              lote_id: null,
+              saldo: novoSaldoRec,
+              updated_at: now,
+              _origem: "atendimento"
+            }));
+          } catch(_) {}
+        }
+
+        // 3. Registra movimento individual em estoque_movimentos (store canonico)
+        if (hasStore(db, "estoque_movimentos")) {
+          try {
+            const movItem = {
+              id: uuidv4(),
+              produto_id: it.catalog_id,
+              produto_nome: it.desc || "",
+              tipo: tipoMov,
+              origem: "ATENDIMENTO",
+              ref_id: ATD.atendimento_id,
+              ref_numero: ATD.numero || "",
+              responsavel_user_id: ATD.responsavel_user_id || null,
+              qtd_delta: sentido === "baixar" ? -qty : qty,
+              saldo_delta: novoSaldo - saldoAtual,
+              custo_unit_cents: Number(it.custo_cents || 0),
+              custo_total_cents: Math.round(Number(it.custo_cents || 0) * qty),
+              created_at: now,
+              updated_at: now,
+              _origem: "atendimento"
+            };
+            await idbPut(db, "estoque_movimentos", movItem);
+          } catch(_) {}
+        }
+
         movs++;
       } catch (e) { console.warn("[ATD] estoque mov erro item:", it.catalog_id, e); }
-    }
-
-    // Registrar em estoque_movimentacoes se store existir
-    if (hasStore(db, "estoque_movimentacoes")) {
-      try {
-        const mov = {
-          id: uuidv4(),
-          tipo: sentido === "baixar" ? "SAIDA" : "ENTRADA",
-          origem: "atendimento",
-          ref_id: ATD.atendimento_id,
-          ref_numero: ATD.numero,
-      responsavel_user_id: ATD.responsavel_user_id || null,
-      responsavel_snapshot: ATD.responsavel_snapshot || null,
-          itens: produtosItens,
-          created_at: isoNow()
-        };
-        await idbPut(db, "estoque_movimentacoes", mov);
-      } catch (_) { }
     }
 
     // Limpar cache de catálogo para forçar releitura
@@ -2887,13 +4082,26 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       cliente_nome: ATD.cliente_label || ATD._cliente_nome || "—",
       cliente_doc: "",
       competencia: todayYMD().slice(0, 7),
-      vencimento: todayYMD(),
+      vencimento: ATD.financeiro_vencimento || todayYMD(),
       valor_original_centavos: totalCents,
       saldo_centavos: totalCents,
       origem: "VSC_ATENDIMENTOS",
       ref_tipo: "atendimento",
       ref_id: ATD.atendimento_id,
-      obs: "Gerado automaticamente pelo módulo de atendimentos.",
+      billing_cycle: ATD.financeiro_fechamento_modo || "gerar_agora",
+      billing_mode: ATD.financeiro_gerado ? "imediato" : "posterior",
+      payment_type: ATD.financeiro_tipo_pagamento || ATD.financeiro_preferencia_pagamento || "definir_depois",
+      forma_pagamento: ATD.financeiro_tipo_pagamento || ATD.financeiro_preferencia_pagamento || "definir_depois",
+      payment_preference: ATD.financeiro_preferencia_pagamento || ATD.financeiro_tipo_pagamento || "definir_depois",
+      payment_terms: ATD.financeiro_condicao_pagamento || "avista",
+      settlement_mode: ATD.financeiro_baixa_modo || "manual",
+      installments: Math.max(1, Number(ATD.financeiro_parcelas || 1)),
+      installment_interval_days: Math.max(0, Number(ATD.financeiro_intervalo_dias ?? 30)),
+      entry_amount: Number(ATD.financeiro_valor_entrada || 0),
+      charge_type: ATD.financeiro_tipo_cobranca || 'avulsa',
+      allow_partial_payments: (ATD.financeiro_aceita_parcial || 'sim') === 'sim',
+      custom_term_days: Math.max(0, Number(ATD.financeiro_prazo_custom_dias || 0)),
+      obs: ((ATD.financeiro_observacao || "") ? ("Gerado automaticamente pelo módulo de atendimentos. " + ATD.financeiro_observacao) : "Gerado automaticamente pelo módulo de atendimentos."),
       cancelado: false,
       recebimentos: [],
       created_at: isoNow(),
@@ -2936,6 +4144,233 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     } catch (_) { }
   }
 
+
+  function mapFinanceDecisionLabel(mode){
+    switch(String(mode||'')){
+      case 'gerar_agora': return 'Contas a receber gerado agora';
+      case 'mensal': return 'Fechamento em lote mensal';
+      case 'posterior': return 'Definir depois';
+      default: return 'Em aberto';
+    }
+  }
+
+  function syncFinanceChoiceVisualState(selectedValue){
+    document.querySelectorAll('.finance-choice').forEach(card => {
+      const input = card.querySelector('input[name="financeDecision"]');
+      const active = !!input && String(input.value) === String(selectedValue || '');
+      card.classList.toggle('is-selected', active);
+    });
+  }
+
+  function syncFinanceTermsUI(){
+    const terms = String($("financeDecisionTerms")?.value || ATD.financeiro_condicao_pagamento || "avista");
+    const inst = $("financeDecisionInstallments");
+    const interval = $("financeDecisionInstallmentInterval");
+    const due = $("financeDecisionDueDate");
+    const customDaysWrap = $("financeDecisionCustomDaysWrap");
+    const customDays = $("financeDecisionCustomDays");
+    const type = String($("financeDecisionChargeType")?.value || ATD.financeiro_tipo_cobranca || 'avulsa');
+    if(customDaysWrap) customDaysWrap.style.display = terms === 'personalizado' ? '' : 'none';
+    if(terms === "avista"){
+      if(inst) inst.value = "1";
+      if(interval) interval.value = "0";
+      if(due) due.value = due.value || ATD.data_atendimento || todayYMD();
+    }else if(terms === "semanal"){
+      if(interval) interval.value = '7';
+      if(due && !due.value) due.value = addDaysYMD(ATD.data_atendimento || todayYMD(), 7);
+    }else if(terms === "quinzenal"){
+      if(interval) interval.value = '15';
+      if(due && !due.value) due.value = addDaysYMD(ATD.data_atendimento || todayYMD(), 15);
+    }else if(terms === "mensal"){
+      if(interval) interval.value = "30";
+      if(due && !due.value) due.value = addDaysYMD(ATD.data_atendimento || todayYMD(), 30);
+    }else if(terms === 'entrada_saldo'){
+      if(inst && Number(inst.value || 1) < 2) inst.value = '2';
+      if(interval && Number(interval.value || 0) === 0) interval.value = '30';
+      if(due && !due.value) due.value = ATD.data_atendimento || todayYMD();
+    }else if(terms === 'personalizado'){
+      const days = Math.max(0, Number(customDays?.value || ATD.financeiro_prazo_custom_dias || 0));
+      if(interval && Number(interval.value || 0) === 0 && Number(inst?.value || 1) > 1) interval.value = String(days || 30);
+      if(due && !due.value) due.value = addDaysYMD(ATD.data_atendimento || todayYMD(), days || 30);
+    }else if(/_dias$/.test(terms)){
+      const days = Number(String(terms).split("_")[0] || 0);
+      if(interval && Number(interval.value || 0) === 0 && Number(inst?.value || 1) > 1) interval.value = String(days || 30);
+      if(due && !due.value) due.value = addDaysYMD(ATD.data_atendimento || todayYMD(), days);
+    }
+    if((type === 'faturamento_mensal' || type === 'recorrente_mensal') && interval && Number(interval.value || 0) < 30) interval.value = '30';
+  }
+
+  function chooseFinanceDecision(){
+    const modal = $('vscFinanceDecisionModal');
+    if(!modal) return Promise.resolve('gerar_agora');
+
+    const current = String(ATD.financeiro_fechamento_modo || (ATD.financeiro_gerado ? 'gerar_agora' : 'posterior'));
+    document.querySelectorAll('input[name="financeDecision"]').forEach(el => {
+      el.checked = (el.value === current);
+    });
+    syncFinanceChoiceVisualState(current);
+
+    $('financeDecisionObs') && ($('financeDecisionObs').value = String(ATD.financeiro_observacao || ''));
+    $('financeDecisionPaymentMethod') && ($('financeDecisionPaymentMethod').value = String(ATD.financeiro_tipo_pagamento || ATD.financeiro_preferencia_pagamento || ''));
+    $('financeDecisionTerms') && ($('financeDecisionTerms').value = String(ATD.financeiro_condicao_pagamento || 'avista'));
+    $('financeDecisionSettlementMode') && ($('financeDecisionSettlementMode').value = String(ATD.financeiro_baixa_modo || 'manual'));
+    $('financeDecisionDueDate') && ($('financeDecisionDueDate').value = String(ATD.financeiro_vencimento || ATD.data_atendimento || todayYMD()));
+    $('financeDecisionInstallments') && ($('financeDecisionInstallments').value = String(Math.max(1, Number(ATD.financeiro_parcelas || 1))));
+    $('financeDecisionInstallmentInterval') && ($('financeDecisionInstallmentInterval').value = String(Math.max(0, Number(ATD.financeiro_intervalo_dias ?? 30))));
+    $('financeDecisionEntryAmount') && ($('financeDecisionEntryAmount').value = ATD.financeiro_valor_entrada ? formatFixedBR(Number(ATD.financeiro_valor_entrada || 0), 2) : '');
+    $('financeDecisionChargeType') && ($('financeDecisionChargeType').value = String(ATD.financeiro_tipo_cobranca || 'avulsa'));
+    $('financeDecisionAllowPartial') && ($('financeDecisionAllowPartial').value = String(ATD.financeiro_aceita_parcial || 'sim'));
+    $('financeDecisionCustomDays') && ($('financeDecisionCustomDays').value = String(Math.max(0, Number(ATD.financeiro_prazo_custom_dias || 0))));
+
+    document.querySelectorAll('.finance-choice').forEach(card => {
+      const input = card.querySelector('input[name="financeDecision"]');
+      if(!input) return;
+      if(card.__vscFinanceBound) return;
+      card.__vscFinanceBound = true;
+      const activateChoice = () => { input.checked = true; syncFinanceChoiceVisualState(input.value); };
+      card.addEventListener('click', activateChoice);
+      input.addEventListener('change', () => syncFinanceChoiceVisualState(input.value));
+      input.addEventListener('click', (ev) => ev.stopPropagation());
+    });
+    $('financeDecisionTerms')?.addEventListener('change', syncFinanceTermsUI);
+    $('financeDecisionChargeType')?.addEventListener('change', syncFinanceTermsUI);
+    $('financeDecisionCustomDays')?.addEventListener('input', syncFinanceTermsUI);
+    syncFinanceTermsUI();
+
+    return new Promise(resolve => {
+      const confirmBtn = $('btnFinanceDecisionConfirm');
+      const cancelBtn = $('btnFinanceDecisionCancel');
+      const closeBtn = $('vscFinanceDecisionModalClose');
+      let resolved = false;
+      const cleanup = () => {
+        modal.removeEventListener('click', onBackdropClick);
+        document.removeEventListener('keydown', onKeydown);
+        $('financeDecisionTerms')?.removeEventListener('change', syncFinanceTermsUI);
+        $('financeDecisionChargeType')?.removeEventListener('change', syncFinanceTermsUI);
+        $('financeDecisionCustomDays')?.removeEventListener('input', syncFinanceTermsUI);
+        [confirmBtn, cancelBtn, closeBtn].forEach((btn) => {
+          btn && btn.removeEventListener('click', btn === confirmBtn ? onConfirm : onCancel);
+        });
+      };
+      const close = (result) => {
+        if (resolved) return;
+        resolved = true;
+        cleanup();
+        modal.classList.add('hidden');
+        modal.setAttribute('aria-hidden','true');
+        resolve(result || null);
+      };
+      const onConfirm = (ev) => {
+        ev?.preventDefault?.();
+        const sel = document.querySelector('input[name="financeDecision"]:checked');
+        close(sel ? sel.value : 'gerar_agora');
+      };
+      const onCancel = (ev) => { ev?.preventDefault?.(); close(null); };
+      const onBackdropClick = (ev) => { if (ev.target === modal) close(null); };
+      const onKeydown = (ev) => {
+        if (ev.key === 'Escape') close(null);
+        if ((ev.ctrlKey || ev.metaKey) && ev.key === 'Enter') onConfirm(ev);
+      };
+      [confirmBtn, cancelBtn, closeBtn].forEach((btn) => {
+        btn && btn.addEventListener('click', btn === confirmBtn ? onConfirm : onCancel);
+      });
+      modal.addEventListener('click', onBackdropClick);
+      document.addEventListener('keydown', onKeydown);
+      modal.classList.remove('hidden');
+      modal.setAttribute('aria-hidden','false');
+      confirmBtn?.focus?.();
+    });
+  }
+
+
+  function getCurrentUserRoleFlags(){
+    const u = ATD._currentUser || {};
+    const candidates = [u.role, u.perfil, u.profile, u.user_role, u.userRole, u.tipo, u.type, u.username, u.slug, u.access_level, ...(Array.isArray(u.roles) ? u.roles : []), ...(Array.isArray(u.permissions) ? u.permissions : []), ...(Array.isArray(u.groups) ? u.groups : [])].flat().filter(Boolean).map(norm);
+    const isMaster = candidates.some(v => ['master','empresa_master','superadmin','super_admin','owner','proprietario'].includes(v));
+    const isAdmin = isMaster || candidates.some(v => ['admin','administrador','administrator','gestor'].includes(v));
+    return { isMaster, isAdmin, labels: candidates };
+  }
+
+  function sumMoneyLikeCentavos(row){
+    const candidates = [row?.valor_centavos, row?.valor_cents, row?.amount_centavos, row?.amount_cents, row?.valor_pago_centavos, row?.paid_centavos];
+    for(const v of candidates){ const n = Number(v); if(Number.isFinite(n) && n) return n; }
+    const money = [row?.valor, row?.amount, row?.valor_pago, row?.paid_amount];
+    for(const v of money){ const n = toNumPt(v); if(Number.isFinite(n) && n) return Math.round(n * 100); }
+    return 0;
+  }
+
+  async function getTituloFinanceiro(db){
+    if(!db || !hasStore(db, 'contas_receber')) return null;
+    let titulo = null;
+    if(ATD.cr_id) titulo = await idbGet(db, 'contas_receber', ATD.cr_id);
+    if(titulo) return titulo;
+    const all = await idbGetAll(db, 'contas_receber');
+    return (Array.isArray(all) ? all : []).find(x => String(x?.ref_id || '') === String(ATD.atendimento_id || '')) || null;
+  }
+
+  async function buildPaymentAlertData(db){
+    const titulo = await getTituloFinanceiro(db);
+    if(!titulo) return { titulo:null, hasPayments:false, totalPaidCentavos:0, balanceCentavos:0, originalCentavos:0, entries:[] };
+    const entries = (Array.isArray(titulo.recebimentos) ? titulo.recebimentos : []).map((row, idx) => ({ idx: idx + 1, when: pickFirstNonEmpty(row?.data_recebimento, row?.received_at, row?.date, row?.created_at), method: pickFirstNonEmpty(row?.forma_pagamento, row?.payment_method, row?.metodo, row?.method, 'Não informado'), note: pickFirstNonEmpty(row?.observacao, row?.obs, row?.note), amountCentavos: sumMoneyLikeCentavos(row) }));
+    const totalPaidCentavos = entries.reduce((acc, row) => acc + Math.max(0, Number(row.amountCentavos || 0)), 0);
+    const originalCentavos = Number(titulo.valor_original_centavos || 0);
+    const balanceCentavos = Number(titulo.saldo_centavos ?? Math.max(0, originalCentavos - totalPaidCentavos));
+    return { titulo, hasPayments: totalPaidCentavos > 0, totalPaidCentavos, balanceCentavos, originalCentavos, entries };
+  }
+
+  function formatCentavos(centavos){ return fmtBRL(Number(centavos || 0) / 100); }
+
+  function askPaymentAlterationApproval(data, roleFlags){
+    const modal = $('vscPaymentAlertModal');
+    if(!modal) return Promise.resolve(window.confirm('Há pagamentos vinculados a este atendimento. Deseja continuar a alteração?'));
+    const summary = $('paymentAlertSummary');
+    const details = $('paymentAlertDetails');
+    const intro = $('paymentAlertIntro');
+    const title = data?.titulo || {};
+    const statusTxt = (data?.totalPaidCentavos || 0) >= (data?.originalCentavos || 0) && (data?.originalCentavos || 0) > 0 ? 'Pagamento total já lançado neste título.' : (data?.hasPayments ? 'Pagamento parcial já lançado neste título.' : 'Este atendimento possui título financeiro vinculado, mas ainda sem recebimentos.');
+    intro.textContent = data?.hasPayments ? (statusTxt + ' Revise abaixo antes de reabrir o atendimento para alteração.') : statusTxt;
+    if(summary){ summary.innerHTML = `<div><b>Título:</b> ${esc(title.documento || ATD.numero || '—')}</div><div><b>Valor original:</b> ${esc(formatCentavos(data?.originalCentavos || 0))}</div><div><b>Total recebido:</b> ${esc(formatCentavos(data?.totalPaidCentavos || 0))}</div><div><b>Saldo atual:</b> ${esc(formatCentavos(data?.balanceCentavos || 0))}</div><div><b>Perfil atual:</b> ${roleFlags.isMaster ? 'Master' : roleFlags.isAdmin ? 'Administrador' : 'Usuário padrão'}</div>`; }
+    if(details){ details.innerHTML = (data?.entries || []).length ? data.entries.map(row => `<div style="padding:10px 12px;border:1px solid #e2e8f0;border-radius:12px;background:#fff;"><div style="font-weight:800;">Pagamento ${row.idx} · ${esc(formatCentavos(row.amountCentavos || 0))}</div><div class="hint" style="margin-top:4px;">${esc(fmtDateTime(row.when))} · ${esc(row.method || 'Não informado')}</div>${row.note ? `<div class="hint" style="margin-top:4px;">${esc(row.note)}</div>` : ''}</div>`).join('') : '<div class="hint">Nenhum recebimento registrado neste título.</div>'; }
+    modal.classList.remove('hidden');
+    modal.setAttribute('aria-hidden','false');
+    return new Promise(resolve => {
+      let done = false;
+      const ok = $('btnPaymentAlertConfirm');
+      const cancel = $('btnPaymentAlertCancel');
+      const close = $('vscPaymentAlertClose');
+      const finish = (value) => { if(done) return; done = true; modal.classList.add('hidden'); modal.setAttribute('aria-hidden','true'); ok?.removeEventListener('click', onOk); cancel?.removeEventListener('click', onCancel); close?.removeEventListener('click', onCancel); modal.removeEventListener('click', onBackdrop); document.removeEventListener('keydown', onEsc); resolve(value); };
+      const onOk = () => finish(true);
+      const onCancel = () => finish(false);
+      const onBackdrop = (ev) => { if(ev.target === modal) finish(false); };
+      const onEsc = (ev) => { if(ev.key === 'Escape') finish(false); };
+      ok?.addEventListener('click', onOk); cancel?.addEventListener('click', onCancel); close?.addEventListener('click', onCancel); modal.addEventListener('click', onBackdrop); document.addEventListener('keydown', onEsc);
+    });
+  }
+
+  async function reabrirFinalizadoParaAlteracao(db){
+    const roles = getCurrentUserRoleFlags();
+    const payData = await buildPaymentAlertData(db);
+    if(payData.hasPayments && !roles.isAdmin){
+      await askPaymentAlterationApproval(payData, roles);
+      snack('Este atendimento possui pagamentos vinculados. Somente master e administradores podem alterá-lo.', 'err');
+      return;
+    }
+    if(payData.titulo){
+      const ok = await askPaymentAlterationApproval(payData, roles);
+      if(!ok) return;
+    }else{
+      const ok = await confirm('Reabrir atendimento finalizado', 'O atendimento voltará para Em atendimento para permitir alterações. O vínculo financeiro existente será mantido.');
+      if(!ok) return;
+    }
+    ATD.status = 'em_atendimento';
+    updateStatusBadges('em_atendimento');
+    $('status') && ($('status').value = 'em_atendimento');
+    await salvar(db, false);
+    await recarregarLista(db);
+    renderExecutivePanels(db).catch(()=>{});
+    snack(payData.hasPayments ? 'Atendimento reaberto para alteração com alerta de pagamentos exibido.' : 'Atendimento reaberto para alteração.', 'ok');
+  }
+
   // ─── MUDANÇA DE STATUS (LÓGICA CENTRAL) ──────────────────────────────
   async function mudarStatus(db, novoStatus, force) {
     const statusAtual = ATD.status;
@@ -2970,33 +4405,51 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       showBanner("✅ Status: Em Atendimento — Estoque movimentado. Financeiro ainda NÃO gerado.", "info");
     }
 
-    // ── ORCAMENTO → FINALIZADO: movimenta estoque + financeiro
-    if (novoStatus === "finalizado" && statusAtual === "orcamento") {
-      const ok = await confirm(
-        "Finalizar atendimento",
-        "Isso irá:\n1. Baixar o estoque dos produtos\n2. Gerar título em Contas a Receber\n\nDeseja continuar?"
-      );
-      if (!ok) return;
-      if (!ATD.estoque_movimentado) {
+    // ── ORCAMENTO / EM ATENDIMENTO → FINALIZADO: decisão financeira obrigatória
+    if (novoStatus === "finalizado" && (statusAtual === "orcamento" || statusAtual === "em_atendimento")) {
+      const decision = await chooseFinanceDecision();
+      if (!decision) return;
+
+      ATD.financeiro_gerado = false;
+      ATD.financeiro_fechamento_modo = decision;
+      ATD.financeiro_fechamento_label = mapFinanceDecisionLabel(decision);
+      ATD.financeiro_observacao = ($('financeDecisionObs')?.value || '').trim();
+      ATD.financeiro_tipo_pagamento = ($('financeDecisionPaymentMethod')?.value || '').trim() || 'definir_depois';
+      ATD.financeiro_preferencia_pagamento = ATD.financeiro_tipo_pagamento;
+      ATD.financeiro_condicao_pagamento = ($('financeDecisionTerms')?.value || 'avista').trim();
+      ATD.financeiro_baixa_modo = ($('financeDecisionSettlementMode')?.value || 'manual').trim();
+      ATD.financeiro_vencimento = ($('financeDecisionDueDate')?.value || ATD.data_atendimento || todayYMD()).trim();
+      ATD.financeiro_parcelas = Math.max(1, Math.min(24, Number(($('financeDecisionInstallments')?.value || 1)) || 1));
+      ATD.financeiro_intervalo_dias = Math.max(0, Math.min(365, Number(($('financeDecisionInstallmentInterval')?.value || 30)) || 0));
+      ATD.financeiro_valor_entrada = Math.max(0, toNumPt(($('financeDecisionEntryAmount')?.value || 0)));
+      ATD.financeiro_tipo_cobranca = ($('financeDecisionChargeType')?.value || 'avulsa').trim();
+      ATD.financeiro_aceita_parcial = ($('financeDecisionAllowPartial')?.value || 'sim').trim();
+      ATD.financeiro_prazo_custom_dias = Math.max(0, Number(($('financeDecisionCustomDays')?.value || 0)) || 0);
+
+      if (statusAtual === "orcamento" && !ATD.estoque_movimentado) {
         const res = await movimentarEstoque(db, ATD.itens, "baixar");
         ATD.estoque_movimentado = true;
         snack(`Estoque movimentado (${res.movs} produto(s)).`, "ok");
       }
-      const resCR = await gerarContasAReceber(db);
-      ATD.financeiro_gerado = true;
-      showBanner("✅ Finalizado — Estoque movimentado + Contas a Receber gerado" + (resCR.ok ? "." : " (falhou — verifique o módulo)."), resCR.ok ? "ok" : "warn");
-    }
 
-    // ── EM ATENDIMENTO → FINALIZADO: somente financeiro
-    if (novoStatus === "finalizado" && statusAtual === "em_atendimento") {
-      const ok = await confirm(
-        "Finalizar atendimento",
-        "Isso irá gerar o título em Contas a Receber.\nO estoque já foi movimentado ao iniciar o atendimento.\n\nDeseja confirmar?"
-      );
-      if (!ok) return;
-      const resCR = await gerarContasAReceber(db);
-      ATD.financeiro_gerado = true;
-      showBanner("✅ Finalizado — Contas a Receber gerado" + (resCR.ok ? "." : " (falhou — verifique o módulo)."), resCR.ok ? "ok" : "warn");
+      if (decision === 'gerar_agora') {
+        const resCR = await gerarContasAReceber(db);
+        ATD.financeiro_gerado = !!resCR.ok;
+        ATD.financeiro_fechamento_label = resCR.ok ? mapFinanceDecisionLabel(decision) : 'Falha ao gerar financeiro';
+        showBanner(
+          statusAtual === 'orcamento'
+            ? ("✅ Finalizado — Estoque movimentado + Contas a Receber gerado" + (resCR.ok ? "." : " (falhou — verifique o módulo)."))
+            : ("✅ Finalizado — Contas a Receber gerado" + (resCR.ok ? "." : " (falhou — verifique o módulo).")),
+          resCR.ok ? "ok" : "warn"
+        );
+      } else {
+        showBanner(
+          statusAtual === 'orcamento'
+            ? `✅ Finalizado — Estoque movimentado e financeiro mantido em aberto (${ATD.financeiro_fechamento_label.toLowerCase()}).`
+            : `✅ Finalizado — Financeiro mantido em aberto (${ATD.financeiro_fechamento_label.toLowerCase()}).`,
+          "info"
+        );
+      }
     }
 
     // ── QUALQUER → CANCELADO: estornar estoque e cancelar C/R
@@ -3010,6 +4463,12 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       if (ATD.financeiro_gerado) {
         await cancelarContasAReceber(db);
         ATD.financeiro_gerado = false;
+        ATD.financeiro_fechamento_modo = "aberto";
+        ATD.financeiro_fechamento_label = "Em aberto";
+        ATD.financeiro_tipo_pagamento = "definir_depois";
+        ATD.financeiro_preferencia_pagamento = "definir_depois";
+        ATD.financeiro_condicao_pagamento = "avista";
+        ATD.financeiro_baixa_modo = "manual";
       }
       showBanner("⛔ Atendimento cancelado — estoque estornado e financeiro cancelado.", "warn");
     }
@@ -3026,6 +4485,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     ATD.status = novoStatus;
     updateStatusBadges(novoStatus);
     $("status") && ($("status").value = novoStatus);
+    renderExecutivePanels(db).catch(()=>{});
 
     // Salvar estado atualizado
     await salvar(db, false);
@@ -3061,6 +4521,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       cli_evolucao: String($("cli_evolucao")?.value || ""),
       itens: ATD.itens || [],
       attachments: ATD.attachments || [],
+      vaccine_events: ATD.vaccine_events || [],
       totals: {
         total_itens: Math.max(0, base),
         desconto_tipo: ATD.desconto_tipo || "R$",
@@ -3073,6 +4534,20 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       },
       estoque_movimentado: !!ATD.estoque_movimentado,
       financeiro_gerado: !!ATD.financeiro_gerado,
+      financeiro_fechamento_modo: ATD.financeiro_fechamento_modo || (ATD.financeiro_gerado ? "gerar_agora" : "aberto"),
+      financeiro_fechamento_label: ATD.financeiro_fechamento_label || (ATD.financeiro_gerado ? "Gerado agora" : "Em aberto"),
+      financeiro_observacao: ATD.financeiro_observacao || "",
+      financeiro_tipo_pagamento: ATD.financeiro_tipo_pagamento || ATD.financeiro_preferencia_pagamento || "definir_depois",
+      financeiro_preferencia_pagamento: ATD.financeiro_preferencia_pagamento || ATD.financeiro_tipo_pagamento || "definir_depois",
+      financeiro_condicao_pagamento: ATD.financeiro_condicao_pagamento || "avista",
+      financeiro_baixa_modo: ATD.financeiro_baixa_modo || "manual",
+      financeiro_vencimento: ATD.financeiro_vencimento || ATD.data_atendimento || todayYMD(),
+      financeiro_parcelas: Math.max(1, Number(ATD.financeiro_parcelas || 1)),
+      financeiro_intervalo_dias: Math.max(0, Number(ATD.financeiro_intervalo_dias ?? 30)),
+      financeiro_valor_entrada: Number(ATD.financeiro_valor_entrada || 0),
+      financeiro_tipo_cobranca: ATD.financeiro_tipo_cobranca || "avulsa",
+      financeiro_aceita_parcial: ATD.financeiro_aceita_parcial || "sim",
+      financeiro_prazo_custom_dias: Math.max(0, Number(ATD.financeiro_prazo_custom_dias || 0)),
       cr_id: ATD.cr_id || null,
       created_at: ATD.created_at || isoNow(),
       updated_at: isoNow()
@@ -3084,8 +4559,85 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     if (!hasStore(db, "atendimentos_master")) { snack("Store atendimentos_master não encontrada.", "err"); return; }
 
     try {
+      await captureAllVitalsForSave(db);
       const payload = buildPayload();
       await idbPut(db, "atendimentos_master", payload);
+
+      // ── SYNC: envia metadados ao D1 (sem attachments) e anexos ao R2 ──
+      try {
+        if (window.VSC_DB && typeof window.VSC_DB.upsertWithOutbox === "function") {
+          // Payload para D1: sem dataUrl dos attachments (muito grande)
+          const payloadD1 = Object.assign({}, payload, {
+            attachments: (payload.attachments || []).map(a => ({
+              id: a.id,
+              name: a.name || a.filename || "",
+              mime: a.mime || a.mime_type || "",
+              size: a.size || 0,
+              descricao: a.descricao || "",
+              created_at: a.created_at || "",
+              synced_to_r2: !!a.synced_to_r2
+              // dataUrl removido intencionalmente
+            })),
+            __origin: "UI_EDIT"
+          });
+          await window.VSC_DB.upsertWithOutbox(
+            "atendimentos_master",
+            payloadD1,
+            "atendimentos_master",
+            String(payload.id),
+            payloadD1
+          );
+        }
+
+        // Envia attachments com dataUrl diretamente para R2
+        const BASE_R2 = (location.hostname === "127.0.0.1" || location.hostname === "localhost")
+          ? "https://app.vetsystemcontrol.com.br" : "";
+        for (const att of (payload.attachments || [])) {
+          if (!att || !att.id || !att.dataUrl) continue;
+          try{
+            if (window.VSC_ATTACHMENTS_RELAY && typeof window.VSC_ATTACHMENTS_RELAY.enqueue === "function") {
+              await window.VSC_ATTACHMENTS_RELAY.enqueue(String(payload.id), att);
+            }
+          }catch(_queueErr){
+            console.warn("[ATD] queue attachment warn:", att.name, _queueErr);
+          }
+          fetch(`${BASE_R2}/api/attachments?action=upload`, {
+            method: "POST",
+            headers: getAttachmentAuthHeaders({ "Content-Type": "application/json" }),
+            body: JSON.stringify({
+              atendimento_id: payload.id,
+              attachment_id: att.id,
+              filename: att.name || att.id,
+              mime_type: att.mime || "application/octet-stream",
+              data_base64: att.dataUrl,
+              descricao: att.descricao || "",
+              created_at: att.created_at || isoNow()
+            })
+          }).then(async r => {
+            if (!r.ok) {
+              console.warn("[ATD] R2 upload falhou:", att.name, r.status);
+              return;
+            }
+            att.synced_to_r2 = true;
+            console.log("[ATD] R2 upload ok:", att.name);
+            try{
+              const live = await idbGet(db, "atendimentos_master", String(payload.id));
+              if(live && Array.isArray(live.attachments)){
+                live.attachments = live.attachments.map(item => String(item && item.id) === String(att.id) ? Object.assign({}, item, { synced_to_r2: true }) : item);
+                await idbPut(db, "atendimentos_master", live);
+              }
+            }catch(_persistUploadStateErr){ }
+          }).catch(e => console.warn("[ATD] R2 upload erro:", att.name, e));
+        }
+      } catch (_syncErr) {
+        // sync nunca bloqueia o save local
+        console.warn("[ATENDIMENTOS] sync error (não crítico):", _syncErr);
+      }
+      if(hasStore(db, "animal_vaccines") && Array.isArray(ATD.vaccine_events)){
+        for(const ev of ATD.vaccine_events){
+          try{ await idbPut(db, "animal_vaccines", ev); }catch(_e){}
+        }
+      }
       if (showMsg !== false) {
         const st = ATD.status;
         let msg = "";
@@ -3112,6 +4664,9 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     ATD.animal_ids = [];
     ATD.vitals_by_animal = {};
     ATD.vitals_active_animal_id = "";
+    ATD.vitals_prefill_by_animal = {};
+    ATD.vitals_prefill_pending_by_animal = {};
+    ATD.vitals_prefill_dirty_by_animal = {};
     ATD.itens = [];
     ATD.desconto_tipo = "R$";
     ATD.desconto_valor = 0;
@@ -3119,7 +4674,21 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     ATD.deslocamento = 0;
     ATD.estoque_movimentado = false;
     ATD.financeiro_gerado = false;
+    ATD.financeiro_fechamento_modo = "aberto";
+    ATD.financeiro_fechamento_label = "Em aberto";
+    ATD.financeiro_tipo_pagamento = "definir_depois";
+    ATD.financeiro_preferencia_pagamento = "definir_depois";
+    ATD.financeiro_condicao_pagamento = "avista";
+    ATD.financeiro_baixa_modo = "manual";
+    ATD.financeiro_vencimento = ATD.data_atendimento || todayYMD();
+    ATD.financeiro_parcelas = 1;
+    ATD.financeiro_intervalo_dias = 30;
+    ATD.financeiro_valor_entrada = 0;
+    ATD.financeiro_tipo_cobranca = "avulsa";
+    ATD.financeiro_aceita_parcial = "sim";
+    ATD.financeiro_prazo_custom_dias = 0;
     ATD.cr_id = null;
+    ATD.vaccine_events = [];
 
     // Responsável (default): médico logado
     try{
@@ -3172,6 +4741,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     uiSetCliente("—");
     uiSetAnimalResumo("—");
     $("uiNumeroSide") && ($("uiNumeroSide").textContent = ATD.numero);
+    $("uiHeroNumero") && ($("uiHeroNumero").textContent = ATD.numero);
     $("editorNumeroDisplay") && ($("editorNumeroDisplay").textContent = ATD.numero);
     $("uiAnimalPick") && ($("uiAnimalPick").textContent = "Selecione um cliente para listar os animais.");
     $("uiClienteHint") && ($("uiClienteHint").textContent = "Digite para buscar. Selecione um item na lista.");
@@ -3186,8 +4756,26 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     updateTotaisUI();
     updateStatusBadges("orcamento");
     updateEditorTitle();
+
+    // Persistência imediata do rascunho: o botão "Novo atendimento" precisa
+    // criar um registro local válido já no início do fluxo offline-first.
+    try {
+      const shell = buildPayload();
+      shell.id = shell.id || ATD.atendimento_id || uuidv4();
+      ATD.atendimento_id = shell.id;
+      shell.numero = shell.numero || ATD.numero;
+      shell.created_at = ATD.created_at || shell.created_at || isoNow();
+      shell.updated_at = isoNow();
+      await idbPut(db, "atendimentos_master", shell);
+    } catch (e) {
+      console.error("[ATD] Falha ao criar rascunho local do atendimento:", e);
+      snack("Falha ao iniciar atendimento: " + (e?.message || e || "erro desconhecido"), "err");
+      return;
+    }
+
     renderLista(db);
     goDetailView();
+    renderExecutivePanels(db).catch(()=>{});
 
     snack("Novo atendimento iniciado: " + ATD.numero, "ok");
   }
@@ -3196,13 +4784,14 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     const title = $("editorTitle");
     if (title) title.textContent = ATD.numero ? `Atendimento: ${ATD.numero}` : "Novo atendimento";
     $("uiNumeroSide") && ($("uiNumeroSide").textContent = ATD.numero || "—");
+    $("uiHeroNumero") && ($("uiHeroNumero").textContent = ATD.numero || "—");
     $("editorNumeroDisplay") && ($("editorNumeroDisplay").textContent = ATD.numero || "");
   }
 
   
   // ─── FLOORPLAN ENTERPRISE: LISTA → DETALHE (como clientes) ───────────────
   function setCmdActionsEnabled(enabled){
-    ["btnSalvarTop","btnAprovarTop","btnFinalizarTop","btnSalvar","btnAprovar","btnFinalizar","btnCancelarAtd","btnAnexosTop","btnImprimirTop","btnAnexos","btnImprimir"].forEach(id=>{
+    ["btnSalvarTop","btnAprovarTop","btnFinalizarTop","btnAlterarFinalizadoTop","btnSalvar","btnAprovar","btnFinalizar","btnAlterarFinalizado","btnCancelarAtd","btnAnexosTop","btnImprimirTop","btnAnexos","btnImprimir"].forEach(id=>{
       const b = $(id);
       if(!b) return;
       b.disabled = !enabled;
@@ -3218,8 +4807,10 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     if(dv) dv.style.display = "none";
     setCmdActionsVisible(false);
     setCmdActionsEnabled(false);
+    refreshFinalizadoActionButtons();
     // reset meta
     $("uiNumeroSide") && ($("uiNumeroSide").textContent = "—");
+    $("uiHeroNumero") && ($("uiHeroNumero").textContent = "—");
     uiSetCliente("—");
     uiSetAnimalResumo("—");
     updateStatusBadges("orcamento");
@@ -3232,6 +4823,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     if(dv) dv.style.display = "";
     setCmdActionsVisible(true);
     setCmdActionsEnabled(true);
+    refreshFinalizadoActionButtons();
     // mostrar conteúdo do detalhe
     const empty = $("atdDetailEmpty");
     const content = $("atdDetailContent");
@@ -3251,6 +4843,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     if(content) content.style.display = "none";
     setCmdActionsVisible(false);
     setCmdActionsEnabled(false);
+    refreshFinalizadoActionButtons();
   }
 // ─── WIRING DOS BOTÕES DE AÇÃO ────────────────────────────────────────
   function wireAcoes(db) {
@@ -3289,6 +4882,8 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
     $("btnPrintClinico")?.addEventListener("click", async (ev)=>{ ev.preventDefault(); closePrintModal(); await imprimirAtendimento(db, "clinico"); });
     $("btnPrintPrescricao")?.addEventListener("click", async (ev)=>{ ev.preventDefault(); closePrintModal(); await imprimirAtendimento(db, "prescricao"); });
     $("btnPrintFinanceiro")?.addEventListener("click", async (ev)=>{ ev.preventDefault(); closePrintModal(); await imprimirAtendimento(db, "financeiro"); });
+    $("btnPrintClinicoFinanceiro")?.addEventListener("click", async (ev)=>{ ev.preventDefault(); closePrintModal(); await imprimirAtendimento(db, "clinico_financeiro"); });
+    $("btnPrintCompleto")?.addEventListener("click", async (ev)=>{ ev.preventDefault(); closePrintModal(); await imprimirAtendimento(db, "clinico_financeiro"); });
 
     // Binding robusto (IDs podem variar entre versões do HTML)
     bindPrintModalButtons(db);
@@ -3303,12 +4898,26 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       });
     });
 
-    // Finalizar
-    ["btnFinalizarTop", "btnFinalizar"].forEach(id => {
-      $(id)?.addEventListener("click", async (ev) => {
-        ev.preventDefault();
+    async function handleFinalizeAction(ev){
+      ev?.preventDefault?.();
+      try {
         await salvar(db, false);
         await mudarStatus(db, "finalizado");
+      } catch (e) {
+        console.error("[ATD] Falha ao finalizar atendimento:", e);
+        snack("Falha ao abrir a finalização: " + (e?.message || e || "erro desconhecido"), "err");
+      }
+    }
+
+    // Finalizar
+    ["btnFinalizarTop", "btnFinalizar"].forEach(id => {
+      $(id)?.addEventListener("click", handleFinalizeAction);
+    });
+
+    ["btnAlterarFinalizadoTop", "btnAlterarFinalizado"].forEach(id => {
+      $(id)?.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        await reabrirFinalizadoParaAlteracao(db);
       });
     });
 
@@ -3331,11 +4940,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       await salvar(db, false);
       await mudarStatus(db, "em_atendimento");
     });
-    $("btnSetFinalizado")?.addEventListener("click", async (ev) => {
-      ev.preventDefault();
-      await salvar(db, false);
-      await mudarStatus(db, "finalizado");
-    });
+    $("btnSetFinalizado")?.addEventListener("click", handleFinalizeAction);
 
 
     
@@ -3413,6 +5018,8 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
         console.warn("[ATD] getCurrentUser failed:", e);
       }
 
+      _dbRef = db;
+
       // Carregar valor/km do deslocamento
       ATD.desl_valor_km = await carregarValorKm(db);
 
@@ -3437,12 +5044,29 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
       wireItensOnce(() => db);
       wireAcoes(db);
       wireFiltros(db);
+      $("uiRecentAtendimentos")?.addEventListener("click", async (ev) => {
+        const row = ev.target?.closest?.("[data-atd-id]");
+        const id = row?.getAttribute?.("data-atd-id");
+        if(!id) return;
+        await abrirAtendimento(db, id);
+      });
 
       // Carregar lista de atendimentos
       await recarregarLista(db);
 
-      // Padrão enterprise: abrir sempre em LISTA
-      goListView();
+      const launch = await resolveLaunchContext(db);
+      if (launch && launch.rec) {
+        await carregarNoFormulario(db, launch.rec);
+        goDetailView();
+        consumeLaunchContext();
+        window.scrollTo({ top: 0, behavior: "auto" });
+      } else {
+        // Padrão enterprise: abrir em LISTA quando não houver contexto válido
+        goListView();
+        if (launch && !launch.rec) {
+          snack("Atendimento solicitado não foi localizado. Lista geral exibida.", "warn");
+        }
+      }
 
       window.__VSC_ATENDIMENTOS_READY = true;
       snack("Módulo Atendimentos v3 carregado.", "ok");
@@ -3458,7 +5082,7 @@ img{max-width:100%;height:auto;display:block;margin:10px auto;border:1px solid v
 
 
   function setCmdActionsVisible(visible){
-    ["btnSalvarTop","btnAprovarTop","btnFinalizarTop","btnSalvar","btnAprovar","btnFinalizar","btnCancelarAtd","btnAnexosTop","btnImprimirTop","btnAnexos","btnImprimir"].forEach(id=>{
+    ["btnSalvarTop","btnAprovarTop","btnFinalizarTop","btnAlterarFinalizadoTop","btnSalvar","btnAprovar","btnFinalizar","btnAlterarFinalizado","btnCancelarAtd","btnAnexosTop","btnImprimirTop","btnAnexos","btnImprimir"].forEach(id=>{
       const b = $(id);
       if(!b) return;
       b.style.display = visible ? "" : "none";

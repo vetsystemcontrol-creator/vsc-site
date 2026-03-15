@@ -142,11 +142,64 @@
   function nowISO() { return new Date().toISOString(); }
 
   function uuidv4() {
-    try { if (crypto && crypto.randomUUID) return crypto.randomUUID(); } catch (_) { }
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-      const r = (Math.random() * 16) | 0;
-      return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
-    });
+    try {
+      if (window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    } catch (_) {}
+    try { if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); } catch (_) {}
+    try {
+      if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b => b.toString(16).padStart(2, "0")).join("");
+        return [hex.slice(0, 8), hex.slice(8, 12), hex.slice(12, 16), hex.slice(16, 20), hex.slice(20)].join("-");
+      }
+    } catch (_) {}
+    throw new TypeError("[IMPORT_DADOS] ambiente sem CSPRNG para gerar UUID v4.");
+  }
+
+
+  function getSyncDeviceId() {
+    const key = "vsc_sync_device_id";
+    try {
+      const cur = String(localStorage.getItem(key) || "").trim();
+      if (cur) return cur;
+      const next = uuidv4();
+      localStorage.setItem(key, next);
+      return next;
+    } catch (_) {
+      return uuidv4();
+    }
+  }
+
+  function buildCanonicalOutboxEvent(store, record, action) {
+    const payload = record && typeof record === "object" ? JSON.parse(JSON.stringify(record)) : { id: String(record || "") };
+    const entityId = String((payload && (payload.id || payload.uuid || payload.key)) || "").trim();
+    if (!store || !entityId) throw new Error("[IMPORT_DADOS] outbox canônica requer store/entityId.");
+    const opId = uuidv4();
+    const baseRevision = Number(payload.sync_rev ?? payload.entity_revision ?? payload.base_revision ?? payload.revision) || 0;
+    const entityRevision = Math.max(1, baseRevision + (String(action || "upsert").toLowerCase() === "delete" ? 0 : 1));
+    const createdAt = nowISO();
+    return {
+      id: opId,
+      op_id: opId,
+      store,
+      entity: store,
+      entity_id: entityId,
+      record_id: entityId,
+      op: String(action || "upsert").toLowerCase(),
+      action: String(action || "upsert").toLowerCase(),
+      payload,
+      created_at: createdAt,
+      updated_at: createdAt,
+      status: "PENDING",
+      synced: false,
+      device_id: getSyncDeviceId(),
+      base_revision: baseRevision,
+      entity_revision: entityRevision,
+      dedupe_key: [String(store), entityId, String(action || "upsert").toLowerCase(), String(baseRevision), String(entityRevision)].join(":"),
+    };
   }
 
   function toNumPt(s) {
@@ -956,9 +1009,9 @@
 
       if (stQ) {
         for (const atd of atdDocs) {
-          stQ.add({ id: uuidv4(), store: STORE_ATD, record_id: atd.id, op: "upsert", payload: atd, ts: now, synced: false });
+          stQ.add(buildCanonicalOutboxEvent(STORE_ATD, atd, "upsert"));
         }
-        stQ.add({ id: uuidv4(), store: STORE_AR, record_id: cr.id, op: "upsert", payload: cr, ts: now, synced: false });
+        stQ.add(buildCanonicalOutboxEvent(STORE_AR, cr, "upsert"));
       }
 
       await new Promise((resolve, reject) => {

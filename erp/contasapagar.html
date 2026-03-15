@@ -4,7 +4,9 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Contas a Pagar · Vet System Control - Equine</title>
+  <link rel="stylesheet" href="assets/css/vsc-premium-enterprise.css" />
+  <link rel="stylesheet" href="modules/vsc-ui.css?v=20260307f" />
+<title>Contas a Pagar · Vet System Control - Equine</title>
 <link rel="icon" href="data:,">
 
   <!-- Mantém padrão visual do projeto: N fO altera topbar aprovada -->
@@ -357,13 +359,32 @@
     }
 
     .danger-text{ color: var(--vsc-danger); font-weight: 800; }
+    .ap-analytics{ margin:12px 0 2px; }
+    .ap-analytics-grid{ display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:10px; }
+    .ap-chart-card{ grid-column:span 4; padding:12px; }
+    .ap-chart-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:8px; margin-bottom:10px; }
+    .ap-chart-head strong{ font-size:13px; font-weight:900; }
+    .ap-chart-head span{ font-size:11px; color:var(--vsc-muted); text-transform:uppercase; letter-spacing:.05em; }
+    .ap-chart-canvas{ width:100%; height:210px; display:block; }
+    .ap-top-list{ display:grid; gap:8px; }
+    .ap-projection-strip{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:10px; margin-top:10px; }
+    .ap-projection-item{ border:1px solid var(--vsc-border); border-radius:14px; padding:10px 12px; background:#fff; }
+    .ap-projection-item span{ display:block; font-size:11px; color:var(--vsc-muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; font-weight:800; }
+    .ap-projection-item strong{ font-size:20px; font-weight:900; }
+    .vsc-fin-empty{ font-size:12px; color:var(--vsc-muted); padding:8px 0; }
+    .vsc-fin-list-item{ display:grid; grid-template-columns:28px 1fr auto; gap:10px; align-items:center; padding:9px 10px; border:1px solid var(--vsc-border); border-radius:12px; background:#fff; }
+    .vsc-fin-rank{ width:22px; height:22px; border-radius:999px; background:#ecfdf5; color:var(--vsc-ok); display:grid; place-items:center; font-size:11px; font-weight:900; }
+    .vsc-fin-label{ font-weight:800; }
+    .vsc-fin-value{ font-size:12px; }
+    @media (max-width: 980px){ .ap-chart-card{ grid-column:span 12; } .ap-projection-strip{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+    @media (max-width: 560px){ .ap-projection-strip{ grid-template-columns:1fr; } }
   </style>
 <link rel="icon" href="data:,">
 </head>
 
-<body>
+<body class="vsc-premium">
   <!-- Topbar: N fO mexer na topbar aprovada, apenas carregar -->
-  <iframe id="vscTopbarFrame" src="topbar.html?v=final" class="vsc-topbar-frame" title="Topbar"></iframe>
+  <iframe id="vscTopbarFrame" src="topbar.html?v=20260307f" class="vsc-topbar-frame" title="Topbar"></iframe>
 
   <!-- <script src="modules/vsc-core.js"></script> 
   <script src="modules/auth.js" charset="utf-8"></script>
@@ -372,20 +393,22 @@
 <script src="modules/vsc_ui_core.js"></script>
 <script src="modules/vsc-utils.js"></script>
 <script src="modules/vsc-outbox-relay.js"></script><script src="modules/vsc_db.js?v=20"></script>
+<script src="modules/finance_analytics.js"></script>
 
-  <div class="page">
-    <div class="panel">
+  <div class="page vsc-shell">
+    <div class="panel print-sheet">
       <div class="panel-hd">
         <div>
           <h1>Contas a Pagar</h1>
           <div class="sub">Offline-first · UUID v4 · Competência + Caixa · Outbox (sync_queue)</div>
         </div>
 
-        <div class="toolbar">
+        <div class="toolbar action-group">
           <button id="btnNovo" class="btn btn-primary" title="Novo título (Ctrl+N) · lançamento manual quando não veio por XML">+ Novo título</button>
           <button id="btnImportarXml" class="btn btn-ghost" title="Importação XML · vincula/gera títulos a partir de NF-e">Importação XML</button>
           <button id="btnExportar" class="btn" title="Exportar · JSON/CSV">Exportar</button>
           <button id="btnRecalcular" class="btn" title="Recalcular · atualiza KPIs e tabela">Recalcular</button>
+          <button id="btnPrint" class="btn" type="button" title="Impressão limpa do contas a pagar">Imprimir</button>
         </div>
       </div>
 
@@ -454,6 +477,28 @@
                    </div>
         </form>
         <div class="hr"></div>
+          <section class="ap-analytics" aria-label="Inteligência financeira">
+            <div class="ap-analytics-grid">
+              <div class="card ap-chart-card">
+                <div class="ap-chart-head"><strong>Saídas emitidas x pagas</strong><span>últimos 6 meses</span></div>
+                <canvas id="apMonthlyChart" class="ap-chart-canvas" height="210"></canvas>
+              </div>
+              <div class="card ap-chart-card">
+                <div class="ap-chart-head"><strong>Envelhecimento das obrigações</strong><span>saldo em aberto</span></div>
+                <canvas id="apAgingChart" class="ap-chart-canvas" height="210"></canvas>
+              </div>
+              <div class="card ap-chart-card">
+                <div class="ap-chart-head"><strong>Maiores fornecedores</strong><span>valor acumulado</span></div>
+                <div id="apTopFornecedores" class="ap-top-list"></div>
+              </div>
+            </div>
+            <div class="ap-projection-strip">
+              <div class="ap-projection-item"><span>Saída prevista 30 dias</span><strong id="apPrevisto30">R$ 0,00</strong></div>
+              <div class="ap-projection-item"><span>Atraso crítico</span><strong id="apAtrasoCritico">R$ 0,00</strong></div>
+              <div class="ap-projection-item"><span>Ticket por título</span><strong id="apTicketMedio">R$ 0,00</strong></div>
+              <div class="ap-projection-item"><span>Liquidação no mês</span><strong id="apLiquidacaoMes">0%</strong></div>
+            </div>
+          </section>
           <div class="table-wrap" style="margin-top:10px;">
             <table>
               <thead>
@@ -479,30 +524,47 @@
           </div>
         </div>
 
-        <!-- DIREITA: resumo do fornecedor / dicas operacionais -->
-        <div class="card">
-          <h2>Resumo</h2>
-
-          <div class="note">
-            <div style="font-weight:900; margin-bottom:6px;">Como este módulo funciona</div>
-            <ul style="margin:0; padding-left:18px;">
-              <li><b>Competência</b> = mês/ano do gasto (regime competência).</li>
-              <li><b>Vencimento</b> = quando deve pagar (regime caixa).</li>
-              <li><b>UUID v4</b> para títulos e entidades (sem IDs incrementais).</li>
-              <li><b>Offline-first</b>: alterações vão para <code>sync_queue</code> (Outbox) para sincronizar depois.</li>
-            </ul>
+        <!-- DIREITA: resumo premium enterprise -->
+        <div class="card ap-side-grid">
+          <div>
+            <h2>Resumo executivo</h2>
+            <div class="info-banner">Contas a pagar premium conecta fornecedor, XML, estoque, lote, recebimento e obrigação financeira no mesmo fluxo auditável.</div>
           </div>
 
-          <div class="hr"></div>
-
-          <div class="note">
+          <div class="card">
             <div style="font-weight:900; margin-bottom:6px;">Fornecedor selecionado</div>
             <div id="sideFornecedorNome" style="font-weight:900;">—</div>
             <div id="sideFornecedorDoc" class="muted">—</div>
             <div id="sideFornecedorObs" class="muted" style="margin-top:6px;">—</div>
           </div>
 
-          <div class="hr"></div>
+          <div class="ap-board">
+            <div class="card">
+              <div class="lbl">Matching</div>
+              <div class="val" style="font-size:1.18rem;font-weight:900;margin-top:4px;">2-way / 3-way</div>
+              <div class="hint">pedido, recebimento e fatura</div>
+            </div>
+            <div class="card">
+              <div class="lbl">Conferência</div>
+              <div class="val" style="font-size:1.18rem;font-weight:900;margin-top:4px;">Duplicidade</div>
+              <div class="hint">bloqueio antes do salvar</div>
+            </div>
+            <div class="card">
+              <div class="lbl">Origem</div>
+              <div class="val" style="font-size:1.18rem;font-weight:900;margin-top:4px;">Manual + XML</div>
+              <div class="hint">fluxo único e consistente</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div style="font-weight:900; margin-bottom:8px;">Checklist enterprise</div>
+            <div class="ap-mini-list">
+              <div class="ap-mini-item"><span>Fornecedor e documento rastreáveis</span><strong>Obrigatório</strong></div>
+              <div class="ap-mini-item"><span>Integração com XML e recebimento</span><strong>Ativo</strong></div>
+              <div class="ap-mini-item"><span>Cancelamento com trilha de auditoria</span><strong>Ativo</strong></div>
+              <div class="ap-mini-item"><span>Baixa financeira controlada</span><strong>Ativo</strong></div>
+            </div>
+          </div>
 
           <div class="note">
             <div style="font-weight:900; margin-bottom:6px;">Atalhos</div>
@@ -511,12 +573,9 @@
             <div><b>Esc</b>: fechar modal</div>
           </div>
 
-          <div class="hr"></div>
-
           <div class="note">
             <div class="danger-text">Atenção</div>
-            Se aparecer texto quebrado (ï¿½ /   /  f), o arquivo está com encoding errado.
-            Este refatoramento grava tudo em UTF-8 sem BOM (no final, após 4/4).
+            Se aparecer texto quebrado, o arquivo está com encoding errado. Este refatoramento grava tudo em UTF-8 sem BOM.
           </div>
         </div>
       </div>
@@ -644,6 +703,7 @@
 </script>
 <script src="modules/contasapagar.js"></script>
 
+  <script src="modules/ui-global.js"></script>
 </body>
 </html>
 

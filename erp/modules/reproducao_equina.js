@@ -38,11 +38,21 @@
 
   // ────── HELPERS ──────
   function uuid() {
-    if (crypto && crypto.randomUUID) return crypto.randomUUID();
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0;
-      return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
-    });
+    try {
+      if (window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    } catch (_) {}
+    try { if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); } catch (_) {}
+    try {
+      if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b => b.toString(16).padStart(2, "0")).join("");
+        return [hex.slice(0, 8), hex.slice(8, 12), hex.slice(12, 16), hex.slice(16, 20), hex.slice(20)].join("-");
+      }
+    } catch (_) {}
+    throw new TypeError("[REPRODUCAO] ambiente sem CSPRNG para gerar UUID v4.");
   }
 
   function now() { return new Date().toISOString(); }
@@ -109,9 +119,15 @@
       const tx = db.transaction([store, "sync_queue", "sys_meta"], "readwrite");
       tx.objectStore(store).put(rec);
       // outbox
+      const _sqId1 = uuid();
       tx.objectStore("sync_queue").add({
-        id: uuid(), store, record_id: rec.id, op: "upsert",
-        payload: rec, ts: now(), synced: false
+        id: _sqId1, op_id: _sqId1,
+        store, entity: store,
+        entity_id: rec.id || _sqId1,
+        op: "upsert", action: "upsert",
+        payload: rec,
+        created_at: now(), updated_at: now(),
+        status: "PENDING"
       });
       tx.oncomplete = () => res(rec);
       tx.onerror = () => rej(tx.error);
@@ -123,8 +139,15 @@
     return new Promise((res, rej) => {
       const tx = db.transaction([store, "sync_queue"], "readwrite");
       tx.objectStore(store).delete(id);
+      const _sqId2 = uuid();
       tx.objectStore("sync_queue").add({
-        id: uuid(), store, record_id: id, op: "delete", ts: now(), synced: false
+        id: _sqId2, op_id: _sqId2,
+        store, entity: store,
+        entity_id: id,
+        op: "delete", action: "delete",
+        payload: { id },
+        created_at: now(), updated_at: now(),
+        status: "PENDING"
       });
       tx.oncomplete = () => res();
       tx.onerror = () => rej(tx.error);
@@ -197,7 +220,7 @@
         tipo: tmpl.tipo,
         descricao: tmpl.desc || "",
         prioridade: "normal",
-        status: "pendente",
+        status: "PENDING",
         gerado_automatico: true,
         created_at: now(), updated_at: now()
       };

@@ -25,22 +25,21 @@ Conforme PATCH CANÔNICO ÚNICO (AA — Automações Premium)
   // Utilitários base (do legado)
   // -----------------------------
   function uuidv4(){
-    // UUID v4 determinístico o suficiente (crypto) com fallback
-    if(window.crypto && crypto.getRandomValues){
-      var a = new Uint8Array(16);
-      crypto.getRandomValues(a);
-      a[6] = (a[6] & 0x0f) | 0x40;
-      a[8] = (a[8] & 0x3f) | 0x80;
-      var s = Array.from(a).map(function(b){ return ("0"+b.toString(16)).slice(-2); }).join("");
-      return s.slice(0,8)+"-"+s.slice(8,12)+"-"+s.slice(12,16)+"-"+s.slice(16,20)+"-"+s.slice(20);
-    }
-    // fallback (menos ideal)
-    var d = Date.now();
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,function(c){
-      var r = (d + Math.random()*16)%16|0;
-      d = Math.floor(d/16);
-      return (c==="x" ? r : (r&0x3|0x8)).toString(16);
-    });
+    try{
+      if(window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    }catch(_){}
+    try{ if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); }catch(_){}
+    try{
+      if(typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"){
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+        return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
+      }
+    }catch(_){}
+    throw new TypeError("[CLIENTES] ambiente sem CSPRNG para gerar UUID v4.");
   }
 
   function onlyDigits(s){ return String(s||"").replace(/\D+/g,""); }
@@ -313,11 +312,15 @@ function confirmModal(title, text){
   }
 
 function outboxEnqueue(db, entity, entityId, action, payload){
-    var now = Date.now();
+    var now = new Date().toISOString();
+    var opId = uuidv4();
     var evt = {
-      id: uuidv4(),
+      id: opId,
+      op_id: opId,
+      store: "clientes_master",
       entity: String(entity),
       entity_id: String(entityId),
+      op: action === "DELETE" ? "delete" : "upsert",
       action: String(action),
       payload: payload || {},
       status: "PENDING",
@@ -544,6 +547,7 @@ function setEditState(mode){
     var rel0 = document.getElementById("relGrid");
     if(rel0) rel0.style.display = "none";
 
+    refreshDeleteUI();
     return;
   }
 
@@ -581,6 +585,7 @@ if(rel){
   rel.style.display = state.editingId ? "grid" : "none";
 }
 
+    refreshDeleteUI();
     return;
   }
 
@@ -609,6 +614,7 @@ if(rel){
     // Snapshot base da edição (dirty-state)
     state.snapshot = snapshotFromForm();
     setDirty(false);
+    refreshDeleteUI();
 
     return;
 
@@ -636,6 +642,7 @@ if(rel){
 
   state.snapshot = snapshotFromForm();
   setDirty(false);
+  refreshDeleteUI();
 
 }
   // -----------------------------
@@ -996,6 +1003,17 @@ try{
     wrap.innerHTML = html;
   }
 
+
+  function isClienteDeleted(c){
+    if(!c) return true;
+    return !!(
+      c.deleted === true ||
+      c.__deleted__ === true ||
+      c.deleted_at ||
+      String(c.status || "").toUpperCase() === "EXCLUIDO"
+    );
+  }
+
   function applyFilters(all){
   var showInativos = !!state.showInativos;
   var q = normNome(state.q || "");
@@ -1004,6 +1022,7 @@ try{
 
   for(var i=0;i<all.length;i++){
     var c = all[i];
+    if(isClienteDeleted(c)) continue;
 
     var inactive = (c.status === "INATIVO");
 
@@ -1459,6 +1478,10 @@ function goListView(){
         toast("Cliente não encontrado.", "warn");
         return;
       }
+      if(isClienteDeleted(c)){
+        toast("Cliente já está excluído e não pode ser aberto.", "warn", true);
+        return;
+      }
       state.editingId = c.id;
       state.selectedId = c.id; // FIORI-like: destaca no Master
       fillForm(c);
@@ -1534,6 +1557,159 @@ function onListClick(ev){
   // Clique na lista (delegação premium)
   // ============================================================
   
+
+function refreshDeleteUI(){
+  var targetId = state.editingId || state.selectedId || null;
+  var allow = !!targetId && state.uiMode !== "NOVO" && state.uiMode !== "EMPTY";
+
+  var ids = ["btnExcluir", "btnExcluirTop"];
+  for(var i=0;i<ids.length;i++){
+    var btn = el(ids[i]);
+    if(!btn) continue;
+    btn.style.display = allow ? "" : "none";
+    btn.disabled = !allow;
+  }
+}
+
+function isRowActive(row){
+  if(!row) return false;
+  if(row.deleted === true || row.__deleted__ === true || row.deleted_at) return false;
+  var status = String(row.status || "").toLowerCase();
+  if(status === "cancelado" || status === "cancelada" || status === "excluido" || status === "excluído" || status === "inativo_excluido") return false;
+  return true;
+}
+
+async function countRowsByAnyKey(storeName, keyNames, targetId){
+  try{
+    const rows = await getAll(state.db, storeName);
+    return (rows || []).filter(function(row){
+      if(!isRowActive(row)) return false;
+      for(var i=0;i<keyNames.length;i++){
+        var key = keyNames[i];
+        if(String((row && row[key]) || "") === String(targetId || "")) return true;
+      }
+      return false;
+    }).length;
+  }catch(_){
+    return 0;
+  }
+}
+
+async function collectClienteDeleteBlockers(targetId){
+  var blockers = [];
+
+  var animaisCount = await countRowsByAnyKey("animais_master", ["cliente_id","tutor_id","proprietario_id"], targetId);
+  if(animaisCount > 0){
+    blockers.push({ store: "animais_master", label: "animais vinculados", count: animaisCount });
+  }
+
+  var atendCount = await countRowsByAnyKey("atendimentos_master", ["cliente_id"], targetId);
+  if(atendCount > 0){
+    blockers.push({ store: "atendimentos_master", label: "atendimentos vinculados", count: atendCount });
+  }
+
+  var arCount = await countRowsByAnyKey("contas_receber", ["cliente_id"], targetId);
+  if(arCount > 0){
+    blockers.push({ store: "contas_receber", label: "contas a receber vinculadas", count: arCount });
+  }
+
+  var fechCount = await countRowsByAnyKey("fechamentos", ["cliente_id"], targetId);
+  if(fechCount > 0){
+    blockers.push({ store: "fechamentos", label: "fechamentos vinculados", count: fechCount });
+  }
+
+  var reproCount = await countRowsByAnyKey("repro_cases", ["cliente_id"], targetId);
+  if(reproCount > 0){
+    blockers.push({ store: "repro_cases", label: "casos de reprodução vinculados", count: reproCount });
+  }
+
+  return blockers;
+}
+
+async function deleteCliente(){
+  try{
+    await window.VSC_AUTH.requireRole("ADMIN"); // ADMIN ou MASTER
+  }catch(e){
+    toast(e && e.message ? e.message : "Acesso negado.", "warn", true);
+    return;
+  }
+
+  var targetId = state.editingId || state.selectedId || null;
+  if(!targetId){
+    toast("Selecione um cliente para excluir.", "warn", false);
+    refreshDeleteUI();
+    return;
+  }
+
+  var ok = await confirmModal("Excluir cliente", "Confirma a exclusão deste cliente? A operação será registrada como tombstone para sincronização offline-first.");
+  if(!ok) return;
+
+  try{
+    updateStatusBadge(STATUS.SYNC);
+
+    const cli = await getById(state.db, STORE_CLIENTES, targetId);
+    if(!cli){
+      toast("Cliente não encontrado.", "warn", false);
+      setEditState("VIEW");
+      refreshDeleteUI();
+      return;
+    }
+
+    if(isClienteDeleted(cli)){
+      toast("Cliente já estava excluído.", "warn", true);
+      state.selectedId = null;
+      state.editingId = null;
+      try{ fillForm(null); }catch(_){ }
+      try{ setEditState("EMPTY"); }catch(_){ }
+      await reloadList();
+      await refreshPendingCount();
+      refreshDeleteUI();
+      return;
+    }
+
+    const blockers = await collectClienteDeleteBlockers(targetId);
+    if(blockers.length){
+      var detail = blockers.map(function(b){ return b.label + ": " + b.count; }).join(" • ");
+      toast("Não é possível excluir: existem vínculos ativos com este cliente. " + detail + ".", "warn", true);
+      setEditState("VIEW");
+      refreshDeleteUI();
+      return;
+    }
+
+    var now = new Date().toISOString();
+    const tombstone = Object.assign({}, cli, {
+      status: "EXCLUIDO",
+      deleted: true,
+      __deleted__: true,
+      deleted_at: now,
+      updated_at: now
+    });
+
+    await put(state.db, STORE_CLIENTES, tombstone);
+    await outboxEnqueue(state.db, "clientes", targetId, "DELETE", {
+      id: targetId,
+      deleted: true,
+      __deleted__: true,
+      deleted_at: now,
+      updated_at: now
+    });
+
+    state.selectedId = null;
+    state.editingId = null;
+    try{ fillForm(null); }catch(_){ }
+    try{ setEditState("EMPTY"); }catch(_){ }
+    await reloadList();
+    await refreshPendingCount();
+    toast("Cliente excluído com segurança.", "success", true);
+  }catch(err){
+    console.error("[CLIENTES] deleteCliente falhou:", err);
+    toast("Falha ao excluir cliente.", "error", true);
+    try{ setEditState("VIEW"); }catch(_){ }
+  }finally{
+    updateStatusBadge();
+    refreshDeleteUI();
+  }
+}
 
 function bindEvents(){
     var qModal = el("qModal");
@@ -1911,6 +2087,75 @@ if(inat){
       }
     }
 
+
+    function refreshDeleteUI(){
+      var targetId = state.editingId || state.selectedId || null;
+      var allow = !!targetId && state.uiMode !== "NOVO" && state.uiMode !== "EMPTY";
+
+      var ids = ["btnExcluir", "btnExcluirTop"];
+      for(var i=0;i<ids.length;i++){
+        var btn = el(ids[i]);
+        if(!btn) continue;
+        btn.style.display = allow ? "" : "none";
+        btn.disabled = !allow;
+      }
+    }
+
+    function isRowActive(row){
+      if(!row) return false;
+      if(row.deleted === true || row.__deleted__ === true || row.deleted_at) return false;
+      var status = String(row.status || "").toLowerCase();
+      if(status === "cancelado" || status === "cancelada" || status === "excluido" || status === "excluído" || status === "inativo_excluido") return false;
+      return true;
+    }
+
+    async function countRowsByAnyKey(storeName, keyNames, targetId){
+      try{
+        const rows = await getAll(state.db, storeName);
+        return (rows || []).filter(function(row){
+          if(!isRowActive(row)) return false;
+          for(var i=0;i<keyNames.length;i++){
+            var key = keyNames[i];
+            if(String((row && row[key]) || "") === String(targetId || "")) return true;
+          }
+          return false;
+        }).length;
+      }catch(_){
+        return 0;
+      }
+    }
+
+    async function collectClienteDeleteBlockers(targetId){
+      var blockers = [];
+
+      var animaisCount = await countRowsByAnyKey("animais_master", ["cliente_id","tutor_id","proprietario_id"], targetId);
+      if(animaisCount > 0){
+        blockers.push({ store: "animais_master", label: "animais vinculados", count: animaisCount });
+      }
+
+      var atendCount = await countRowsByAnyKey("atendimentos_master", ["cliente_id"], targetId);
+      if(atendCount > 0){
+        blockers.push({ store: "atendimentos_master", label: "atendimentos vinculados", count: atendCount });
+      }
+
+      var arCount = await countRowsByAnyKey("contas_receber", ["cliente_id"], targetId);
+      if(arCount > 0){
+        blockers.push({ store: "contas_receber", label: "contas a receber vinculadas", count: arCount });
+      }
+
+      var fechCount = await countRowsByAnyKey("fechamentos", ["cliente_id"], targetId);
+      if(fechCount > 0){
+        blockers.push({ store: "fechamentos", label: "fechamentos vinculados", count: fechCount });
+      }
+
+      var reproCount = await countRowsByAnyKey("repro_cases", ["cliente_id"], targetId);
+      if(reproCount > 0){
+        blockers.push({ store: "repro_cases", label: "casos de reprodução vinculados", count: reproCount });
+      }
+
+      return blockers;
+    }
+
     async function deleteCliente(){
       try{
         await window.VSC_AUTH.requireRole("ADMIN"); // ADMIN ou MASTER
@@ -1918,32 +2163,78 @@ if(inat){
         toast(e && e.message ? e.message : "Acesso negado.", "warn", true);
         return;
       }
-      if(!state.selectedId){
+
+      var targetId = state.editingId || state.selectedId || null;
+      if(!targetId){
         toast("Selecione um cliente para excluir.", "warn", false);
+        refreshDeleteUI();
         return;
       }
-      var ok = await confirmModal("Excluir cliente", "Confirma a exclusão definitiva deste cliente? Essa ação não pode ser desfeita.");
+
+      var ok = await confirmModal("Excluir cliente", "Confirma a exclusão deste cliente? A operação será registrada como tombstone para sincronização offline-first.");
       if(!ok) return;
 
       try{
         setEditState("SYNC", "Excluindo...");
-        await delById(state.db, STORE_CLIENTES, state.selectedId);
-        // registrar na outbox (DELETE)
+
+        const cli = await getById(state.db, STORE_CLIENTES, targetId);
+        if(!cli){
+          toast("Cliente não encontrado.", "warn", false);
+          setEditState("IDLE", "");
+          refreshDeleteUI();
+          return;
+        }
+
+        if(isClienteDeleted(cli)){
+          toast("Cliente já estava excluído.", "warn", true);
+          state.selectedId = null;
+          state.editingId = null;
+          try{ fillForm(null); }catch(_){}
+          try{ setEditState("EMPTY"); }catch(_){}
+          await reloadList();
+          await refreshPendingCount();
+          refreshDeleteUI();
+          return;
+        }
+
+        const blockers = await collectClienteDeleteBlockers(targetId);
+        if(blockers.length){
+          var detail = blockers.map(function(b){ return b.label + ": " + b.count; }).join(" • ");
+          toast("Não é possível excluir: existem vínculos ativos com este cliente. " + detail + ".", "warn", true);
+          setEditState("VIEW");
+          refreshDeleteUI();
+          return;
+        }
+
         var now = new Date().toISOString();
-        await outboxEnqueue(state.db, "clientes", state.selectedId, "DELETE", { id: state.selectedId, deleted_at: now });
-        // limpar seleção e UI
+        const tombstone = Object.assign({}, cli, {
+          status: "EXCLUIDO",
+          deleted: true,
+          __deleted__: true,
+          deleted_at: now,
+          updated_at: now
+        });
+
+        await put(state.db, STORE_CLIENTES, tombstone);
+        await outboxEnqueue(state.db, "clientes", targetId, "DELETE", {
+          id: targetId,
+          deleted: true,
+          __deleted__: true,
+          deleted_at: now,
+          updated_at: now
+        });
+
         state.selectedId = null;
         state.editingId = null;
         try{ fillForm(null); }catch(_){}
-        try{ setDetailVisible(false); }catch(_){}
+        try{ setEditState("EMPTY"); }catch(_){}
         await reloadList();
         await refreshPendingCount();
-        toast("Cliente excluído.", "ok", false);
-        setEditState("SALVO", "Excluído");
+        toast("Cliente excluído com segurança.", "success", true);
       }catch(err){
-        console.error(err);
+        console.error("[CLIENTES] deleteCliente falhou:", err);
         toast("Falha ao excluir cliente.", "error", true);
-        setEditState("ERRO", "Erro");
+        try{ setEditState("VIEW"); }catch(_){}
       }finally{
         refreshDeleteUI();
       }

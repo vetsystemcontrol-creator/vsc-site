@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Acesso suspenso - Vet System Control | Equine</title>
   <link rel="stylesheet" href="/assets/styles.css" />
-  <script src="modules/app.js" charset="utf-8"></script>
+  <link rel="stylesheet" href="modules/vsc-ui.css?v=20260307f" />
+  <link rel="stylesheet" href="assets/css/vsc-premium-enterprise.css" />
+<script src="modules/app.js" charset="utf-8"></script>
   <script src="modules/vsc_db.js" charset="utf-8"></script>
   <script src="modules/auth.js" charset="utf-8"></script>
   <script src="modules/auth_guard.js" charset="utf-8"></script>
@@ -32,8 +34,8 @@
     body { margin-top: 0 !important; }
 </style>
 </head>
-<body>
-<iframe id="vscTopbarFrame" src="topbar.html?v=final" title="Navegação"></iframe>
+<body class="vsc-premium">
+<iframe id="vscTopbarFrame" src="topbar.html?v=20260307f" title="Navegação"></iframe>
 
   <div class="wrap">
     <div class="card">
@@ -88,5 +90,6 @@
   });
 })();
 </script>
+  <script src="modules/ui-global.js"></script>
 </body>
 </html>

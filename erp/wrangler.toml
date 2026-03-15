@@ -1,0 +1,8 @@
+name = "vsc-frontend"
+compatibility_date = "2026-03-08"
+pages_build_output_dir = "."
+
+[[d1_databases]]
+binding = "DB"
+database_name = "vsc-sync-local"
+database_id = "51407646-263d-4311-967f-8608fd2d2268"

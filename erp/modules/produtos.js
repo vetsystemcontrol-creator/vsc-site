@@ -54,13 +54,21 @@
 function nowISO(){ return new Date().toISOString(); }
 
   function uuidv4(){
-    try{ if(window.crypto && typeof crypto.randomUUID === "function") return crypto.randomUUID(); }catch(_){}
-    // fallback (último recurso) — mantém compatibilidade
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-      var r = (Math.random() * 16) | 0;
-      var v = c === "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+    try{
+      if(window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    }catch(_){}
+    try{ if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); }catch(_){}
+    try{
+      if(typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"){
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+        return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
+      }
+    }catch(_){}
+    throw new TypeError("[PRODUTOS] ambiente sem CSPRNG para gerar UUID v4.");
   }
 
   function centsToMoney(c){
@@ -73,6 +81,35 @@ function nowISO(){ return new Date().toISOString(); }
     var n = Number(s);
     if (!isFinite(n)) return NaN;
     return Math.round(n * 100);
+  }
+
+  function parseDecimalInput(v, fallback){
+    var s = String(v == null ? "" : v).trim();
+    if(!s) return Number(fallback || 0);
+    var n = Number(s.replace(/\./g, "").replace(",", "."));
+    return isFinite(n) ? n : Number(fallback || 0);
+  }
+
+  function sanitizeUnit(raw){
+    return String(raw || "").trim().toUpperCase().replace(/\s+/g, "");
+  }
+
+  function buildConversaoResumo(obj){
+    if(!obj) return "Sem conversão configurada";
+    var uCompra = sanitizeUnit(obj.un_compra_padrao || obj.unidade_compra || "");
+    var uEstoque = sanitizeUnit(obj.un_estoque || obj.unidade_estoque || "");
+    var fator = Number(obj.conv_fator_compra_para_estoque || 0);
+    if(!uCompra && !uEstoque && !(fator > 0)) return "Sem conversão configurada";
+    if(uCompra && uEstoque && uCompra === uEstoque){
+      return "Mesma unidade: " + uCompra + " → " + uEstoque + " (fator 1)";
+    }
+    if(uCompra && uEstoque && fator > 0){
+      return "Compra " + uCompra + " → Estoque " + uEstoque + " | fator " + String(fator).replace('.', ',');
+    }
+    if(uEstoque){
+      return "Estoque em " + uEstoque + (fator > 0 ? (" | fator " + String(fator).replace('.', ',')) : "");
+    }
+    return "Sem conversão configurada";
   }
 
   function sanitizeEAN(eanRaw){
@@ -102,6 +139,27 @@ function nowISO(){ return new Date().toISOString(); }
     if(!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return "";
     var y = iso.slice(0,4), m = iso.slice(5,7), d = iso.slice(8,10);
     return d + "/" + m + "/" + y;
+  }
+  function safeHtml(s){
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function setProductPreview(src){
+    var box = byId("pFotoPreview");
+    if(!box) return;
+    var val = String(src || "").trim();
+    if(!val){
+      box.className = "product-photo is-empty";
+      box.innerHTML = "";
+      return;
+    }
+    box.className = "product-photo";
+    box.innerHTML = '<img alt="Foto do produto" src="' + safeHtml(val) + '">';
   }
 
   // =============================
@@ -194,13 +252,12 @@ function nowISO(){ return new Date().toISOString(); }
   }
 
 
-  // Soma quantidade por produto a partir de produtos_lotes (offline-first)
-  async function idbGetStockMapFromLotes(){
+  async function idbGetStockMapFromStore(storeName, qtyField){
     var db = await VSC_DB.openDB();
     try{
       return await new Promise(function(resolve, reject){
-        var tx = db.transaction([VSC_DB.stores.produtos_lotes], "readonly");
-        var st = tx.objectStore(VSC_DB.stores.produtos_lotes);
+        var tx = db.transaction([storeName], "readonly");
+        var st = tx.objectStore(storeName);
         var rq = st.openCursor();
         var map = {};
         rq.onsuccess = function(){
@@ -209,7 +266,8 @@ function nowISO(){ return new Date().toISOString(); }
             var v = cur.value || {};
             if(!v.deleted_at){
               var pid = String(v.produto_id || "");
-              var q = Number(v.qtd || 0);
+              var raw = (v[qtyField] != null) ? v[qtyField] : v.qtd;
+              var q = Number(raw || 0);
               if(pid){
                 map[pid] = (map[pid] || 0) + (isFinite(q) ? q : 0);
               }
@@ -219,10 +277,26 @@ function nowISO(){ return new Date().toISOString(); }
             resolve(map);
           }
         };
-        rq.onerror = function(){ reject(rq.error || new Error("Falha IDB cursor produtos_lotes")); };
+        rq.onerror = function(){ reject(rq.error || new Error("Falha IDB cursor " + storeName)); };
       });
     } finally { try{ db.close(); }catch(_e){} }
   }
+
+  // Fonte canônica: estoque_saldos. Fallback: produtos_lotes.
+  async function idbGetStockMapCanonic(){
+    try{
+      var fromSaldo = await idbGetStockMapFromStore("estoque_saldos", "saldo");
+      if(fromSaldo && Object.keys(fromSaldo).length) return fromSaldo;
+    }catch(_e){}
+    try{
+      var fromLegacy = await idbGetStockMapFromStore(VSC_DB.stores.produtos_lotes, "qtd");
+      if(fromLegacy && Object.keys(fromLegacy).length) return fromLegacy;
+    }catch(_e){}
+    return {};
+  }
+
+  window.VSC_PRODUTOS = window.VSC_PRODUTOS || {};
+  window.VSC_PRODUTOS.getStockMapCanonic = idbGetStockMapCanonic;
 
   async function idbGetLotesByProduto(produto_id){
     var db = await VSC_DB.openDB();
@@ -353,16 +427,22 @@ function nowISO(){ return new Date().toISOString(); }
   function setInputsEnabled(enabled){
     var _pNome = byId("pNome"); if(_pNome) _pNome.disabled = !enabled;
     var _pEAN = byId("pEAN"); if(_pEAN) _pEAN.disabled = !enabled;
+    var _pUnEstoque = byId("pUnEstoque"); if(_pUnEstoque) _pUnEstoque.disabled = !enabled;
+    var _pUnCompraPadrao = byId("pUnCompraPadrao"); if(_pUnCompraPadrao) _pUnCompraPadrao.disabled = !enabled;
+    var _pConvFator = byId("pConvFator"); if(_pConvFator) _pConvFator.disabled = !enabled;
     var _pCusto = byId("pCusto"); if(_pCusto) _pCusto.disabled = !enabled;
     var _pVenda = byId("pVenda"); if(_pVenda) _pVenda.disabled = !enabled;
     // dados técnicos
     if(byId("pMarca")) byId("pMarca").disabled = !enabled;
     if(byId("pCategoria")) byId("pCategoria").disabled = !enabled;
+    if(byId("pTipoProduto")) byId("pTipoProduto").disabled = !enabled;
     if(byId("pNCM")) byId("pNCM").disabled = !enabled;
     if(byId("pCEST")) byId("pCEST").disabled = !enabled;
     if(byId("pRegistro")) byId("pRegistro").disabled = !enabled;
     if(byId("pPrincipio")) byId("pPrincipio").disabled = !enabled;
     if(byId("pImgUrl")) byId("pImgUrl").disabled = !enabled;
+    if(byId("pImgFile")) byId("pImgFile").disabled = !enabled;
+    if(byId("btnImgClear")) byId("btnImgClear").disabled = !enabled;
     if(byId("pMin")) byId("pMin").disabled = !enabled;
     if(byId("pRep")) byId("pRep").disabled = !enabled;
     // derivados sempre disabled
@@ -438,6 +518,10 @@ function nowISO(){ return new Date().toISOString(); }
     state.selectedId = "";
     byId("pNome").value = "";
     byId("pEAN").value = "";
+    if(byId("pUnEstoque")) byId("pUnEstoque").value = "";
+    if(byId("pUnCompraPadrao")) byId("pUnCompraPadrao").value = "";
+    if(byId("pConvFator")) byId("pConvFator").value = "1";
+    if(byId("pConvResumo")) byId("pConvResumo").value = "Sem conversão configurada";
     byId("pCusto").value = "0,00";
     byId("pVenda").value = "0,00";
     byId("pLucro").value = "0,00";
@@ -445,11 +529,14 @@ function nowISO(){ return new Date().toISOString(); }
     byId("pCustoMedio").value = "0,00";
     if(byId("pMarca")) byId("pMarca").value = "";
     if(byId("pCategoria")) byId("pCategoria").value = "";
+    if(byId("pTipoProduto")) byId("pTipoProduto").value = "";
     if(byId("pNCM")) byId("pNCM").value = "";
     if(byId("pCEST")) byId("pCEST").value = "";
     if(byId("pRegistro")) byId("pRegistro").value = "";
     if(byId("pPrincipio")) byId("pPrincipio").value = "";
     if(byId("pImgUrl")) byId("pImgUrl").value = "";
+    if(byId("pImgFile")) byId("pImgFile").value = "";
+    setProductPreview("");
     if(byId("pMin")) byId("pMin").value = "";
     if(byId("pRep")) byId("pRep").value = "";
     clearLoteForm();
@@ -468,6 +555,10 @@ function nowISO(){ return new Date().toISOString(); }
     state.selectedId = String(obj.produto_id || obj.id || "");
     byId("pNome").value = obj.nome || "";
     byId("pEAN").value = obj.ean || "";
+    if(byId("pUnEstoque")) byId("pUnEstoque").value = sanitizeUnit(obj.un_estoque || "");
+    if(byId("pUnCompraPadrao")) byId("pUnCompraPadrao").value = sanitizeUnit(obj.un_compra_padrao || "");
+    if(byId("pConvFator")) byId("pConvFator").value = String(Number(obj.conv_fator_compra_para_estoque || 1));
+    if(byId("pConvResumo")) byId("pConvResumo").value = buildConversaoResumo(obj);
     byId("pCusto").value = centsToMoney(obj.custo_base_cents);
     byId("pVenda").value = centsToMoney(obj.venda_cents);
     byId("pCustoReal").value = centsToMoney(obj.custo_real_cents);
@@ -475,11 +566,14 @@ function nowISO(){ return new Date().toISOString(); }
     byId("pLucro").value = fmtPercent(calcLucroPercent(obj.venda_cents, obj.custo_base_cents));
     if(byId("pMarca")) byId("pMarca").value = obj.marca || "";
     if(byId("pCategoria")) byId("pCategoria").value = obj.categoria || "";
+    if(byId("pTipoProduto")) byId("pTipoProduto").value = obj.tipo_produto || "";
     if(byId("pNCM")) byId("pNCM").value = obj.ncm || "";
     if(byId("pCEST")) byId("pCEST").value = obj.cest || "";
     if(byId("pRegistro")) byId("pRegistro").value = obj.registro || "";
     if(byId("pPrincipio")) byId("pPrincipio").value = obj.principio || "";
     if(byId("pImgUrl")) byId("pImgUrl").value = obj.img_url || "";
+    if(byId("pImgFile")) byId("pImgFile").value = "";
+    setProductPreview(obj.img_url || "");
     if(byId("pMin")) byId("pMin").value = String(obj.estoque_minimo != null ? obj.estoque_minimo : "");
     if(byId("pRep")) byId("pRep").value = String(obj.ponto_reposicao != null ? obj.ponto_reposicao : "");
   }
@@ -601,11 +695,19 @@ function nowISO(){ return new Date().toISOString(); }
         if(st === "CRIT") tr.classList.add("vsc-row-crit");
         else if(st === "LOW") tr.classList.add("vsc-row-low");
       }catch(_e){}
+      var thumb = String(x.img_url || "").trim()
+        ? '<img src="' + safeHtml(String(x.img_url || "")) + '" alt="Foto do produto" style="width:48px;height:48px;object-fit:cover;border-radius:12px;border:1px solid var(--border);background:#fff;">'
+        : '<div style="width:48px;height:48px;border-radius:12px;border:1px solid var(--border);background:#f8fafc;color:#64748b;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;">Sem<br>foto</div>';
       tr.innerHTML =
         '<td>' +
-          '<div style="font-weight:900;">' + (x.nome || "") + '</div>' +
-          '<div style="opacity:.7; font-size:12px;">Custo: R$ ' + centsToMoney(x.custo_base_cents) + ' • Venda: R$ ' + centsToMoney(x.venda_cents) + '</div>' +
-          '<div style="margin-top:6px;">' + stockBadgeHTML(x) + '</div>' +
+          '<div style="display:grid;grid-template-columns:48px 1fr;gap:10px;align-items:start;">' +
+            '<div>' + thumb + '</div>' +
+            '<div>' +
+              '<div style="font-weight:900;">' + safeHtml(x.nome || "") + '</div>' +
+              '<div style="opacity:.7; font-size:12px;">Custo: R$ ' + centsToMoney(x.custo_base_cents) + ' • Venda: R$ ' + centsToMoney(x.venda_cents) + '</div>' +
+              '<div style="margin-top:6px;">' + stockBadgeHTML(x) + '</div>' +
+            '</div>' +
+          '</div>' +
         '</td>' +
         '<td>' + (x.ean || "") + '</td>' +
         '<td><button class="btn small" type="button" data-act="view" data-id="' + String(x.produto_id) + '">Ver</button></td>';
@@ -894,6 +996,15 @@ state.mode = "NEW";
       if(!isFinite(custo) || custo < 0) throw new Error("Custo inválido.");
       if(!isFinite(venda) || venda < 0) throw new Error("Venda inválida.");
 
+      var unEstoque = sanitizeUnit(byId("pUnEstoque") && byId("pUnEstoque").value);
+      var unCompra = sanitizeUnit(byId("pUnCompraPadrao") && byId("pUnCompraPadrao").value);
+      var convFator = parseDecimalInput(byId("pConvFator") && byId("pConvFator").value, 1);
+      if((unEstoque || unCompra) && !unEstoque) throw new Error("Unidade base (estoque) é obrigatória quando houver conversão.");
+      if((unEstoque || unCompra) && !unCompra) throw new Error("Unidade de compra padrão é obrigatória quando houver conversão.");
+      if(unEstoque && unCompra && unEstoque !== unCompra && !(convFator > 0)) throw new Error("Fator de conversão inválido.");
+      if(unEstoque && unCompra && unEstoque === unCompra) convFator = 1;
+      if(!unEstoque && !unCompra) convFator = 1;
+
       var now = nowISO();
       var obj = null;
 
@@ -911,6 +1022,9 @@ state.mode = "NEW";
       obj.nome = nome;
       obj.nome_norm = nome; // compat (normalização pode ser feita em outro ciclo)
       obj.ean = ean;
+      obj.un_estoque = unEstoque || obj.un_estoque || "";
+      obj.un_compra_padrao = unCompra || obj.un_compra_padrao || obj.un_estoque || "";
+      obj.conv_fator_compra_para_estoque = convFator > 0 ? convFator : 1;
       obj.custo_base_cents = custo;
       obj.venda_cents = venda;
       obj.deleted_at = null;
@@ -918,17 +1032,24 @@ state.mode = "NEW";
       // dados técnicos (podem vir do enriquecimento web)
       obj.marca = (byId("pMarca") ? String(byId("pMarca").value||"").trim() : (obj.marca||""));
       obj.categoria = (byId("pCategoria") ? String(byId("pCategoria").value||"").trim() : (obj.categoria||""));
+      obj.tipo_produto = (byId("pTipoProduto") ? String(byId("pTipoProduto").value||"").trim().toLowerCase() : String(obj.tipo_produto||"").trim().toLowerCase());
+      if(!obj.tipo_produto){
+        var catNorm = String(obj.categoria||"").toLowerCase();
+        if(catNorm.includes("vacin")) obj.tipo_produto = "vacina";
+      }
       obj.ncm = (byId("pNCM") ? String(byId("pNCM").value||"").trim() : (obj.ncm||""));
       obj.cest = (byId("pCEST") ? String(byId("pCEST").value||"").trim() : (obj.cest||""));
       obj.registro = (byId("pRegistro") ? String(byId("pRegistro").value||"").trim() : (obj.registro||""));
       obj.principio = (byId("pPrincipio") ? String(byId("pPrincipio").value||"").trim() : (obj.principio||""));
       obj.img_url = (byId("pImgUrl") ? String(byId("pImgUrl").value||"").trim() : (obj.img_url||""));
+      setProductPreview(obj.img_url);
       // estoque (cores + filtros)
       obj.estoque_minimo = (byId("pMin") ? Number(String(byId("pMin").value||"").trim().replace(",", ".")) : (obj.estoque_minimo||0));
       obj.ponto_reposicao = (byId("pRep") ? Number(String(byId("pRep").value||"").trim().replace(",", ".")) : (obj.ponto_reposicao||0));
       if(!isFinite(obj.estoque_minimo) || obj.estoque_minimo < 0) obj.estoque_minimo = 0;
       if(!isFinite(obj.ponto_reposicao) || obj.ponto_reposicao < 0) obj.ponto_reposicao = 0;
       obj.enrich_updated_at = obj.enrich_updated_at || null;
+      if(byId("pConvResumo")) byId("pConvResumo").value = buildConversaoResumo(obj);
 
       await idbUpsertProdutoAtomico(obj);
 
@@ -1004,7 +1125,7 @@ state.mode = "NEW";
       state.produtos = await idbGetAllProdutos();
           state.stockMap = (window.VSC_ESTOQUE && typeof window.VSC_ESTOQUE.getStockMap === "function")
             ? await window.VSC_ESTOQUE.getStockMap()
-            : await idbGetStockMapFromLotes();
+            : await idbGetStockMapCanonic();
       
           // ordem alfabética (enterprise default)
           state.produtos = (state.produtos || []).slice().sort(function(a,b){
@@ -1034,7 +1155,7 @@ state.mode = "NEW";
 
   function fieldLabel(k){
     var map = {
-      nome:"Nome", marca:"Marca/Laboratório", categoria:"Categoria",
+      nome:"Nome", marca:"Marca/Laboratório", tipo_produto:"Tipo clínico", categoria:"Categoria",
       ncm:"NCM", cest:"CEST", registro:"Registro", principio:"Princípio ativo",
       img_url:"Imagem (URL)"
     };
@@ -1045,6 +1166,7 @@ state.mode = "NEW";
     if(k === "nome") return String(byId("pNome") && byId("pNome").value || "").trim();
     if(k === "marca") return String(byId("pMarca") && byId("pMarca").value || "").trim();
     if(k === "categoria") return String(byId("pCategoria") && byId("pCategoria").value || "").trim();
+    if(k === "tipo_produto") return String(byId("pTipoProduto") && byId("pTipoProduto").value || "").trim();
     if(k === "ncm") return String(byId("pNCM") && byId("pNCM").value || "").trim();
     if(k === "cest") return String(byId("pCEST") && byId("pCEST").value || "").trim();
     if(k === "registro") return String(byId("pRegistro") && byId("pRegistro").value || "").trim();
@@ -1058,6 +1180,7 @@ state.mode = "NEW";
     if(k === "nome" && byId("pNome")) byId("pNome").value = v;
     if(k === "marca" && byId("pMarca")) byId("pMarca").value = v;
     if(k === "categoria" && byId("pCategoria")) byId("pCategoria").value = v;
+    if(k === "tipo_produto" && byId("pTipoProduto")) byId("pTipoProduto").value = v;
     if(k === "ncm" && byId("pNCM")) byId("pNCM").value = v;
     if(k === "cest" && byId("pCEST")) byId("pCEST").value = v;
     if(k === "registro" && byId("pRegistro")) byId("pRegistro").value = v;
@@ -1349,6 +1472,29 @@ async function onEnrichFetch(){
     if(byId("btnRecarregar")) byId("btnRecarregar").addEventListener("click", function(e){ e.preventDefault(); init(); });
 
     if(byId("q")) byId("q").addEventListener("input", function(){ renderList(); });
+    if(byId("pImgUrl")) byId("pImgUrl").addEventListener("input", function(){ setProductPreview(this.value); });
+    if(byId("btnImgClear")) byId("btnImgClear").addEventListener("click", function(){
+      if(byId("pImgUrl")) byId("pImgUrl").value = "";
+      if(byId("pImgFile")) byId("pImgFile").value = "";
+      setProductPreview("");
+    });
+    if(byId("pImgFile")) byId("pImgFile").addEventListener("change", function(ev){
+      var file = ev && ev.target && ev.target.files ? ev.target.files[0] : null;
+      if(!file) return;
+      if(!/^image\//i.test(String(file.type || ""))){
+        toastShow("warn", "Foto do produto", "Selecione um arquivo de imagem válido.");
+        this.value = "";
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function(){
+        var result = String(reader.result || "");
+        if(byId("pImgUrl")) byId("pImgUrl").value = result;
+        setProductPreview(result);
+      };
+      reader.onerror = function(){ toastShow("error", "Foto do produto", "Não foi possível ler a imagem."); };
+      reader.readAsDataURL(file);
+    });
 
     // Quick filters (data-qf)
     document.addEventListener("click", function(ev){

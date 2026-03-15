@@ -191,7 +191,19 @@ window.ERPVet = (function() {
          * Gera ID ?f??,??,?nico
          */
         generateID(prefix = 'id') {
-            return `${prefix}_${Date.now()}_${Math.floor(Math.random() * 10000)}`;
+            return `${prefix}_${(() => {
+                if (window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+                if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+                if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
+                    const buf = new Uint8Array(16);
+                    crypto.getRandomValues(buf);
+                    buf[6] = (buf[6] & 0x0f) | 0x40;
+                    buf[8] = (buf[8] & 0x3f) | 0x80;
+                    const hex = Array.from(buf).map(b => b.toString(16).padStart(2, "0")).join("");
+                    return [hex.slice(0, 8), hex.slice(8, 12), hex.slice(12, 16), hex.slice(16, 20), hex.slice(20)].join("-");
+                }
+                throw new TypeError("[APP] ambiente sem CSPRNG para gerar UUID v4.");
+            })()}`;
         },
 
         /**
@@ -911,17 +923,35 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 ;(() => {
-  // VSC_BRANDING_LOGO_A_TOPBAR_E9_V1
-  // Regra: Logo A do cliente (empresa.html) deve aparecer na topbar (canto direito) quando existir.
-  // Fonte: localStorage 'vsc_empresa_v1' -> '__logoA' (dataURL).
-  // N?f?'?,?o altera layout; apenas preenche um slot existente, se encontrado.
+  // VSC_BRANDING_LOGO_A_CANONICAL_E14_V2
+  // Fonte única: snapshot canônico de empresa (VSC_DB.getEmpresaSnapshot),
+  // com fallback estritamente legado em localStorage.
 
-  function safeJsonParse(s){ try { return JSON.parse(s); } catch(e){ return null; } }
+  function safeJsonParse(s){ try { return JSON.parse(s); } catch(_){ return null; } }
+
+  async function readEmpresaSnapshot(){
+    try{
+      if(window.VSC_DB && typeof window.VSC_DB.getEmpresaSnapshot === 'function'){
+        const snap = await window.VSC_DB.getEmpresaSnapshot({ preferIdb:true, hydrateLocalStorage:true });
+        if(snap && typeof snap === 'object') return snap;
+      }
+    }catch(_){ }
+    try{
+      const raw = localStorage.getItem('vsc_empresa_v1');
+      const parsed = raw ? safeJsonParse(raw) : null;
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    }catch(_){ return {}; }
+  }
+
+  function resolveLogoA(snapshot){
+    if(!snapshot || typeof snapshot !== 'object') return '';
+    const value = snapshot.__logoA || snapshot.logoA || snapshot.logo_a || snapshot.logo || '';
+    return String(value || '').trim();
+  }
 
   function findLogoSlot(){
-    // Prioriza IDs mais prov?f?'?,?veis, depois seletores gen?f?'?,?ricos e atributos.
     const selectors = [
-      '#logoEmpresa', '#empresaLogo', '#logoA', '#topbarLogoA', '#vscLogoA',
+      '#logoEmpresa', '#empresaLogo', '#logoA', '#topbarLogoA', '#vscLogoA', '#vscLogoEmpresaA',
       'img[data-empresa-logo]', 'img[data-logo-a]', '.empresa-logo img', '.logo-empresa img',
       '.topbar .empresa-logo img', '.topbar .logo-empresa img',
       'header img#logoEmpresa', 'header img.empresa-logo', 'header img.logo-empresa'
@@ -931,139 +961,58 @@ document.addEventListener('DOMContentLoaded', () => {
       if (el) return el;
     }
 
-    // Fallback: procura no header por um IMG do lado direito (sem tocar no logo do sistema ?f?'?,? esquerda)
+    const topbar = document.querySelector('.vsc-topbar');
+    if(topbar){
+      let img = topbar.querySelector('#vscLogoEmpresaA');
+      if(!img){
+        img = document.createElement('img');
+        img.id = 'vscLogoEmpresaA';
+        img.alt = 'Logo da empresa';
+        img.style.maxHeight = '56px';
+        img.style.height = '56px';
+        img.style.width = 'auto';
+        img.style.objectFit = 'contain';
+        img.style.display = 'none';
+        img.style.alignSelf = 'center';
+        img.style.verticalAlign = 'middle';
+        img.style.margin = '0 18px';
+        const last = topbar.lastElementChild;
+        if(last) topbar.insertBefore(img, last);
+        else topbar.appendChild(img);
+      }
+      return img;
+    }
+
     const header = document.querySelector('header');
     if(!header) return null;
     const imgs = Array.from(header.querySelectorAll('img'));
-    if(imgs.length <= 1) return null;
-
-    // heur?f?'?,?stica: pega o ?f?'?,?ltimo img do header (frequentemente ?f?'?,? o slot da direita)
-    return imgs[imgs.length - 1] || null;
+    return imgs.length > 1 ? (imgs[imgs.length - 1] || null) : null;
   }
 
-  function applyLogoA(){
+  async function applyLogoA(){
     const slot = findLogoSlot();
     if(!slot) return;
-
-    const raw = localStorage.getItem('vsc_empresa_v1');
-    const obj = raw ? safeJsonParse(raw) : null;
-    const logoA = obj && obj.__logoA ? String(obj.__logoA) : '';
+    const snapshot = await readEmpresaSnapshot();
+    const logoA = resolveLogoA(snapshot);
 
     if(logoA && logoA.startsWith('data:image')){
-      // aplica
-      try{
-        slot.src = logoA;
-      }catch(e){}
-      try{
-        slot.style.display = '';
-        slot.style.visibility = 'visible';
-        slot.style.opacity = '1';
-      }catch(e){}
-      try{
-        slot.setAttribute('alt', 'Logo da empresa');
-      }catch(e){}
-      try{
-        console.log('[BRANDING] Logo A aplicada (localStorage).');
-      }catch(e){}
-    } else {
-      // sem logo: mantém branco/oculto como regra
-      try{
-        slot.removeAttribute('src');
-      }catch(e){}
-      try{
-        slot.style.display = 'none';
-      }catch(e){}
-      try{
-                console.log("[BRANDING] Empresa não configurada. Logo não aplicada.");
-      }catch(e){}
+      try{ slot.src = logoA; }catch(_){ }
+      try{ slot.style.display = ''; slot.style.visibility = 'visible'; slot.style.opacity = '1'; }catch(_){ }
+      try{ slot.setAttribute('alt', 'Logo da empresa'); }catch(_){ }
+      return;
     }
+
+    try{ slot.removeAttribute('src'); }catch(_){ }
+    try{ slot.style.display = 'none'; }catch(_){ }
   }
 
-  // aplica no load e também quando o storage mudar (ex: outra aba salvou)
-  document.addEventListener('DOMContentLoaded', applyLogoA, { once:false });
+  document.addEventListener('DOMContentLoaded', () => { void applyLogoA(); }, { once:false });
   window.addEventListener('storage', (ev) => {
-    if(ev && ev.key === 'vsc_empresa_v1') applyLogoA();
+    if(ev && ev.key === 'vsc_empresa_v1') void applyLogoA();
   });
-})();
-
-;(() => {
-  // VSC_TOPBAR_LOGO_A_SLOT_E10_V1
-  // Regra: Logo A do cliente deve aparecer na topbar (lado direito) quando existir.
-  // Fonte: localStorage 'vsc_empresa_v1' -> '__logoA' (dataURL).
-  // Comportamento: se n?f?'?,?o existir logo, slot fica oculto (branco).
-
-  function safeParse(s){ try { return JSON.parse(s); } catch(e){ return null; } }
-
-  function ensureSlot(){
-    const topbar = document.querySelector('.vsc-topbar');
-    if(!topbar) return null;
-
-    let img = topbar.querySelector('#vscLogoEmpresaA');
-    if(img) return img;
-
-    img = document.createElement('img');
-    img.id = 'vscLogoEmpresaA';
-    img.alt = 'Logo da empresa';
-
-    // Estilo m?f?'?,?nimo (n?f?'?,?o muda topbar; s?f?'?,? garante boa visualiza?f?'?,??f?'?,?o)
-        // VSC_TOPBAR_LOGO_A_STYLE_E11_V1
-    // Ajuste visual: encaixa a logo entre as linhas da topbar e centraliza verticalmente
-    img.style.maxHeight = '56px';
-    img.style.height = '56px';
-    img.style.width = 'auto';
-    img.style.objectFit = 'contain';
-    img.style.display = 'none';
-
-    // Centraliza?f?'?,??f?'?,?o e ?f????s??.??oencaixe?f????s??,? no flex da topbar
-    img.style.alignSelf = 'center';
-    img.style.verticalAlign = 'middle';
-        // VSC_TOPBAR_LOGO_A_ALIGN_E12_V1
-    // Centraliza?f?'?,??f?'?,?o horizontal visual entre menu e borda direita
-    img.style.margin = '0 18px 0 18px';
-    img.style.padding = '0';
-
-    // Inser?f?'?,??f?'?,?o segura: antes do ?f?'?,?ltimo elemento (normalmente a?f?'?,??f?'?,?es/?f?'?,?cone da direita)
-    // Se n?f?'?,?o houver filhos, apenas adiciona.
-    const last = topbar.lastElementChild;
-    if(last){
-      topbar.insertBefore(img, last);
-    } else {
-      topbar.appendChild(img);
-    }
-
-    return img;
-  }
-
-  function applyLogoA(){
-    const img = ensureSlot();
-    if(!img) return;
-
-    const raw = localStorage.getItem('vsc_empresa_v1');
-    const obj = raw ? safeParse(raw) : null;
-    const logoA = (obj && obj.__logoA) ? String(obj.__logoA) : '';
-
-    if(logoA && logoA.startsWith('data:image')){
-      img.src = logoA;
-      img.style.display = '';
-      img.style.visibility = 'visible';
-      img.style.opacity = '1';
-      try{ console.log('[BRANDING] Logo A aplicada na topbar.'); }catch(e){}
-    } else {
-      // Sem logo -> oculto
-      img.removeAttribute('src');
-      img.style.display = 'none';
-      try{ console.log('[BRANDING] Logo A ausente. Slot oculto.'); }catch(e){}
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', applyLogoA);
-  window.addEventListener('storage', (ev) => {
-    if(ev && ev.key === 'vsc_empresa_v1') applyLogoA();
-  });
-
-  // Refor?f?'?,?o: aplica ap?f?'?,?s pequenos atrasos (caso a topbar seja montada depois)
-  setTimeout(applyLogoA, 250);
-  setTimeout(applyLogoA, 1000);
+  window.addEventListener('vsc:empresa-updated', () => { void applyLogoA(); });
+  setTimeout(() => { void applyLogoA(); }, 250);
+  setTimeout(() => { void applyLogoA(); }, 1000);
 })();
 
 ;(() => {

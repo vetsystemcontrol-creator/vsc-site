@@ -104,7 +104,7 @@
       fornecedor_nome: normalizeString(obj.fornecedor_nome ?? obj.mFornecedorNome ?? obj.fornecedor ?? ""),
       fornecedor_doc: normalizeString(obj.fornecedor_doc ?? obj.mFornecedorDoc ?? obj.documento_fornecedor ?? ""),
       // documento do título
-      documento: normalizeString(obj.documento),
+      documento: normalizeString(obj.documento ?? obj.numero_doc ?? obj.numero ?? ""),
 
       // datas
       competencia: normalizeString(obj.competencia ?? obj.dt_comp ?? ""), // "MM/AAAA" (compat) ou "YYYY-MM" (futuro)
@@ -168,6 +168,14 @@
    * @returns {Promise<{ok:boolean, outbox_id:string}>}
    */
   async function upsertTitulo(input) {
+    // [FIX C-09] Verificar papel de usuário — apenas ADMIN ou MASTER podem lançar contas a pagar
+    if (window.VSC_AUTH && typeof window.VSC_AUTH.requireRole === "function") {
+      try {
+        await window.VSC_AUTH.requireRole("ADMIN");
+      } catch(e) {
+        throw new Error(e && e.message ? e.message : "Acesso negado: requer papel ADMIN ou MASTER para lançar contas a pagar.");
+      }
+    }
     const t = normalizeTitulo(input);
     t.updated_at = nowISO();
     t.status     = computeStatus(t);
@@ -304,6 +312,7 @@
   const btnRecalcular = $("btnRecalcular");
   const btnExportar = $("btnExportar");
   const btnImportarXml = $("btnImportarXml");
+  const btnPrint = $("btnPrint");
 
   // modal título
   const modal = $("modal");
@@ -642,17 +651,24 @@
         st === "cancelado" ? "warn" :
         "warn";
 
+      const origem = escapeHtml(t.origem || "manual");
+      const documento = escapeHtml(t.documento || "Sem documento");
+      const pagamento = escapeHtml(t.pagamento_data || "-");
       tr.innerHTML = `
         <td><span class="pill ${pillClass}">${escapeHtml(st)}</span></td>
-        <td>${escapeHtml(t.vencimento || "-")}</td>
-        <td>${escapeHtml(t.competencia || "-")}</td>
+        <td><div class="vsc-value-soft">${escapeHtml(t.vencimento || "-")}</div></td>
+        <td><div class="vsc-value-soft">${escapeHtml(t.competencia || "-")}</div></td>
         <td>
-          <div style="font-weight:800;">${escapeHtml(t.fornecedor_nome || "-")}</div>
-          <div class="muted">${escapeHtml(t.documento || "")}</div>
+          <div style="font-weight:900;">${escapeHtml(t.fornecedor_nome || "-")}</div>
+          <div class="muted">${documento}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;">
+            <span class="pill">${origem}</span>
+            ${t.fornecedor_doc ? `<span class="pill">${escapeHtml(t.fornecedor_doc)}</span>` : ``}
+          </div>
         </td>
-        <td>${"R$ " + escapeHtml(window.VSC_AP._util.centsToMoneyBR(t.valor_centavos || 0))}</td>
-        <td>${escapeHtml(t.pagamento_data || "-")}</td>
-        <td>${escapeHtml(t.origem || "manual")}</td>
+        <td><span class="vsc-value-cell">${"R$ " + escapeHtml(window.VSC_AP._util.centsToMoneyBR(t.valor_centavos || 0))}</span></td>
+        <td><span class="vsc-value-soft">${pagamento}</span></td>
+        <td><span class="pill ${t.origem === 'xml' ? 'ok' : 'warn'}">${origem}</span></td>
         <td style="text-align:right;">
           <div class="row-actions">
             <button class="btn mini" type="button" data-act="editar" data-id="${escapeHtml(t.id)}">Editar</button>
@@ -717,6 +733,22 @@
     if (kpiPagoMesHint) kpiPagoMesHint.textContent = `${pagoMesN} títulos`;
   }
 
+
+
+  function updateApAnalytics(lista){
+    var F = window.VSC_FINANCE_ANALYTICS;
+    if(!F) return;
+    var sum = F.summarizePortfolio(lista,'ap');
+    if($('apPrevisto30')) $('apPrevisto30').textContent = F.fmtBRLFromCents(sum.upcoming30);
+    if($('apAtrasoCritico')) $('apAtrasoCritico').textContent = F.fmtBRLFromCents(sum.overdue);
+    if($('apTicketMedio')) $('apTicketMedio').textContent = F.fmtBRLFromCents(sum.count ? Math.round(sum.total / sum.count) : 0);
+    var liq = sum.total>0 ? Math.round((sum.settledMonth / sum.total) * 100) : 0;
+    if($('apLiquidacaoMes')) $('apLiquidacaoMes').textContent = liq + '%';
+    F.drawLine($('apMonthlyChart'), sum.monthlyDue.map(function(row, idx){ return {label:row.label, value:Math.max(row.value||0, (sum.monthlySettled[idx]&&sum.monthlySettled[idx].value)||0)}; }));
+    F.drawBars($('apAgingChart'), Object.keys(sum.aging).map(function(k){ return {label:k, value:sum.aging[k]}; }), {yLabel:'Saldo'});
+    F.renderList($('apTopFornecedores'), sum.topEntities);
+  }
+
   async function applyFiltersAndRender() {
     const all = (await window.VSC_AP.loadAP()).slice().sort(sortByVenc);
 
@@ -735,6 +767,7 @@
 
     computeKpis(all);
     renderGrid(filtered);
+    updateApAnalytics(filtered);
   }
 
   // clampInt local (para KPIs) — sem expor global
@@ -778,6 +811,12 @@
     if (btnImportarXml) {
       btnImportarXml.addEventListener("click", () => {
         window.location.href = "importacaoxml.html";
+      });
+    }
+
+    if (btnPrint) {
+      btnPrint.addEventListener("click", () => {
+        window.print();
       });
     }
 
@@ -969,11 +1008,29 @@
     if (btnRecalc) btnRecalc.click();
   }
 
+  async function findDuplicate(d, ignoreId) {
+    const list = await window.VSC_AP.loadAP();
+    const fornecedor = norm(d.fornecedor_nome).toLowerCase();
+    const documento = norm(d.documento).toLowerCase();
+    const vencimento = norm(d.vencimento);
+    for (let i = 0; i < list.length; i++) {
+      const row = list[i] || {};
+      if (ignoreId && row.id === ignoreId) continue;
+      if (row.cancelado) continue;
+      const sameFornecedor = norm(row.fornecedor_nome).toLowerCase() === fornecedor;
+      const sameDocumento = documento && norm(row.documento).toLowerCase() === documento;
+      const sameVencimento = vencimento && norm(row.vencimento) === vencimento;
+      if (sameFornecedor && (sameDocumento || sameVencimento)) return row;
+    }
+    return null;
+  }
+
   // ---------------------------
   // Validação premium (inline)
   // ---------------------------
   function validateForm(d) {
     if (!d.fornecedor_nome) return "Fornecedor é obrigatório.";
+    if (!d.documento && d.origem !== "xml") return "Documento é obrigatório para rastreabilidade.";
     if (!d.vencimento) return "Vencimento é obrigatório.";
     if (!d.valor_centavos || d.valor_centavos <= 0) return "Valor inválido.";
     return "";
@@ -1040,8 +1097,18 @@
     const t = await getById(id);
     if (!t) return;
 
-    // modal padrão para ação crítica (aqui, confirmação nativa; modal premium será padronizado depois)
-    const ok = confirm("Confirmar pagamento deste título?");
+    let ok = true;
+    if (window.VSC_UI && typeof window.VSC_UI.confirmAsync === "function") {
+      ok = await window.VSC_UI.confirmAsync({
+        title: "Confirmar pagamento",
+        body: "Esta ação marcará o título como pago integralmente e registrará a data de pagamento.",
+        okText: "Marcar como pago",
+        cancelText: "Voltar",
+        kind: "ok"
+      });
+    } else {
+      ok = confirm("Confirmar pagamento deste título?");
+    }
     if (!ok) return;
 
     const hoje = new Date().toISOString().slice(0, 10);
@@ -1063,10 +1130,21 @@
     const t = await getById(id);
     if (!t) return;
 
-    const ok = confirm("Cancelar este título? (soft-delete)");
+    let ok = true;
+    if (window.VSC_UI && typeof window.VSC_UI.confirmAsync === "function") {
+      ok = await window.VSC_UI.confirmAsync({
+        title: "Cancelar título",
+        body: "O título será mantido para auditoria, porém sairá do fluxo ativo de pagamento.",
+        okText: "Cancelar título",
+        cancelText: "Voltar",
+        kind: "err"
+      });
+    } else {
+      ok = confirm("Cancelar este título? (soft-delete)");
+    }
     if (!ok) return;
 
-    const motivo = prompt("Motivo do cancelamento (opcional):") || "";
+    const motivo = "Cancelado via fluxo premium";
 
     const novo = {
       ...t,
@@ -1121,10 +1199,19 @@
       const err = validateForm(d);
       if (err) { showWarn(err); return; }
 
+      const dup = await findDuplicate(d, UI.editingId);
+      if (dup) {
+        showWarn("Possível duplicidade detectada para fornecedor/documento ou fornecedor/vencimento. Revise antes de salvar.");
+        if (window.VSC_UI && typeof window.VSC_UI.toast === "function") {
+          window.VSC_UI.toast("warn", "Possível duplicidade detectada no contas a pagar.");
+        }
+        return;
+      }
+
       if (!UI.editingId) {
         // novo
         const obj = {
-          id: (crypto?.randomUUID ? crypto.randomUUID() : undefined),
+          id: uuidv4(),
           fornecedor_nome: d.fornecedor_nome,
           fornecedor_doc: d.fornecedor_doc,
           documento: d.documento,
@@ -1162,6 +1249,9 @@
       }
 
       closeModal(modal);
+      if (window.VSC_UI && typeof window.VSC_UI.toast === "function") {
+        window.VSC_UI.toast("ok", UI.editingId ? "Título atualizado com sucesso." : "Título criado com sucesso.");
+      }
 
       const btnRecalc = $("btnRecalcular");
       if (btnRecalc) btnRecalc.click();
@@ -1250,7 +1340,7 @@
   function audit(evt) {
     const e = (evt && typeof evt === "object") ? evt : {};
     const row = {
-      id: (crypto?.randomUUID ? crypto.randomUUID() : ("A-" + Date.now())),
+      id: uuidv4(),
       when: new Date().toISOString(),
       who: (localStorage.getItem("user_id") || "local"),
       where: location.pathname || "contasapagar",

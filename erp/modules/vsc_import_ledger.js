@@ -108,6 +108,7 @@ window.VSC_IMPORT_LEDGER = (function(){
   }
 
   return {
+    get,
     makePayloadHash,
     existsSame,
     markImported,

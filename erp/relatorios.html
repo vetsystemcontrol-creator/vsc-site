@@ -7,7 +7,9 @@
 
   <!-- PADRÃO DO SISTEMA (igual dashboard) -->
   <link rel="stylesheet" href="/assets/styles.css" />
-  <script src="modules/app.js" charset="utf-8"></script>
+  <link rel="stylesheet" href="modules/vsc-ui.css?v=20260307f" />
+  <link rel="stylesheet" href="assets/css/vsc-premium-enterprise.css" />
+<script src="modules/app.js" charset="utf-8"></script>
   <script src="modules/enter-nav.js" charset="utf-8"></script>
   <script src="modules/vsc-topbar.js" charset="utf-8"></script>
   <script src="modules/vsc-outbox-relay.js" charset="utf-8"></script>
@@ -102,7 +104,7 @@
   </style>
 </head>
 
-<body>
+<body class="vsc-premium">
   <!-- Cabeçalho canônico de impressão (Emitente/CRMV) -->
   <div id="vscPrintHeader">
     <div class="row2">
@@ -124,7 +126,7 @@
     </div>
   </div>
 
-  <iframe id="vscTopbarFrame" src="topbar.html?v=final"></iframe>
+  <iframe id="vscTopbarFrame" src="topbar.html?v=20260307f"></iframe>
 
   <div class="wrap">
     <div class="top">
@@ -190,6 +192,22 @@
             <button class="danger" id="btnLimpar" type="button">Limpar</button>
           </div>
 
+          <div class="card" style="margin-top:14px; border-radius:14px;">
+            <div class="hd"><b>Central de auditoria</b><small style="color:var(--muted)">Login • alterações • usabilidade • sync • erros</small></div>
+            <div class="bd">
+              <div class="btns">
+                <button class="ghost" id="btnAuditLogin" type="button">Login</button>
+                <button class="ghost" id="btnAuditAlteracoes" type="button">Alterações</button>
+                <button class="ghost" id="btnAuditUsabilidade" type="button">Usabilidade</button>
+                <button class="ghost" id="btnAuditSync" type="button">Sync</button>
+                <button class="ghost" id="btnAuditErros" type="button">Erros</button>
+              </div>
+              <div class="hint">
+                Presets de auditoria segundo trilhas canônicas do ERP: <span class="mono">auth_audit_log</span>, <span class="mono">business_audit_log</span> e <span class="mono">ux_audit_log</span>.
+              </div>
+            </div>
+          </div>
+
           <div class="hint">
             Regras premium: nada acontece em silêncio. Relatório só gera por comando explícito.
             Offline-first: dados locais do <span style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono','Courier New', monospace;">vsc_db</span>.
@@ -230,9 +248,10 @@
 
   <script src="modules/vsc_db.js"></script>
     
+  <script src="modules/ui-global.js"></script>
   <script src="modules/auth.js" charset="utf-8"></script>
   <script src="modules/auth_guard.js" charset="utf-8"></script>
-<script src="modules/auth.js" charset="utf-8"></script>
+<script src="modules/print_template.js"></script>
 <script src="modules/relatorios.js"></script>
 </body>
 </html>

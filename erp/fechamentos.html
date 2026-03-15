@@ -8,6 +8,8 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="modules/vsc-ui.css?v=20260307f" />
+<link rel="stylesheet" href="assets/css/vsc-premium-enterprise.css" />
 <style>
 :root{
   --bg:#f3f5f7;--surface:#fff;--border:rgba(0,0,0,.07);--border-md:rgba(0,0,0,.11);
@@ -69,23 +71,8 @@ input:focus,select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(29,
 .toast.is-on{opacity:1;}
 </style>
 </head>
-<body>
-<iframe id="vscTopbarFrame" src="topbar.html?v=final" title="Topbar"></iframe>
-<script>
-(function(){
-  var f=document.getElementById('vscTopbarFrame');
-  if(!f) return;
-  function fit(){
-    try{
-      var d=f.contentDocument; if(!d) return;
-      var h=Math.max(d.documentElement?d.documentElement.scrollHeight:0,d.body?d.body.scrollHeight:0,86);
-      f.style.height=h+'px';
-    }catch(_){ }
-  }
-  f.addEventListener('load',fit);
-  setTimeout(fit,150); setTimeout(fit,600);
-})();
-</script>
+<body class="vsc-premium">
+<iframe id="vscTopbarFrame" src="topbar.html?v=20260307f" title="Topbar"></iframe>
 
 <div class="page">
   <div class="page-head">

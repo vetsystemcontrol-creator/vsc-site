@@ -55,19 +55,21 @@ function centsToBRL(cents){
 }
 
   function uuid(){
-    try{ if(crypto && typeof crypto.randomUUID === "function") return crypto.randomUUID(); }catch(_){}
     try{
-  var buf = new Uint8Array(16);
-  crypto.getRandomValues(buf);
-  buf[6] = (buf[6] & 0x0f) | 0x40;
-  buf[8] = (buf[8] & 0x3f) | 0x80;
-  var hex = Array.prototype.map.call(buf, function(b){ return b.toString(16).padStart(2,"0"); }).join("");
-  return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
-}catch(_){}
-return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c){
-  var r = Math.random()*16|0, v = (c==="x") ? r : (r&0x3|0x8);
-  return v.toString(16);
-});
+      if(window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+    }catch(_){}
+    try{ if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID(); }catch(_){}
+    try{
+      if(typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"){
+        const buf = new Uint8Array(16);
+        crypto.getRandomValues(buf);
+        buf[6] = (buf[6] & 0x0f) | 0x40;
+        buf[8] = (buf[8] & 0x3f) | 0x80;
+        const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+        return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
+      }
+    }catch(_){}
+    throw new TypeError("[CONFIG] ambiente sem CSPRNG para gerar UUID v4.");
   }
 
   function $(id){ return document.getElementById(id); }
@@ -322,6 +324,15 @@ tx.oncomplete = function(){ resolve(out); };
 
         try{
           stP.put(rec);
+          // Enfileirar para sync
+          const _vscDb = (() => {
+            if (window.VSC_DB && typeof window.VSC_DB.outboxEnqueue === 'function') return window.VSC_DB;
+            try { for (const f of document.querySelectorAll('iframe')) { const w = f.contentWindow; if (w && w.VSC_DB) return w.VSC_DB; } } catch(_) {}
+            return null;
+          })();
+          if (_vscDb && typeof _vscDb.outboxEnqueue === 'function') {
+            _vscDb.outboxEnqueue('config_params', 'upsert', rec.id, rec).catch(()=>{});
+          }
           stA.add({
             id: uuid(),
             when: nowISO(),

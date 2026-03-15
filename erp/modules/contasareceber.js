@@ -110,6 +110,11 @@ return;
       origem: normalizeString(obj.origem),
       ref_tipo: normalizeString(obj.ref_tipo),
       ref_id: normalizeString(obj.ref_id),
+      billing_cycle: normalizeString(obj.billing_cycle),
+      billing_mode: normalizeString(obj.billing_mode),
+      payment_preference: normalizeString(obj.payment_preference),
+      settlement_mode: normalizeString(obj.settlement_mode),
+      installments: clampInt(obj.installments ?? 1, 1, 24),
       obs: normalizeString(obj.obs),
 
       cancelado: !!obj.cancelado,
@@ -149,6 +154,14 @@ return;
   }
 
   async function upsertTitulo(input) {
+    // [FIX C-09] Verificar papel de usuário — apenas ADMIN ou MASTER podem lançar contas a receber manualmente
+    if (window.VSC_AUTH && typeof window.VSC_AUTH.requireRole === "function") {
+      try {
+        await window.VSC_AUTH.requireRole("ADMIN");
+      } catch(e) {
+        throw new Error(e && e.message ? e.message : "Acesso negado: requer papel ADMIN ou MASTER para lançar contas a receber.");
+      }
+    }
     const t = normalizeTitulo(input);
     t.updated_at = nowISO();
     t.status     = computeStatus(t);
@@ -238,7 +251,7 @@ return;
   }
 
   // ── Filtros ──
-  var _fCliente="", _fStatus="", _fComp="", _fVenc="";
+  var _fCliente="", _fStatus="", _fComp="", _fCiclo="", _fVenc="";
   var _fOverdue=false; // filtro especial: em atraso (inclui vencido + parcial com saldo > 0)
   var _listaAll = [];
 
@@ -286,6 +299,7 @@ function _isOverdueTitulo(t){
         }
       }
       if(_fComp && (t.competencia||"").slice(0,7) !== _fComp) return false;
+      if(_fCiclo && String(t.billing_cycle||"") !== _fCiclo) return false;
       if(_fVenc && t.vencimento !== _fVenc) return false;
       return true;
     });
@@ -297,6 +311,7 @@ function _isOverdueTitulo(t){
     // Expor para KPI updater
     window.__VSC_AR_ALL = _listaAll;
 
+    updateFinanceInsights(lista);
     if(!lista.length){
       tbody.innerHTML = '<tr><td colspan="8" style="padding:24px;text-align:center;color:var(--muted-lt);">Nenhum registro encontrado.</td></tr>';
       return;
@@ -308,8 +323,8 @@ function _isOverdueTitulo(t){
     });
     tbody.innerHTML = lista.map(function(t){
       return '<tr>'+
-        '<td class="mono" style="font-size:12px;font-weight:700;">'+(t.documento||"—")+'</td>'+
-        '<td style="font-weight:700;">'+(t.cliente_nome||"—")+'</td>'+
+        '<td class="mono" style="font-size:12px;font-weight:700;">'+(t.documento||"—")+'<div style="margin-top:4px;font-size:11px;color:var(--muted);font-family:inherit;">'+esc((t.billing_cycle||'').replace(/_/g,' ') || 'sem ciclo')+'</div></td>'+
+        '<td style="font-weight:700;">'+(t.cliente_nome||"—")+'<div style="margin-top:4px;font-size:11px;color:var(--muted);font-weight:600;">'+esc((t.payment_preference||'definir_depois').replace(/_/g,' '))+'</div></td>'+
         '<td style="color:var(--muted);font-size:12px;">'+(t.competencia||"—")+'</td>'+
         '<td style="font-size:12px;">'+(t.vencimento?fmtDate(t.vencimento):"—")+'</td>'+
         '<td class="mono" style="font-size:12px;">'+fmtBRL(t.valor_original_centavos)+'</td>'+
@@ -322,6 +337,51 @@ function _isOverdueTitulo(t){
         '</td>'+
       '</tr>';
     }).join("");
+  }
+
+
+
+  function updateFinanceInsights(lista){
+    var F = window.VSC_FINANCE_ANALYTICS;
+    lista = Array.isArray(lista) ? lista : [];
+    var abertoC=0, abertoN=0, parcialC=0, parcialN=0, vencidoC=0, vencidoN=0, recebidoMesC=0, recebidoMesN=0;
+    var hoje = new Date();
+    lista.forEach(function(t){
+      var total = Number(t.valor_original_centavos||0);
+      var saldo = Number(t.saldo_centavos!=null?t.saldo_centavos:total);
+      var status = String(t.status||'');
+      if(status==='aberto'){ abertoC += saldo; abertoN++; }
+      if(status==='parcial'){ parcialC += saldo; parcialN++; }
+      if(status==='vencido'){ vencidoC += saldo; vencidoN++; }
+      var recs = Array.isArray(t.recebimentos)?t.recebimentos:[];
+      recs.forEach(function(r){
+        var d = F && F.parseYMD ? F.parseYMD(r.data) : null;
+        if(d && d.getMonth()===hoje.getMonth() && d.getFullYear()===hoje.getFullYear()){
+          recebidoMesC += Number(r.valor_centavos||0); recebidoMesN++;
+        }
+      });
+    });
+    if($('kpiAberto')) $('kpiAberto').textContent = fmtBRL(abertoC);
+    if($('kpiAbertoSub')) $('kpiAbertoSub').textContent = abertoN + ' título(s)';
+    if($('kpiParcial')) $('kpiParcial').textContent = fmtBRL(parcialC);
+    if($('kpiParcialSub')) $('kpiParcialSub').textContent = parcialN + ' título(s)';
+    if($('kpiVencido')) $('kpiVencido').textContent = fmtBRL(vencidoC);
+    if($('kpiVencidoSub')) $('kpiVencidoSub').textContent = vencidoN + ' título(s)';
+    if($('kpiRecebido')) $('kpiRecebido').textContent = fmtBRL(recebidoMesC);
+    if($('kpiRecebidoSub')) $('kpiRecebidoSub').textContent = recebidoMesN + ' baixa(s)';
+
+    if(!F) return;
+    var sum = F.summarizePortfolio(lista,'ar');
+    if($('arPrevisto30')) $('arPrevisto30').textContent = F.fmtBRLFromCents(sum.upcoming30);
+    if($('arAtrasoTotal')) $('arAtrasoTotal').textContent = F.fmtBRLFromCents(sum.overdue);
+    if($('arTicketMedio')) $('arTicketMedio').textContent = F.fmtBRLFromCents(sum.count ? Math.round(sum.total / sum.count) : 0);
+    var conv = sum.total>0 ? Math.round((sum.settledMonth / sum.total) * 100) : 0;
+    if($('arConversaoMes')) $('arConversaoMes').textContent = conv + '%';
+    if($('arCarteiraHealth')) $('arCarteiraHealth').textContent = sum.overdue > sum.upcoming30 ? 'Atenção na cobrança' : 'Carteira equilibrada';
+    F.drawBars($('arAgingChart'), Object.keys(sum.aging).map(function(k){ return {label:k, value:sum.aging[k]}; }), {yLabel:'Saldo'});
+    F.drawLine($('arMonthlyChart'), sum.monthlySettled.map(function(row, idx){ return {label:row.label, value:Math.max(row.value||0, (sum.monthlyDue[idx]&&sum.monthlyDue[idx].value)||0)}; }));
+    F.drawDonut($('arPaymentChart'), sum.paymentMethods.length ? sum.paymentMethods : [{label:'Sem baixas', value:1}]);
+    F.renderList($('arTopClientes'), sum.topEntities);
   }
 
   async function recarregar(){
@@ -367,6 +427,10 @@ try{
     $("mCompetencia").value = titulo ? (titulo.competencia||"") : new Date().toISOString().slice(0,7);
     $("mVencimento").value = titulo ? (titulo.vencimento||"") : new Date().toISOString().slice(0,10);
     $("mValor").value = titulo ? AR._util.centsToMoneyBR(titulo.valor_original_centavos) : "";
+    $("mBillingCycle").value = titulo ? (titulo.billing_cycle||"gerar_agora") : "gerar_agora";
+    $("mPaymentPreference").value = titulo ? (titulo.payment_preference||"definir_depois") : "definir_depois";
+    $("mSettlementMode").value = titulo ? (titulo.settlement_mode||"manual") : "manual";
+    $("mInstallments").value = titulo ? String(Math.max(1, Number(titulo.installments||1))) : "1";
     $("mObs").value = titulo ? (titulo.obs||"") : "";
     var w = $("mWarn"); if(w){ w.textContent=""; w.classList.remove("show"); }
     $("modalTitulo").classList.remove("hidden");
@@ -387,6 +451,10 @@ try{
     var comp = ($("mCompetencia").value||"").trim();
     var venc = ($("mVencimento").value||"").trim();
     var valStr = ($("mValor").value||"").trim();
+    var billingCycle = ($("mBillingCycle").value||"gerar_agora").trim();
+    var paymentPreference = ($("mPaymentPreference").value||"definir_depois").trim();
+    var settlementMode = ($("mSettlementMode").value||"manual").trim();
+    var installments = Math.max(1, Math.min(24, Number(($("mInstallments").value||1)) || 1));
     var obs  = ($("mObs").value||"").trim();
     var warn = $("mWarn");
 
@@ -406,13 +474,15 @@ try{
         if(!titulo){ warnMsg("Título não encontrado."); return; }
         titulo.cliente_nome = nome; titulo.cliente_doc = doc; titulo.documento = docum;
         titulo.competencia = comp; titulo.vencimento = venc; titulo.obs = obs;
+        titulo.billing_cycle = billingCycle; titulo.payment_preference = paymentPreference; titulo.settlement_mode = settlementMode; titulo.installments = installments;
         titulo.valor_original_centavos = cents;
         if(titulo.saldo_centavos===null||titulo.saldo_centavos===undefined) titulo.saldo_centavos=cents;
       } else {
         titulo = {
-          id: (window.VSC_UTILS&&VSC_UTILS.uuidv4)?VSC_UTILS.uuidv4():crypto.randomUUID(),
+          id: uuidv4(),
           documento: docum, cliente_nome: nome, cliente_doc: doc,
           competencia: comp, vencimento: venc, obs: obs,
+          billing_cycle: billingCycle, billing_mode: billingCycle === "gerar_agora" ? "imediato" : "periodico", payment_preference: paymentPreference, settlement_mode: settlementMode, installments: installments,
           valor_original_centavos: cents, saldo_centavos: cents,
           origem: "MANUAL", recebimentos: [], cancelado: false,
           created_at: new Date().toISOString()
@@ -470,7 +540,7 @@ try{
       var titulo = lista.find(function(x){ return x.id===id; });
       if(!titulo){ warnMsg("Título não encontrado."); return; }
       var recs = Array.isArray(titulo.recebimentos)?titulo.recebimentos:[];
-      recs.push({ id: crypto.randomUUID(), data: data, forma: forma, valor_centavos: cents, obs: obs, created_at: new Date().toISOString() });
+      recs.push({ id: uuidv4(), data: data, forma_pagamento: forma, canal_baixa: titulo.settlement_mode || "manual", valor_centavos: cents, obs: obs, created_at: new Date().toISOString() });
       titulo.recebimentos = recs;
       var totalRec = recs.reduce(function(s,r){ return s+(r.valor_centavos||0); },0);
       titulo.saldo_centavos = Math.max(0,(titulo.valor_original_centavos||0)-totalRec);
@@ -486,10 +556,11 @@ try{
   // ── Wiring ──
   function wire(){
     // Filtros
-    var fC=$("fCliente"),fS=$("fStatus"),fCo=$("fCompetencia"),fV=$("fVencimento");
+    var fC=$("fCliente"),fS=$("fStatus"),fCo=$("fCompetencia"),fCi=$("fCiclo"),fV=$("fVencimento");
     if(fC) fC.addEventListener("input",function(){ _fCliente=fC.value; renderGrid(); });
     if(fS) fS.addEventListener("change",function(){ _fStatus=fS.value; renderGrid(); });
     if(fCo) fCo.addEventListener("change",function(){ _fComp=fCo.value; renderGrid(); });
+    if(fCi) fCi.addEventListener("change",function(){ _fCiclo=fCi.value; renderGrid(); });
     if(fV) fV.addEventListener("change",function(){ _fVenc=fV.value; renderGrid(); });
 
     // Botão Novo

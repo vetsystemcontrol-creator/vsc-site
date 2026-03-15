@@ -6,6 +6,8 @@
 <title>VSC — Importação XML NF-e</title>
 <link rel="icon" href="data:,">
 <link href="assets/styles.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="modules/vsc-ui.css?v=20260307f" />
+<link rel="stylesheet" href="assets/css/vsc-premium-enterprise.css" />
 <style>
 /* ===================== RESET / BASE ===================== */
 :root{
@@ -193,10 +195,10 @@ input[type=file]{width:100%;padding:14px;border-radius:var(--radius-sm);border:2
     body { margin-top: 0 !important; }
 </style>
 </head>
-<body>
-<iframe id="vscTopbarFrame" src="topbar.html?v=final" title="Navegação"></iframe>
+<body class="vsc-premium">
+<iframe id="vscTopbarFrame" src="topbar.html?v=20260307f" title="Navegação"></iframe>
 
-
+<!-- TOPBAR -->
 <main>
 
 <!-- CARD PRINCIPAL: SELECIONAR E ANALISAR -->
@@ -216,7 +218,8 @@ input[type=file]{width:100%;padding:14px;border-radius:var(--radius-sm);border:2
     <button class="btn-analisar" id="btnAnalisar" type="button">
       ANALISAR NOTA FISCAL
     </button>
-    <button class="btn-fin" id="btnFinalizar" type="button"></button>
+    <button class="btn-fin" id="btnFinalizar" type="button" style="display:none">✓ FINALIZAR IMPORTAÇÃO</button>
+    <button class="mbtn-ghost" id="btnLimparTela" type="button">LIMPAR TELA</button>
   </div>
 </div>
 
@@ -423,5 +426,6 @@ document.addEventListener('DOMContentLoaded',function(){
   <script src="modules/auth_guard.js" charset="utf-8"></script>
 <script src="modules/fornecedores.js"></script>
 <script src="modules/importacaoxml.js"></script>
+  <script src="modules/ui-global.js"></script>
 </body>
 </html>

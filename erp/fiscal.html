@@ -6,231 +6,553 @@
   <title>Fiscal (NF-e) - Vet System Control | Equine</title>
 
   <link rel="stylesheet" href="/assets/styles.css" />
-  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="modules/vsc-ui.css?v=20260307f" />
+  <link rel="stylesheet" href="assets/css/vsc-premium-enterprise.css" />
+  <link rel="icon" href="data:," />
 
-  <!-- JS CANÔNICO: somente \modules (SEM JS inline neste HTML) -->
   <script src="modules/vsc_ui_core.js" charset="utf-8"></script>
   <script src="modules/app.js" charset="utf-8"></script>
   <script src="modules/auth.js" charset="utf-8"></script>
   <script src="modules/auth_guard.js" charset="utf-8"></script>
   <script src="modules/enter-nav.js" charset="utf-8"></script>
   <script src="modules/vsc-topbar.js" charset="utf-8"></script>
-  <script defer src="modules/fiscal.js" charset="utf-8"></script>
+  <script defer src="modules/fiscal.js?v=20260307h" charset="utf-8"></script>
 
   <style>
     :root{
-      --muted:#6b7280;
-      --bg:#f7f8fa;
+      --muted:#64748b;
+      --bg:#f4f7f6;
       --card:#ffffff;
-      --line:rgba(0,0,0,.08);
-      --danger:#b91c1c;
-      --ok:#065f46;
+      --line:rgba(15,23,42,.12);
+      --line-soft:rgba(15,23,42,.08);
+      --text:#0f172a;
+      --soft:#f8fafc;
+      --soft-2:#eef7f1;
+      --ok:#166534;
+      --ok-bg:#ecfdf3;
       --warn:#92400e;
+      --warn-bg:#fff7ed;
+      --danger:#b91c1c;
+      --danger-bg:#fef2f2;
+      --primary:#15803d;
+      --primary-2:#166534;
+      --shadow:0 18px 48px rgba(15,23,42,.08);
     }
-    body{ margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial; background:var(--bg); color:#111; }
+    *{box-sizing:border-box}
+    body{ margin:0; font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; background:linear-gradient(180deg,#f7faf8 0,#f4f7f6 200px); color:var(--text); }
     #vscTopbarFrame{ width:100%; height:86px; border:0; display:block; background:#fff; }
-    .page-wrap{ max-width:1280px; margin:0 auto; padding:24px 24px 60px; }
-    .title{ font-size:28px; font-weight:800; margin:12px 0 6px; }
-    .sub{ font-size:14px; color:var(--muted); margin-bottom:18px; }
-    .grid{ display:grid; grid-template-columns: 520px 1fr; gap:16px; align-items:start; }
-    .card{ background:var(--card); border:1px solid var(--line); border-radius:16px; padding:16px; }
-    .row{ display:grid; grid-template-columns: 1fr 1fr; gap:12px; }
-    .row3{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:12px; }
-    .field{ display:flex; flex-direction:column; gap:6px; }
-    label{ font-size:12px; color:var(--muted); }
-    input, select, textarea{ font:inherit; padding:10px 12px; border:1px solid var(--line); border-radius:12px; outline:none; background:#fff; }
-    textarea{ min-height:88px; resize:vertical; }
-    input:focus, select:focus, textarea:focus{ border-color: rgba(34,197,94,.55); box-shadow: 0 0 0 3px rgba(34,197,94,.12); }
-    .actions{ display:flex; gap:10px; align-items:center; margin-top:12px; flex-wrap:wrap; }
-    .btn{ border:1px solid var(--line); background:#fff; border-radius:12px; padding:10px 14px; cursor:pointer; font-weight:800; }
-    .btn-primary{ background:#16a34a; color:#fff; border-color:#16a34a; }
+    .page-wrap{ max-width:1580px; margin:0 auto; padding:24px 24px 72px; }
+    .page-hero{
+      display:grid; grid-template-columns:1.35fr .9fr; gap:18px; margin:8px 0 18px;
+      align-items:stretch;
+    }
+    .hero-card, .card{
+      background:var(--card); border:1px solid var(--line-soft); border-radius:24px;
+      box-shadow:var(--shadow);
+    }
+    .hero-card{ padding:22px 24px; }
+    .hero-eyebrow{ font-size:12px; text-transform:uppercase; letter-spacing:.12em; font-weight:900; color:#0f766e; }
+    .hero-title{ font-size:31px; line-height:1.05; font-weight:900; margin-top:8px; }
+    .hero-sub{ font-size:14px; color:var(--muted); margin-top:8px; max-width:70ch; }
+    .hero-grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; margin-top:18px; }
+    .metric{
+      border:1px solid var(--line-soft); background:linear-gradient(180deg,#fff 0,#f8fafc 100%);
+      border-radius:18px; padding:14px 16px;
+    }
+    .metric .lbl{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; font-weight:900; color:var(--muted); }
+    .metric .val{ font-size:22px; font-weight:900; margin-top:6px; }
+    .metric .hint{ margin-top:4px; font-size:12px; color:var(--muted); }
+
+    .hero-side{
+      padding:20px 22px; display:flex; flex-direction:column; gap:14px;
+      background:linear-gradient(180deg,#ffffff 0,#f8fbf9 100%);
+    }
+    .hero-side h2{ margin:0; font-size:18px; }
+    .hero-side .stack{ display:grid; gap:10px; }
+    .status-row{ display:flex; gap:10px; flex-wrap:wrap; }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px; padding:7px 12px; border-radius:999px;
+      border:1px solid var(--line-soft); font-size:12px; color:var(--muted); background:#fff; font-weight:800;
+    }
+    .pill.ok{ color:var(--ok); border-color:rgba(22,101,52,.18); background:var(--ok-bg); }
+    .pill.err{ color:var(--danger); border-color:rgba(185,28,28,.18); background:var(--danger-bg); }
+    .pill.warn{ color:var(--warn); border-color:rgba(146,64,14,.18); background:var(--warn-bg); }
+
+    .grid{ display:grid; grid-template-columns:minmax(620px,1.2fr) minmax(380px,.85fr); gap:18px; align-items:start; }
+    .card{ padding:18px; }
+    .card-title{ font-size:17px; font-weight:900; }
+    .card-sub{ font-size:12px; color:var(--muted); margin-top:4px; line-height:1.45; }
+    .section{ margin-top:16px; padding-top:16px; border-top:1px solid var(--line-soft); }
+    .section:first-of-type{ margin-top:14px; padding-top:0; border-top:0; }
+    .section-header{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:12px; margin-bottom:12px; flex-wrap:wrap;
+    }
+    .section-header h3{ margin:0; font-size:14px; font-weight:900; }
+    .section-header .hint{ margin:0; }
+    .row{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .row3{ display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+    .row4{ display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .field{ display:flex; flex-direction:column; gap:6px; min-width:0; }
+    label{ font-size:12px; color:var(--muted); font-weight:800; }
+    input, select, textarea{
+      width:100%; font:inherit; padding:12px 14px; border:1px solid var(--line);
+      border-radius:14px; outline:none; background:#fff; color:var(--text);
+      transition:border-color .18s ease, box-shadow .18s ease, transform .12s ease;
+    }
+    textarea{ min-height:92px; resize:vertical; }
+    input:focus, select:focus, textarea:focus{
+      border-color:rgba(21,128,61,.45); box-shadow:0 0 0 4px rgba(21,128,61,.10);
+    }
+    .actions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .btn{
+      border:1px solid var(--line); background:#fff; border-radius:14px; padding:11px 14px;
+      cursor:pointer; font-weight:900; color:var(--text); min-height:44px;
+    }
+    .btn:hover{ transform:translateY(-1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; transform:none; }
+    .btn-primary{ background:linear-gradient(180deg,var(--primary) 0,var(--primary-2) 100%); color:#fff; border-color:var(--primary); }
     .btn-danger{ background:#fff; color:var(--danger); border-color:rgba(185,28,28,.35); }
-    .btn:disabled{ opacity:.55; cursor:not-allowed; }
-    .pill{ display:inline-flex; align-items:center; gap:8px; padding:6px 10px; border-radius:999px; border:1px solid var(--line); font-size:12px; color:var(--muted); background:#fff; }
-    .pill.ok{ color:var(--ok); border-color:rgba(6,95,70,.25); background:rgba(6,95,70,.06); }
-    .pill.err{ color:var(--danger); border-color:rgba(185,28,28,.25); background:rgba(185,28,28,.06); }
-    .pill.warn{ color:var(--warn); border-color:rgba(146,64,14,.25); background:rgba(146,64,14,.06); }
-    .hr{ height:1px; background:var(--line); margin:14px 0; }
-    .list-head{ display:flex; gap:10px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+    .btn-ghost{ background:#f8fafc; }
+    .btn-soft{ background:linear-gradient(180deg,#f0fdf4 0,#ecfdf3 100%); border-color:rgba(21,128,61,.18); color:#166534; }
+    .req{ color:#ef4444; font-weight:900; margin-left:4px; }
+    .hint{ font-size:12px; color:var(--muted); line-height:1.45; }
+    .badge{
+      display:inline-flex; align-items:center; padding:5px 10px; border-radius:999px; border:1px solid var(--line-soft);
+      font-size:12px; font-weight:900;
+    }
+    .b-draft{ background:#fff; }
+    .b-signed{ background:#f0fdf4; border-color:rgba(34,197,94,.24); }
+    .b-sent{ background:#eff6ff; border-color:rgba(59,130,246,.24); }
+    .b-auth{ background:#ecfdf3; border-color:rgba(22,101,52,.22); color:#166534; }
+    .b-rej{ background:#fef2f2; border-color:rgba(185,28,28,.22); color:#b91c1c; }
+
+    .summary-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px; }
+    .summary-box{
+      border:1px solid var(--line-soft); background:#fcfdfd; border-radius:18px; padding:14px;
+    }
+    .summary-box .lbl{ font-size:11px; font-weight:900; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+    .summary-box .val{ font-size:15px; font-weight:800; margin-top:6px; line-height:1.4; }
+    .summary-box .subtxt{ font-size:12px; color:var(--muted); margin-top:5px; }
+
     .searchbar{ display:flex; gap:10px; align-items:center; width:100%; }
     .searchbar input{ flex:1; }
+    .table-shell{
+      border:1px solid var(--line-soft); border-radius:18px; overflow:auto; background:#fff;
+    }
     table{ width:100%; border-collapse:separate; border-spacing:0; }
-    th, td{ padding:10px 10px; border-bottom:1px solid var(--line); vertical-align:top; }
-    th{ text-align:left; font-size:12px; color:var(--muted); font-weight:900; }
+    th, td{ padding:11px 12px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+    th{ text-align:left; font-size:12px; color:var(--muted); font-weight:900; background:#f8fafc; position:sticky; top:0; z-index:1; }
     td{ font-size:13px; }
     .td-actions{ white-space:nowrap; }
     .linkbtn{ border:0; background:transparent; color:#0f172a; cursor:pointer; font-weight:900; padding:6px 8px; border-radius:10px; }
     .linkbtn:hover{ background:rgba(0,0,0,.04); }
+    .small{ font-size:12px; color:var(--muted); }
     .muted{ color:var(--muted); }
-    .small{ font-size:12px; }
-    .req{ color:#ef4444; font-weight:900; margin-left:4px; }
-    .hint{ font-size:12px; color:var(--muted); line-height:1.35; }
-    .badge{ display:inline-flex; align-items:center; padding:4px 8px; border-radius:999px; border:1px solid var(--line); font-size:12px; font-weight:900; }
-    .b-draft{ background:#fff; }
-    .b-signed{ background:rgba(34,197,94,.08); border-color:rgba(34,197,94,.25); }
-    .b-sent{ background:rgba(59,130,246,.08); border-color:rgba(59,130,246,.25); }
-    .b-auth{ background:rgba(6,95,70,.08); border-color:rgba(6,95,70,.25); }
-    .b-rej{ background:rgba(185,28,28,.08); border-color:rgba(185,28,28,.25); }
-    @media (max-width: 1100px){ .grid{ grid-template-columns: 1fr; } }
+
+    .items-shell{
+      border:1px solid var(--line-soft); border-radius:18px; overflow:hidden; background:#fff;
+    }
+    .items-actions{
+      display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; border-bottom:1px solid var(--line-soft);
+      background:#f8fafc; flex-wrap:wrap;
+    }
+    .item-row-actions{ display:flex; gap:8px; align-items:center; justify-content:flex-end; }
+    .item-input{ min-width:100px; }
+    .num-right{ text-align:right; }
+
+    .legal-note{
+      border:1px dashed rgba(146,64,14,.28); background:#fffaf0; border-radius:16px; padding:14px;
+      font-size:12px; color:#7c5a11; line-height:1.5;
+    }
+
+    .preview-modal{
+      position:fixed; inset:0; background:rgba(2,6,23,.58); z-index:99999; display:none; align-items:center; justify-content:center; padding:18px;
+    }
+    .preview-shell{
+      width:min(1240px,98vw); height:min(94vh,960px); background:#fff; border-radius:20px; overflow:hidden;
+      box-shadow:0 32px 84px rgba(2,6,23,.36); display:flex; flex-direction:column;
+    }
+    .preview-head{
+      display:flex; gap:12px; align-items:center; padding:12px 14px; border-bottom:1px solid var(--line-soft); background:#f8fafc;
+      flex-wrap:wrap;
+    }
+    .preview-head .grow{ flex:1; min-width:200px; }
+    .preview-head strong{ display:block; font-size:15px; }
+    .preview-head span{ display:block; font-size:12px; color:var(--muted); margin-top:2px; }
+    #danfeFrame{ flex:1; width:100%; border:0; background:#cbd5e1; }
+
+    @media (max-width:1360px){
+      .page-hero{ grid-template-columns:1fr; }
+      .hero-grid{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .grid{ grid-template-columns:1fr; }
+    }
+    @media (max-width:920px){
+      .page-wrap{ padding:18px 16px 56px; }
+      .hero-title{ font-size:26px; }
+      .row,.row3,.row4,.summary-grid{ grid-template-columns:1fr; }
+      .hero-grid{ grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:640px){
+      .hero-grid{ grid-template-columns:1fr; }
+      .searchbar,.actions{ flex-direction:column; align-items:stretch; }
+      .btn{ width:100%; }
+      .preview-head{ flex-direction:column; align-items:stretch; }
+    }
   </style>
 </head>
 
-<body class="page-fiscal">
-  <!-- Topbar oficial (iframe) -->
-  <iframe id="vscTopbarFrame" src="topbar.html?v=final"></iframe>
+<body class="page-fiscal vsc-premium">
+  <iframe id="vscTopbarFrame" src="topbar.html?v=20260307f"></iframe>
 
   <main class="page-wrap">
-    <div class="title">Fiscal (NF-e)</div>
-    <div class="sub">Emissão NF-e (modelo 55) · Base offline-first · Certificado digital A1 (v1)</div>
+    <section class="page-hero">
+      <div class="hero-card">
+        <div class="hero-eyebrow">Módulo fiscal</div>
+        <div class="hero-title">Emissão e impressão DANFE NF-e</div>
+        <div class="hero-sub">
+          Fluxo offline-first com rascunho persistido, itens editáveis, pré-visualização DANFE em A4 e reimpressão interna do documento sem quebrar o restante do sistema.
+        </div>
+        <div class="hero-grid">
+          <div class="metric">
+            <div class="lbl">Total</div>
+            <div class="val" id="kpiTotal">—</div>
+            <div class="hint">documentos gravados localmente</div>
+          </div>
+          <div class="metric">
+            <div class="lbl">Autorizadas</div>
+            <div class="val" id="kpiAuth">—</div>
+            <div class="hint">status autorizado</div>
+          </div>
+          <div class="metric">
+            <div class="lbl">Pendentes</div>
+            <div class="val" id="kpiPending">—</div>
+            <div class="hint">draft, assinado ou enviado</div>
+          </div>
+          <div class="metric">
+            <div class="lbl">Rejeitadas</div>
+            <div class="val" id="kpiRejected">—</div>
+            <div class="hint">exigem correção antes de nova emissão</div>
+          </div>
+        </div>
+      </div>
 
-    <!-- KPI Strip -->
-    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0;">
-      <div class="card" style="padding:12px 14px;">
-        <div style="font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.4px;">Total</div>
-        <div style="font-size:22px;font-weight:900;margin-top:4px;" id="kpiTotal">—</div>
-      </div>
-      <div class="card" style="padding:12px 14px;">
-        <div style="font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.4px;">Autorizadas</div>
-        <div style="font-size:22px;font-weight:900;margin-top:4px;" id="kpiAuth">—</div>
-      </div>
-      <div class="card" style="padding:12px 14px;">
-        <div style="font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.4px;">Pendentes</div>
-        <div style="font-size:22px;font-weight:900;margin-top:4px;" id="kpiPending">—</div>
-      </div>
-      <div class="card" style="padding:12px 14px;">
-        <div style="font-size:11px;color:var(--muted);font-weight:900;text-transform:uppercase;letter-spacing:.4px;">Rejeitadas</div>
-        <div style="font-size:22px;font-weight:900;margin-top:4px;" id="kpiRejected">—</div>
-      </div>
-    </div>
+      <aside class="hero-card hero-side">
+        <div>
+          <h2>Resumo operacional</h2>
+          <div class="card-sub">O DANFE segue leitura A4 e separa claramente emitente, destinatário, itens, tributos e observações.</div>
+        </div>
+        <div class="stack">
+          <div class="status-row">
+            <div id="docStatusPill" class="pill">Status: —</div>
+            <div id="syncPill" class="pill">Offline-first</div>
+            <div id="certPill" class="pill warn">Certificado: verificando…</div>
+          </div>
+          <div class="summary-grid">
+            <div class="summary-box">
+              <div class="lbl">Emitente</div>
+              <div class="val" id="emitenteResumo">Empresa não configurada</div>
+              <div class="subtxt" id="emitenteResumo2">Cadastre os dados completos em Empresa para enriquecer o DANFE.</div>
+            </div>
+            <div class="summary-box">
+              <div class="lbl">Documento aberto</div>
+              <div class="val" id="docResumo">Nenhum documento selecionado</div>
+              <div class="subtxt" id="docResumo2">Abra um rascunho ou crie uma nova NF-e.</div>
+            </div>
+          </div>
+          <div class="legal-note">
+            O XML/SEFAZ continua preparado para evolução posterior, mas a impressão implantada aqui já entrega uma
+            folha DANFE interna consistente, reimprimível e alinhada ao leiaute A4 do documento auxiliar. Para trânsito fiscal real,
+            o DANFE deve acompanhar uma NF-e efetivamente autorizada pela SEFAZ. 
+          </div>
+        </div>
+      </aside>
+    </section>
 
     <div class="grid">
-      <!-- LEFT: Detalhe / Emissão -->
       <section class="card">
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <div class="section-header">
           <div>
-            <div style="font-weight:900;font-size:16px;">Documento NF-e</div>
-            <div class="hint">Fluxo premium: Draft → Assinar → Enviar → Protocolo (autorizada/rejeitada)</div>
+            <div class="card-title">Documento NF-e</div>
+            <div class="card-sub">Preencha os dados do cabeçalho, do destinatário e dos itens. O total é recalculado automaticamente e a impressão segue esse mesmo snapshot.</div>
           </div>
-          <div id="docStatusPill" class="pill">Status: —</div>
-        </div>
-
-        <div class="hr"></div>
-
-        <div class="row3">
-          <div class="field">
-            <label>Série <span class="req">*</span></label>
-            <input id="fSerie" type="text" inputmode="numeric" placeholder="1" />
-          </div>
-          <div class="field">
-            <label>Número <span class="req">*</span></label>
-            <input id="fNumero" type="text" inputmode="numeric" placeholder="Automático" />
-          </div>
-          <div class="field">
-            <label>Ambiente</label>
-            <select id="fAmbiente">
-              <option value="HOMOLOG">Homologação</option>
-              <option value="PROD">Produção</option>
-            </select>
+          <div class="actions">
+            <button class="btn btn-primary" id="btnNovo">Novo rascunho</button>
+            <button class="btn btn-soft" id="btnSalvar">Salvar</button>
+            <button class="btn btn-ghost" id="btnVisualizar">Visualizar DANFE</button>
+            <button class="btn" id="btnImprimir">Imprimir DANFE</button>
+            <button class="btn" id="btnAssinar" disabled>Assinar (stub)</button>
+            <button class="btn" id="btnEnviar" disabled>Enviar SEFAZ (stub)</button>
+            <button class="btn btn-danger" id="btnExcluir" disabled>Excluir</button>
           </div>
         </div>
 
-        <div class="row" style="margin-top:12px;">
-          <div class="field">
-            <label>Destinatário (Nome)</label>
-            <input id="fDestNome" type="text" placeholder="Cliente" />
+        <div class="hint" id="msgArea">—</div>
+
+        <div class="section">
+          <div class="section-header">
+            <div>
+              <h3>Identificação</h3>
+              <div class="hint">Campos principais do cabeçalho da NF-e e da futura DANFE.</div>
+            </div>
           </div>
-          <div class="field">
-            <label>CPF/CNPJ</label>
-            <input id="fDestDoc" type="text" placeholder="Somente números" />
+          <div class="row4">
+            <div class="field">
+              <label>Série <span class="req">*</span></label>
+              <input id="fSerie" type="text" inputmode="numeric" placeholder="1" />
+            </div>
+            <div class="field">
+              <label>Número <span class="req">*</span></label>
+              <input id="fNumero" type="text" inputmode="numeric" placeholder="Automático" />
+            </div>
+            <div class="field">
+              <label>Ambiente</label>
+              <select id="fAmbiente">
+                <option value="HOMOLOG">Homologação</option>
+                <option value="PROD">Produção</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Natureza da operação</label>
+              <input id="fNatureza" type="text" placeholder="Venda de mercadoria / atendimento" />
+            </div>
+          </div>
+          <div class="row4" style="margin-top:12px;">
+            <div class="field">
+              <label>Data de emissão</label>
+              <input id="fEmissao" type="datetime-local" />
+            </div>
+            <div class="field">
+              <label>Saída/entrada</label>
+              <input id="fSaida" type="datetime-local" />
+            </div>
+            <div class="field">
+              <label>Chave de acesso</label>
+              <input id="fChave" type="text" placeholder="Preenchida pela integração oficial" />
+            </div>
+            <div class="field">
+              <label>Protocolo de autorização</label>
+              <input id="fProtocolo" type="text" placeholder="Opcional enquanto a integração SEFAZ é stub" />
+            </div>
           </div>
         </div>
 
-        <div class="row" style="margin-top:12px;">
-          <div class="field">
-            <label>Valor Total (R$)</label>
-            <input id="fTotal" type="text" inputmode="decimal" placeholder="0,00" data-vsc-mask="money-br" />
+        <div class="section">
+          <div class="section-header">
+            <div>
+              <h3>Destinatário</h3>
+              <div class="hint">Esses dados aparecem no bloco principal do DANFE.</div>
+            </div>
           </div>
-          <div class="field">
-            <label>Observações</label>
-            <input id="fObs" type="text" placeholder="Opcional" />
+          <div class="row">
+            <div class="field">
+              <label>Nome / razão social</label>
+              <input id="fDestNome" type="text" placeholder="Cliente / destinatário" />
+            </div>
+            <div class="field">
+              <label>CPF/CNPJ</label>
+              <input id="fDestDoc" type="text" placeholder="Somente números" />
+            </div>
           </div>
-        </div>
-
-        <div class="actions">
-          <button class="btn btn-primary" id="btnNovo">Novo (Draft)</button>
-          <button class="btn" id="btnSalvar">Salvar</button>
-          <button class="btn" id="btnAssinar" disabled>Assinar (stub)</button>
-          <button class="btn" id="btnEnviar" disabled>Enviar SEFAZ (stub)</button>
-          <button class="btn btn-danger" id="btnExcluir" disabled>Excluir</button>
-        </div>
-
-        <div style="margin-top:10px;" class="hint" id="msgArea">—</div>
-
-        <div class="hr"></div>
-
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">
-          <div style="font-weight:900;">Certificado Digital (A1)</div>
-          <div id="certPill" class="pill warn">Certificado: verificando…</div>
-        </div>
-        <div class="hint" style="margin-top:8px;">
-          A1 (PFX/P12) é armazenado criptografado no backend local (AES-256-GCM). A senha <b>não</b> é armazenada.
-        </div>
-
-        <div class="row" style="margin-top:12px; align-items:end;">
-          <div class="field">
-            <label>Arquivo .PFX/.P12</label>
-            <input id="certFile" type="file" accept=".pfx,.p12,application/x-pkcs12" />
+          <div class="row" style="margin-top:12px;">
+            <div class="field">
+              <label>Inscrição estadual</label>
+              <input id="fDestIE" type="text" placeholder="Opcional" />
+            </div>
+            <div class="field">
+              <label>Telefone</label>
+              <input id="fDestFone" type="text" placeholder="Opcional" />
+            </div>
           </div>
-          <div class="field">
-            <label>Senha do certificado</label>
-            <input id="certPass" type="password" placeholder="Senha do A1" />
+          <div class="row" style="margin-top:12px;">
+            <div class="field" style="grid-column:1/-1;">
+              <label>Endereço</label>
+              <input id="fDestEndereco" type="text" placeholder="Rua, número, bairro, cidade/UF" />
+            </div>
           </div>
         </div>
-        <div class="actions" style="margin-top:10px;">
-          <button class="btn" id="btnCertImport">Importar Certificado</button>
-          <button class="btn" id="btnCertRefresh">Atualizar Status</button>
+
+        <div class="section">
+          <div class="section-header">
+            <div>
+              <h3>Valores e observações</h3>
+              <div class="hint">Os tributos ficam com defaults seguros; ajuste fino pode ser feito depois sem quebrar a impressão.</div>
+            </div>
+          </div>
+          <div class="row4">
+            <div class="field">
+              <label>Base ICMS (R$)</label>
+              <input id="fBaseICMS" type="text" inputmode="decimal" placeholder="0,00" data-vsc-mask="money-br" />
+            </div>
+            <div class="field">
+              <label>Valor ICMS (R$)</label>
+              <input id="fValorICMS" type="text" inputmode="decimal" placeholder="0,00" data-vsc-mask="money-br" />
+            </div>
+            <div class="field">
+              <label>Frete (R$)</label>
+              <input id="fFrete" type="text" inputmode="decimal" placeholder="0,00" data-vsc-mask="money-br" />
+            </div>
+            <div class="field">
+              <label>Desconto (R$)</label>
+              <input id="fDesconto" type="text" inputmode="decimal" placeholder="0,00" data-vsc-mask="money-br" />
+            </div>
+          </div>
+          <div class="row" style="margin-top:12px;">
+            <div class="field">
+              <label>Valor total (R$)</label>
+              <input id="fTotal" type="text" inputmode="decimal" placeholder="0,00" data-vsc-mask="money-br" />
+            </div>
+            <div class="field">
+              <label>Informações complementares</label>
+              <input id="fObs" type="text" placeholder="Observações impressas no rodapé do DANFE" />
+            </div>
+          </div>
         </div>
-        <div class="hint" id="certMsg" style="margin-top:8px;">—</div>
+
+        <div class="section">
+          <div class="section-header">
+            <div>
+              <h3>Itens do documento</h3>
+              <div class="hint">Tabela preparada para impressão. Informe pelo menos descrição, quantidade e valor unitário.</div>
+            </div>
+            <div class="actions">
+              <button class="btn btn-ghost" id="btnAddItem" type="button">+ Adicionar item</button>
+            </div>
+          </div>
+
+          <div class="items-shell">
+            <div class="items-actions">
+              <div class="hint">Código, descrição, NCM, CFOP, un., quantidade, valor unitário e total.</div>
+              <div class="small">Total calculado automaticamente pelos itens.</div>
+            </div>
+            <div class="table-shell" style="border:0;border-radius:0;">
+              <table>
+                <thead>
+                  <tr>
+                    <th style="width:96px;">Código</th>
+                    <th>Descrição</th>
+                    <th style="width:104px;">NCM</th>
+                    <th style="width:92px;">CFOP</th>
+                    <th style="width:74px;">UN</th>
+                    <th style="width:110px;" class="num-right">Qtd.</th>
+                    <th style="width:128px;" class="num-right">Vlr unit.</th>
+                    <th style="width:128px;" class="num-right">Total</th>
+                    <th style="width:84px;">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="itemsBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <div class="section-header">
+            <div>
+              <h3>Certificado digital A1</h3>
+              <div class="hint">Persistência segura no backend local, sem armazenar a senha.</div>
+            </div>
+          </div>
+          <div class="row" style="align-items:end;">
+            <div class="field">
+              <label>Arquivo .PFX/.P12</label>
+              <input id="certFile" type="file" accept=".pfx,.p12,application/x-pkcs12" />
+            </div>
+            <div class="field">
+              <label>Senha do certificado</label>
+              <input id="certPass" type="password" placeholder="Senha do A1" />
+            </div>
+          </div>
+          <div class="actions" style="margin-top:10px;">
+            <button class="btn" id="btnCertImport">Importar certificado</button>
+            <button class="btn btn-ghost" id="btnCertRefresh">Atualizar status</button>
+          </div>
+          <div class="hint" id="certMsg" style="margin-top:8px;">—</div>
+        </div>
       </section>
 
-      <!-- RIGHT: Lista -->
-      <section class="card">
-        <div class="list-head">
+      <aside class="card">
+        <div class="section-header">
           <div>
-            <div style="font-weight:900;font-size:16px;">Documentos</div>
-            <div class="hint">Clique em um item para abrir no detalhe.</div>
+            <div class="card-title">Documentos salvos</div>
+            <div class="card-sub">Clique para abrir, revisar e reimprimir. A listagem respeita o snapshot local persistido.</div>
           </div>
-          <div class="pill" id="syncPill">Offline-first</div>
         </div>
-
-        <div class="hr"></div>
 
         <div class="searchbar">
           <input id="q" type="text" placeholder="Buscar por destinatário, número, chave…" />
-          <button class="btn" id="btnLimpar">Limpar</button>
+          <button class="btn btn-ghost" id="btnLimpar">Limpar</button>
         </div>
 
-        <div style="margin-top:12px; overflow:auto;">
+        <div class="table-shell" style="margin-top:14px;">
           <table>
             <thead>
               <tr>
-                <th style="width:120px;">Status</th>
-                <th style="width:140px;">Série/Nº</th>
+                <th style="width:112px;">Status</th>
+                <th style="width:128px;">Série/Nº</th>
                 <th>Destinatário</th>
-                <th style="width:140px;">Total</th>
-                <th style="width:110px;">Ações</th>
+                <th style="width:116px;" class="num-right">Total</th>
+                <th style="width:86px;">Abrir</th>
               </tr>
             </thead>
             <tbody id="tb"></tbody>
           </table>
         </div>
 
-        <div class="hint" style="margin-top:10px;">
-          Nota: nesta entrega v1 o fluxo de emissão para SEFAZ está preparado (API local + storage de certificado),
-          porém a camada completa NF-e (MOC/XMLDSig/SOAP) será evoluída no próximo ciclo.
+        <div class="section">
+          <div class="section-header">
+            <div>
+              <h3>Emitente carregado</h3>
+              <div class="hint">A DANFE puxa automaticamente os dados do módulo Empresa.</div>
+            </div>
+          </div>
+          <div class="summary-grid">
+            <div class="summary-box">
+              <div class="lbl">Razão social</div>
+              <div class="val" id="sumEmpresaNome">—</div>
+              <div class="subtxt" id="sumEmpresaDoc">—</div>
+            </div>
+            <div class="summary-box">
+              <div class="lbl">Endereço fiscal</div>
+              <div class="val" id="sumEmpresaEndereco">—</div>
+              <div class="subtxt" id="sumEmpresaContato">—</div>
+            </div>
+          </div>
         </div>
-      </section>
+
+        <div class="section">
+          <div class="section-header">
+            <div>
+              <h3>Critérios da impressão implantada</h3>
+            </div>
+          </div>
+          <div class="legal-note">
+            <strong>O que foi corrigido aqui:</strong><br>
+            1. pré-visualização DANFE A4 com quebra de página limpa;<br>
+            2. reimpressão do mesmo snapshot salvo;<br>
+            3. cabeçalho fiscal mais completo;<br>
+            4. itens tabulados para impressão;<br>
+            5. alerta visual quando o documento ainda não está autorizado.
+          </div>
+        </div>
+      </aside>
     </div>
   </main>
+
+  <div id="danfePreviewModal" class="preview-modal" aria-hidden="true">
+    <div class="preview-shell">
+      <div class="preview-head">
+        <div class="grow">
+          <strong>Pré-visualização DANFE</strong>
+          <span id="danfePreviewInfo">Documento não carregado</span>
+        </div>
+        <button class="btn btn-ghost" id="btnDanfeDownload" type="button">Baixar HTML</button>
+        <button class="btn btn-soft" id="btnDanfePrint" type="button">Imprimir</button>
+        <button class="btn" id="btnDanfeClose" type="button">Fechar</button>
+      </div>
+      <iframe id="danfeFrame" title="Pré-visualização DANFE"></iframe>
+    </div>
+  </div>
+
+  <script src="modules/ui-global.js"></script>
 </body>
 </html>

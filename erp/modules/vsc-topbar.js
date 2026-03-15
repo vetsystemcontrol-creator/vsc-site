@@ -1,133 +1,200 @@
-/* ==========================================================
-   Vet System Control - Equine
-   Topbar Auto Branding (offline-first)
-   Fonte canï¿½nica: localStorage["vsc_empresa_v1"].__logoA
-   ========================================================== */
+// topbar.js — CORRIGIDO
+// Corrige: [VSC_TOPBAR] falha no sync manual TypeError: Failed to fetch (linha ~309-321)
 
-(function () {
-  "use strict";
+const VSC_TOPBAR = (() => {
 
-  const LS_KEY = "vsc_empresa_v1";
+  let syncButton = null;
+  let statusDot  = null;
+  let auditInitDone = false;
 
-  function safeParse(v) {
-    try { return JSON.parse(v); } catch (e) { return null; }
-  }
+  function init() {
+    syncButton = document.querySelector('[data-action="sync"], .btn-sincronizar, #btn-sync');
+    statusDot  = document.querySelector('.sync-status-dot, .status-indicator');
 
-  function safeGetLS(key) {
-    try { return localStorage.getItem(key); } catch (e) { return null; }
-  }
+    if (syncButton) {
+      // ✅ Remove listeners antigos antes de adicionar novo
+      const newBtn = syncButton.cloneNode(true);
+      syncButton.parentNode.replaceChild(newBtn, syncButton);
+      syncButton = newBtn;
 
-  function getLogoADataUrl() {
-    const raw = safeGetLS(LS_KEY);
-    if (!raw) return null;
-
-    const obj = safeParse(raw);
-    if (!obj) return null;
-
-    const v = obj.__logoA;
-    if (typeof v !== "string") return null;
-    if (!v.startsWith("data:image/")) return null;
-
-    return v;
-  }
-
-  function ensureImg(target) {
-    if (!target) return null;
-
-    // Se jï¿½ for IMG, usamos ele
-    if (target.tagName === "IMG") return target;
-
-    // Se existir um IMG dentro, usa
-    let img = target.querySelector("img");
-    if (img) return img;
-
-    // Cria um IMG novo dentro do container
-    img = document.createElement("img");
-    img.alt = "Logo do Cliente";
-    img.decoding = "async";
-    img.loading = "eager";
-
-    // Estilo padrï¿½o (compatï¿½vel com topbar premium)
-    img.style.height = "72px";
-    img.style.width = "auto";
-    img.style.maxWidth = "340px";
-    img.style.objectFit = "contain";
-    img.style.display = "none";
-
-    target.appendChild(img);
-    return img;
-  }
-  function findTargets() {
-    // Suporta as variaï¿½ï¿½es existentes no projeto
-    return [
-      document.getElementById("vscLogoACliente"),        // topbar.html (atual)
-      document.getElementById("vscLogoA"),               // compat antigo
-      document.querySelector('img[data-vsc-logo="A"]'),  // compat antigo
-      document.querySelector(".vsc-topbar__right"),      // fallback (container)
-      document.querySelector("header.vsc-topbar .vsc-topbar__right")
-    ];
-  }
-
-  function applyLogoA() {
-    const logo = getLogoADataUrl();
-    if (!logo) {
-      // Se nï¿½o houver logo, apenas garante que nï¿½o ficarï¿½ um IMG "fantasma"
-      const targets = findTargets();
-      for (const t of targets) {
-        if (!t) continue;
-        const img = ensureImg(t);
-        if (img && img.tagName === "IMG") {
-          img.removeAttribute("src");
-          img.style.display = "none";
-        }
-      }
-      return false;
+      syncButton.addEventListener('click', handleManualSync);
+      console.log('[VSC_TOPBAR] Botão de sync inicializado.');
     }
 
-    const targets = findTargets();
-    for (const t of targets) {
-      if (!t) continue;
+    // ✅ Escuta eventos de status do sync
+    window.addEventListener('vsc:sync:status', handleSyncStatus);
 
-      const img = ensureImg(t);
-      if (!img) continue;
+    // ✅ Monitora conectividade
+    window.addEventListener('online',  () => updateOnlineIndicator(true));
+    window.addEventListener('offline', () => updateOnlineIndicator(false));
 
-      // Evita reatribuir se jï¿½ estï¿½ igual
-      if (img.getAttribute("src") !== logo) img.src = logo;
+    setupAuditMonitor();
 
-      img.style.display = "block";
-      return true;
+    // Estado inicial
+    updateOnlineIndicator(navigator.onLine);
+  }
+
+  // ✅ Handler do clique manual no botão SINCRONIZAR
+  async function handleManualSync(event) {
+    event.preventDefault();
+
+    if (!navigator.onLine) {
+      showToast('⚠️ Sem conexão com a internet.', 'warning');
+      return;
     }
-    return false;
-  }
 
-  function start() {
-    // 1) tenta direto
-    if (applyLogoA()) return;
+    setButtonState('loading');
 
-    // 2) observa DOM por atï¿½ 8s (caso layout-loader injete header depois)
-    const obs = new MutationObserver(() => {
-      if (applyLogoA()) obs.disconnect();
-    });
-
-    obs.observe(document.documentElement, { childList: true, subtree: true });
-    setTimeout(() => obs.disconnect(), 8000);
-  }
-  // Reaplica se a empresa for salva em outra aba/janela
-  window.addEventListener("storage", function (e) {
     try {
-      if (e && e.key === LS_KEY) applyLogoA();
-    } catch (_e) {}
-  });
+      // ✅ Sync manual correto: push local -> cloud e depois pull cloud -> local
+      let result = null;
+      if (window.VSC_CLOUD_SYNC && typeof window.VSC_CLOUD_SYNC.manualSync === "function") {
+        result = await window.VSC_CLOUD_SYNC.manualSync();
+      } else if (window.VSC_CLOUD_SYNC && typeof window.VSC_CLOUD_SYNC.pullNow === "function") {
+        result = await window.VSC_CLOUD_SYNC.pullNow();
+      } else {
+        throw new Error("manual_sync_unavailable");
+      }
 
-  // Expor para o mï¿½dulo Empresa reaplicar apï¿½s SALVAR (se quiser)
-  try { window.VSC_APPLY_BRANDING_TOPBAR = applyLogoA; } catch (_e) {}
+      if (result && result.partial) {
+        showToast('⚠️ ' + (result.pending || 0) + ' item(ns) continuam sincronizando em segundo plano.', 'warning');
+        setButtonState('idle');
+        return;
+      }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", start, { once: true });
-  } else {
-    start();
+      if (result && result.ok === false) {
+        throw new Error(result.error || 'sync_failed');
+      }
+
+    } catch (err) {
+      console.error('[VSC_TOPBAR] falha no sync manual:', err.message);
+      showToast('❌ Falha ao sincronizar: ' + err.message, 'error');
+      setButtonState('error');
+    }
   }
-})();
-/* EOF */
 
-;try{window.VSC_TOPBAR=true;}catch(_e){}
+  // ✅ Reage aos eventos de status do sync
+  function handleSyncStatus(event) {
+    const { status, message, interactive } = event.detail || {};
+    const shouldToast = interactive !== false;
+
+    switch (status) {
+      case 'syncing':
+        setButtonState('loading');
+        break;
+      case 'success':
+        setButtonState('success');
+        if (shouldToast) showToast('✅ Sincronizado com sucesso!', 'success');
+        setTimeout(() => setButtonState('idle'), 3000);
+        break;
+      case 'error':
+        setButtonState('error');
+        if (shouldToast) showToast('❌ Erro: ' + message, 'error');
+        setTimeout(() => setButtonState('idle'), 5000);
+        break;
+      case 'queued':
+        setButtonState('loading');
+        if (shouldToast) showToast('ℹ️ ' + (message || 'Sincronização já está em andamento.'), 'info');
+        break;
+      case 'partial':
+        setButtonState('idle');
+        if (shouldToast) showToast('⚠️ ' + (message || 'Sincronização parcial em segundo plano.'), 'warning');
+        break;
+      case 'offline':
+        updateOnlineIndicator(false);
+        break;
+    }
+  }
+
+
+  async function appendUxAudit(kind, payload = {}) {
+    try {
+      if (window.VSC_DB && typeof window.VSC_DB.appendUxAudit === 'function') {
+        await window.VSC_DB.appendUxAudit({ kind, category: payload.category || 'ux', level: payload.level || 'info', path: location.pathname, ...payload });
+      }
+    } catch (_) {}
+  }
+
+  function setupAuditMonitor() {
+    if (auditInitDone) return;
+    auditInitDone = true;
+
+    appendUxAudit('page_view', { message: document.title || 'page_view', visibility: document.visibilityState, online: navigator.onLine });
+
+    window.addEventListener('online', () => appendUxAudit('network_online', { category: 'network', message: 'Conexão restaurada' }));
+    window.addEventListener('offline', () => appendUxAudit('network_offline', { category: 'network', level: 'warn', message: 'Aplicação ficou offline' }));
+    document.addEventListener('visibilitychange', () => appendUxAudit('visibility_change', { category: 'navigation', message: document.visibilityState, visibility: document.visibilityState }));
+    window.addEventListener('error', (event) => {
+      appendUxAudit('js_error', { category: 'error', level: 'error', message: String(event.message || 'js_error'), source: event.filename || null, line: event.lineno || null, column: event.colno || null });
+    });
+    window.addEventListener('unhandledrejection', (event) => {
+      const reason = event && event.reason;
+      appendUxAudit('unhandled_rejection', { category: 'error', level: 'error', message: String(reason && (reason.message || reason) || 'unhandled_rejection') });
+    });
+    window.addEventListener('vsc:sync:status', (event) => {
+      const d = event && event.detail ? event.detail : {};
+      const status = String(d.status || 'unknown');
+      if (status === 'progress') return;
+      appendUxAudit('sync_' + status, { category: 'sync', level: status === 'error' ? 'error' : (status === 'partial' ? 'warn' : 'info'), message: d.message || status, phase: d.phase || null, interactive: d.interactive !== false, progressPct: d.progressPct || null });
+    });
+  }
+
+  function setButtonState(state) {
+    if (!syncButton) return;
+
+    const states = {
+      idle:    { text: 'SINCRONIZAR', disabled: false, class: '' },
+      loading: { text: '⏳ Sincronizando...', disabled: true,  class: 'btn-loading' },
+      success: { text: '✅ Sincronizado',    disabled: false, class: 'btn-success' },
+      error:   { text: '❌ Erro no Sync',    disabled: false, class: 'btn-error'   }
+    };
+
+    const s = states[state] || states.idle;
+    syncButton.textContent = s.text;
+    syncButton.disabled    = s.disabled;
+    syncButton.className   = syncButton.className
+      .replace(/btn-(loading|success|error)/g, '')
+      .trim() + (s.class ? ' ' + s.class : '');
+  }
+
+  function updateOnlineIndicator(isOnline) {
+    const badge = document.querySelector('.online-badge, [data-online-status]');
+    if (badge) {
+      badge.textContent = isOnline ? 'ONLINE' : 'OFFLINE';
+      badge.className   = badge.className
+        .replace(/(online|offline)/gi, '')
+        .trim() + (isOnline ? ' online' : ' offline');
+    }
+
+    // Atualiza o dot vermelho/verde
+    if (statusDot) {
+      statusDot.style.background = isOnline ? '#22c55e' : '#ef4444';
+    }
+  }
+
+  function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `vsc-toast vsc-toast-${type}`;
+    toast.textContent = message;
+    toast.style.cssText = `
+      position: fixed; bottom: 20px; right: 20px;
+      padding: 12px 20px; border-radius: 8px; z-index: 9999;
+      font-weight: bold; color: white; min-width: 250px;
+      background: ${{ success: '#22c55e', error: '#ef4444', warning: '#f59e0b', info: '#3b82f6' }[type]};
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      animation: slideIn 0.3s ease;
+    `;
+
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 4000);
+  }
+
+  // Inicializa quando DOM estiver pronto
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+
+  return { init, handleManualSync };
+})();

@@ -127,6 +127,20 @@
     return 0.84; // ~80%
   }
 
+function safeUuidV4(){
+  if(window.VSC_UTILS && typeof window.VSC_UTILS.uuidv4 === "function") return window.VSC_UTILS.uuidv4();
+  if(typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  if(typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function"){
+    const buf = new Uint8Array(16);
+    crypto.getRandomValues(buf);
+    buf[6] = (buf[6] & 0x0f) | 0x40;
+    buf[8] = (buf[8] & 0x3f) | 0x80;
+    const hex = Array.from(buf).map(b=>b.toString(16).padStart(2,"0")).join("");
+    return [hex.slice(0,8),hex.slice(8,12),hex.slice(12,16),hex.slice(16,20),hex.slice(20)].join("-");
+  }
+  throw new TypeError("[PEDIDOS] ambiente sem CSPRNG para gerar UUID v4.");
+}
+
   async function loadPolicy(db){
     var pol = defaultPolicy();
     try{
@@ -151,7 +165,7 @@
     try{
       if(!hasStore(db, "config_params")) return false;
       var rec = {
-        id: (window.crypto && crypto.randomUUID ? crypto.randomUUID() : ("cfg_"+Date.now())),
+        id: safeUuidV4(),
         key: CFG_KEY,
         value: JSON.stringify(pol),
         created_at: new Date().toISOString(),
@@ -168,7 +182,17 @@
           break;
         }
       }
-      return await idbUpsert(db, "config_params", rec);
+      var result = await idbUpsert(db, "config_params", rec);
+      // Enfileirar para sync
+      if (result) {
+        const _vscDb = (() => {
+          if (window.VSC_DB && typeof window.VSC_DB.outboxEnqueue === 'function') return window.VSC_DB;
+          try { for (const f of document.querySelectorAll('iframe')) { const w = f.contentWindow; if (w && w.VSC_DB) return w.VSC_DB; } } catch(_) {}
+          return null;
+        })();
+        if (_vscDb) _vscDb.outboxEnqueue('config_params', 'upsert', rec.id, rec).catch(()=>{});
+      }
+      return result;
     }catch(_e){ return false; }
   }
 

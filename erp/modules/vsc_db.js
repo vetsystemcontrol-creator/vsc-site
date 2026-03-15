@@ -25,8 +25,13 @@ try{
   }
 }catch(_){}
 const DB_NAME = "vsc_db";
-  const DB_VERSION = 32;// v32: Fechamentos/Faturamento em lote (STORE_FECHAMENTOS) // v30: Subscription/Billing control (tenant_subscription + billing_events) | v29: Estoque ledger/saldos/import_ledger | v26: Reprodução Equina | v25: Fornecedores | v24: Produtos Lotes | v23: Config + RBAC + Auditoria
+  const DB_VERSION = 39;// v39: ux_audit_log + auditoria operacional/erros/usabilidade | v38: retry scheduling / stale sending recovery indexes + SW registration | v37: documents_store + attachments_queue stores canônicos para anexos/documentos offline-first | v36: empresa cadastral/fiscal store (CNPJ, Razão Social, IE, IM, CNAE, endereço) | v35: fornecedores_master schema alignment for cloud snapshot sync | v34: Sync hardening (op_id/device_id/revision metadata) // v32: Fechamentos/Faturamento em lote (STORE_FECHAMENTOS) // v30: Subscription/Billing control (tenant_subscription + billing_events) | v29: Estoque ledger/saldos/import_ledger | v26: Reprodução Equina | v25: Fornecedores | v24: Produtos Lotes | v23: Config + RBAC + Auditoria
   const STORE_OUTBOX = "sync_queue";
+  const STORE_ATTACHMENTS_QUEUE = "attachments_queue";
+  const STORE_DOCUMENTS = "documents_store";
+
+  // Empresa (cadastro fiscal/legal) — v36
+  const STORE_EMPRESA = "empresa";
 
   const STORE_FECHAMENTOS = "fechamentos";
   const STORE_SYS_META = "sys_meta";
@@ -54,6 +59,7 @@ const DB_NAME = "vsc_db";
  // v24: lote/validade/qtd/custo por lote (FEFO)
   const STORE_SERVICOS_MASTER = "servicos_master";
   const STORE_CLIENTES_MASTER = "clientes_master";
+  const STORE_FORNECEDORES_MASTER = "fornecedores_master";
   const STORE_ANIMAIS_MASTER  = "animais_master";
   const STORE_CONTAS_PAGAR    = "contas_pagar";
   const STORE_CONTAS_RECEBER  = "contas_receber"; // R-01: IDB canônico para AR
@@ -64,6 +70,8 @@ const DB_NAME = "vsc_db";
   const STORE_ANIMAIS_ESPECIES = "animais_especies";
 
   const STORE_ATENDIMENTOS_MASTER = "atendimentos_master";
+  const STORE_ANIMAL_VITALS_HISTORY = "animal_vitals_history";
+  const STORE_ANIMAL_VACCINES = "animal_vaccines";
 
   // ==============================
   // CONFIG (date-effective) + RBAC
@@ -83,6 +91,7 @@ const DB_NAME = "vsc_db";
 
   // Auditoria Business (SAP-like Change Documents)
   const STORE_BUSINESS_AUDIT = "business_audit_log";
+  const STORE_UX_AUDIT = "ux_audit_log";
 
   // ========================
   // REPRODUÇÃO EQUINA (v26)
@@ -133,6 +142,14 @@ exames_master: [
   "tipo",
   "custo_base_cents", "preco_venda_cents",
   "ativo", "deleted_at"
+],
+// Empresa (cadastro fiscal/legal)
+empresa: [
+  "cnpj", "razao_social", "nome_fantasia",
+  "ie", "im", "cnae_principal",
+  "cep", "logradouro", "numero", "complemento", "bairro", "cidade", "uf",
+  "telefone", "email", "site",
+  "regime_tributario", "updated_at"
 ],
 });
 
@@ -235,6 +252,81 @@ exames_master: [
   }
 
   // ============================================================
+// SYNC HARDENING (v34)
+// - device_id estável por instalação
+// - dedupe key por entidade/operação
+// - base/entity revision para reconciliação futura
+// ============================================================
+  function getOrCreateSyncDeviceId(){
+    const KEY = "vsc_sync_device_id";
+    try{
+      const ls = window.localStorage;
+      if(ls){
+        let cur = String(ls.getItem(KEY) || "").trim();
+        if(cur) return cur;
+        cur = uuidv4();
+        ls.setItem(KEY, cur);
+        return cur;
+      }
+    }catch(_){}
+    return uuidv4();
+  }
+
+  function nextEntityRevision(payload){
+    try{
+      const p = payload && typeof payload === "object" ? payload : null;
+      const cur = Number(p && (p.sync_rev ?? p.entity_revision ?? p.base_revision ?? p.revision)) || 0;
+      return cur + 1;
+    }catch(_){}
+    return 1;
+  }
+
+  function buildOutboxMetadata(entity, action, entity_id, payload){
+    const body = payload && typeof payload === "object" ? payload : null;
+    const deviceId = getOrCreateSyncDeviceId();
+    const baseRevision = Number(body && (body.sync_rev ?? body.base_revision ?? body.entity_revision ?? body.revision)) || 0;
+    const entityRevision = nextEntityRevision(body);
+    const opId = uuidv4();
+    const dedupeKey = [String(entity||""), String(entity_id||""), String(action||"upsert").toLowerCase(), String(baseRevision), String(entityRevision)].join(":");
+    return {
+      op_id: opId,
+      device_id: deviceId,
+      base_revision: baseRevision,
+      entity_revision: entityRevision,
+      dedupe_key: dedupeKey
+    };
+  }
+
+  function attachSyncMetadata(recordLike, meta, action){
+    if(!recordLike || typeof recordLike !== "object") return recordLike;
+    const normalizedAction = String(action || "upsert").toLowerCase();
+    const next = { ...recordLike };
+    next.base_revision = Number(meta && meta.base_revision) || 0;
+    next.entity_revision = Math.max(1, Number(meta && meta.entity_revision) || 1);
+    next.sync_rev = next.entity_revision;
+    next.last_synced_op_id = String(meta && meta.op_id || "");
+    next.sync_device_id = String(meta && meta.device_id || "");
+    next.updated_at = String(next.updated_at || nowISO());
+    if(normalizedAction === "delete"){
+      next.deleted_at = String(next.deleted_at || next.updated_at || nowISO());
+    }
+    return next;
+  }
+
+  function compareSyncPriority(currentRecord, incomingRecord){
+    const curRev = Number(currentRecord && (currentRecord.sync_rev ?? currentRecord.entity_revision ?? currentRecord.base_revision ?? currentRecord.revision)) || 0;
+    const incRev = Number(incomingRecord && (incomingRecord.sync_rev ?? incomingRecord.entity_revision ?? incomingRecord.base_revision ?? incomingRecord.revision)) || 0;
+    if(incRev !== curRev) return incRev > curRev ? 1 : -1;
+
+    const curAt = Date.parse(_pickUpdatedAt(currentRecord) || '');
+    const incAt = Date.parse(_pickUpdatedAt(incomingRecord) || '');
+    if(Number.isFinite(incAt) && Number.isFinite(curAt) && incAt !== curAt) return incAt > curAt ? 1 : -1;
+    if(Number.isFinite(incAt) && !Number.isFinite(curAt)) return 1;
+    if(!Number.isFinite(incAt) && Number.isFinite(curAt)) return -1;
+    return 0;
+  }
+
+// ============================================================
   // OUTBOX REPAIR (compat/anti-regressão)
   // - Normaliza registros antigos/incompletos em sync_queue.
   // - Rodar UMA vez por schema via SYS_META para não impactar performance.
@@ -250,7 +342,7 @@ exames_master: [
         const meta = tx0.objectStore(STORE_SYS_META);
         const outb = tx0.objectStore(STORE_OUTBOX);
 
-        const flagKey = "outbox_repair_v1";
+        const flagKey = "outbox_repair_v34";
         const rqFlag = meta.get(flagKey);
 
         const stats = { ok:true, skipped:false, scanned:0, fixed:0 };
@@ -275,10 +367,21 @@ exames_master: [
             if(!v.id){ v.id = uuidv4(); changed = true; }
             if(!v.status){ v.status = "PENDING"; changed = true; }
             if(!v.entity){ v.entity = v.entity_type || v.type || "UNKNOWN"; changed = true; }
+            if(!v.store){ v.store = v.store_name || v.entity || v.entity_type || "UNKNOWN"; changed = true; }
             if(!v.action){ v.action = v.op || v.kind || "upsert"; changed = true; }
             if(!v.entity_id){ v.entity_id = v.ref_id || v.target_id || v.id; changed = true; }
             if(!v.created_at){ v.created_at = now; changed = true; }
             if(!v.updated_at){ v.updated_at = now; changed = true; }
+            if(!v.op_id){ v.op_id = uuidv4(); changed = true; }
+            if(!v.device_id){ v.device_id = getOrCreateSyncDeviceId(); changed = true; }
+            if(typeof v.base_revision !== "number"){ v.base_revision = Number(v.base_revision) || 0; changed = true; }
+            if(typeof v.entity_revision !== "number"){ v.entity_revision = Math.max(1, Number(v.entity_revision) || (Number(v.base_revision) || 0) + 1); changed = true; }
+            if(v.next_attempt_at == null){ v.next_attempt_at = 0; changed = true; }
+            if(v.retry_after_ms == null){ v.retry_after_ms = 0; changed = true; }
+            if(!v.dedupe_key){
+              v.dedupe_key = [String(v.entity||""), String(v.entity_id||""), String(v.action||"upsert").toLowerCase(), String(v.base_revision||0), String(v.entity_revision||1)].join(":");
+              changed = true;
+            }
 
             if(changed){
               stats.fixed++;
@@ -292,7 +395,7 @@ exames_master: [
           try{
             // Marca reparo executado.
             const tx1 = db.transaction([STORE_SYS_META], "readwrite");
-            tx1.objectStore(STORE_SYS_META).put({ key:"outbox_repair_v1", value:true, at: nowISO() });
+            tx1.objectStore(STORE_SYS_META).put({ key:"outbox_repair_v34", value:true, at: nowISO() });
           }catch(_){ }
           resolve(stats);
         };
@@ -318,6 +421,18 @@ req.onupgradeneeded = (e) => {
           outbox.createIndex("status", "status", { unique: false });
           outbox.createIndex("entity", "entity", { unique: false });
           outbox.createIndex("created_at", "created_at", { unique: false });
+          outbox.createIndex("op_id", "op_id", { unique: false });
+          outbox.createIndex("dedupe_key", "dedupe_key", { unique: false });
+          outbox.createIndex("status_created", ["status", "created_at"], { unique: false });
+          outbox.createIndex("next_attempt_at", "next_attempt_at", { unique: false });
+          outbox.createIndex("status_next_attempt", ["status", "next_attempt_at"], { unique: false });
+        } else {
+          const outbox = req.transaction.objectStore(STORE_OUTBOX);
+          if (!outbox.indexNames.contains("op_id")) outbox.createIndex("op_id", "op_id", { unique: false });
+          if (!outbox.indexNames.contains("dedupe_key")) outbox.createIndex("dedupe_key", "dedupe_key", { unique: false });
+          if (!outbox.indexNames.contains("status_created")) outbox.createIndex("status_created", ["status", "created_at"], { unique: false });
+          if (!outbox.indexNames.contains("next_attempt_at")) outbox.createIndex("next_attempt_at", "next_attempt_at", { unique: false });
+          if (!outbox.indexNames.contains("status_next_attempt")) outbox.createIndex("status_next_attempt", ["status", "next_attempt_at"], { unique: false });
         }
 
         // SYS_META (governança/contadores/backup policy)
@@ -571,6 +686,15 @@ req.onupgradeneeded = (e) => {
           st.createIndex("created_at", "created_at", { unique: false });
         }
 
+        // Fornecedores (canônico — alinhamento com snapshot cloud)
+        if (!db.objectStoreNames.contains(STORE_FORNECEDORES_MASTER)) {
+          const st = db.createObjectStore(STORE_FORNECEDORES_MASTER, { keyPath: "id" });
+          st.createIndex("cnpj_digits", "cnpj_digits", { unique: false });
+          st.createIndex("nome_norm", "nome_norm", { unique: false });
+          st.createIndex("status", "status", { unique: false });
+          st.createIndex("updated_at", "updated_at", { unique: false });
+        }
+
         // Clientes (canônico — continuidade)
         if (!db.objectStoreNames.contains(STORE_CLIENTES_MASTER)) {
           const st = db.createObjectStore(STORE_CLIENTES_MASTER, { keyPath: "id" });
@@ -587,6 +711,24 @@ req.onupgradeneeded = (e) => {
           st.createIndex("cliente_id", "cliente_id", { unique: false });
           st.createIndex("updated_at", "updated_at", { unique: false });
           st.createIndex("created_at", "created_at", { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains(STORE_ANIMAL_VITALS_HISTORY)) {
+          const st = db.createObjectStore(STORE_ANIMAL_VITALS_HISTORY, { keyPath: "id" });
+          st.createIndex("animal_id", "animal_id", { unique: false });
+          st.createIndex("atendimento_id", "atendimento_id", { unique: false });
+          st.createIndex("recorded_at", "recorded_at", { unique: false });
+          st.createIndex("animal_recorded", ["animal_id","recorded_at"], { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains(STORE_ANIMAL_VACCINES)) {
+          const st = db.createObjectStore(STORE_ANIMAL_VACCINES, { keyPath: "id" });
+          st.createIndex("animal_id", "animal_id", { unique: false });
+          st.createIndex("produto_id", "produto_id", { unique: false });
+          st.createIndex("atendimento_id", "atendimento_id", { unique: false });
+          st.createIndex("data_aplicacao", "data_aplicacao", { unique: false });
+          st.createIndex("proxima_dose", "proxima_dose", { unique: false });
+          st.createIndex("animal_aplicacao", ["animal_id","data_aplicacao"], { unique: false });
         }
 
                 // ============================================================
@@ -665,6 +807,19 @@ req.onupgradeneeded = (e) => {
           aud.createIndex("entity_when", ["entity","when"], { unique: false });
         }
 
+        // Auditoria operacional/UX — trilha de navegação, sync, erros e comportamento diário
+        if (!db.objectStoreNames.contains(STORE_UX_AUDIT)) {
+          const st = db.createObjectStore(STORE_UX_AUDIT, { keyPath: "id" });
+          st.createIndex("when", "when", { unique: false });
+          st.createIndex("kind", "kind", { unique: false });
+          st.createIndex("category", "category", { unique: false });
+          st.createIndex("level", "level", { unique: false });
+          st.createIndex("user_id", "user_id", { unique: false });
+          st.createIndex("path", "path", { unique: false });
+          st.createIndex("kind_when", ["kind","when"], { unique: false });
+          st.createIndex("category_when", ["category","when"], { unique: false });
+        }
+
         // ========================
         // REPRODUÇÃO EQUINA (v26)
         // ========================
@@ -726,6 +881,34 @@ req.onupgradeneeded = (e) => {
           }catch(_){}
         }
 
+        // =========================
+        // EMPRESA CADASTRAL/FISCAL — v36
+        // Armazena dados da empresa: CNPJ, Razão Social, Nome Fantasia,
+        // IE, IM, CNAE, endereço completo, contatos, dados bancários e logo.
+        // keyPath "id" = tenant_id (string) para suporte multi-tenant futuro.
+        // =========================
+        if (!db.objectStoreNames.contains(STORE_EMPRESA)) {
+          const st = db.createObjectStore(STORE_EMPRESA, { keyPath: "id" });
+          st.createIndex("cnpj_digits", "cnpj_digits", { unique: false });
+          st.createIndex("razao_social_norm", "razao_social_norm", { unique: false });
+          st.createIndex("updated_at", "updated_at", { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains(STORE_DOCUMENTS)) {
+          const st = db.createObjectStore(STORE_DOCUMENTS, { keyPath: "id" });
+          st.createIndex("entity_type_id", ["entity_type", "entity_id"], { unique: false });
+          st.createIndex("entity_id", "entity_id", { unique: false });
+          st.createIndex("updated_at", "updated_at", { unique: false });
+        }
+
+        if (!db.objectStoreNames.contains(STORE_ATTACHMENTS_QUEUE)) {
+          const st = db.createObjectStore(STORE_ATTACHMENTS_QUEUE, { keyPath: "id" });
+          st.createIndex("status", "status", { unique: false });
+          st.createIndex("atendimento_id", "atendimento_id", { unique: false });
+          st.createIndex("attachment_id", "attachment_id", { unique: false });
+          st.createIndex("created_at", "created_at", { unique: false });
+        }
+
       };
 
       req.onsuccess = () => {
@@ -767,22 +950,74 @@ req.onupgradeneeded = (e) => {
     });
   }
 
-  function makeOutboxEvent(entity, action, entity_id, payload){
-    const ts = nowISO();
+  function makeOutboxEvent(storeName, entity, action, entity_id, payload){
+    const meta = buildOutboxMetadata(entity, action, entity_id, payload);
+    const payloadWithSync = attachSyncMetadata(payload && typeof payload === "object" ? payload : null, meta, action);
+    const ts = String(payloadWithSync && payloadWithSync.updated_at || nowISO());
     return {
       id: uuidv4(),
       status: "PENDING",
+      store: String(storeName || entity || "UNKNOWN"),
       entity,
       action,
       entity_id,
-      payload: payload || null,
+      payload: payloadWithSync || payload || null,
       created_at: ts,
-      updated_at: ts
+      updated_at: ts,
+      op_id: meta.op_id,
+      device_id: meta.device_id,
+      base_revision: meta.base_revision,
+      entity_revision: meta.entity_revision,
+      dedupe_key: meta.dedupe_key,
+      next_attempt_at: 0,
+      retry_after_ms: 0,
+      sending_at: null,
+      dead_at: null,
+      done_at: null,
+      last_error: null
     };
   }
 
+  async function _countPendingOutbox(){
+    try{
+      const db = await openDB();
+      return await new Promise((resolve) => {
+        try{
+          const tx = db.transaction([STORE_OUTBOX], "readonly");
+          const st = tx.objectStore(STORE_OUTBOX);
+          let req = null;
+          if (st.indexNames && st.indexNames.contains("status")) req = st.index("status").count("PENDING");
+          else req = st.getAll();
+          req.onsuccess = () => {
+            try{
+              const result = req.result;
+              if (typeof result === "number") resolve(result || 0);
+              else {
+                const now = Date.now();
+                resolve((Array.isArray(result) ? result : []).filter(x => {
+                  const st = String((x && x.status) || '').trim().toUpperCase();
+                  if(!(st === 'PENDING' || st === 'PENDENTE')) return false;
+                  const nextAt = Number(x && x.next_attempt_at || 0) || 0;
+                  return !nextAt || nextAt <= now;
+                }).length);
+              }
+            }catch(_){ resolve(0); }
+          };
+          req.onerror = () => resolve(0);
+        }catch(_){ resolve(0); }
+      });
+    }catch(_){ return 0; }
+  }
+
+  async function _emitOutboxChanged(){
+    const pending = await _countPendingOutbox();
+    try{ window.dispatchEvent(new CustomEvent("vsc:outbox-changed", { detail:{ pending } })); }catch(_){ }
+    try{ window.dispatchEvent(new CustomEvent("vsc:sync-progress", { detail:{ pending, running:false } })); }catch(_){ }
+    return pending;
+  }
+
   async function outboxEnqueue(entity, action, entity_id, payload){
-    const evt = makeOutboxEvent(entity, action, entity_id, payload);
+    const evt = makeOutboxEvent(entity, entity, action, entity_id, payload);
     await tx([STORE_OUTBOX], "readwrite", (s) => {
       s[STORE_OUTBOX].add(evt);
     });
@@ -796,7 +1031,32 @@ req.onupgradeneeded = (e) => {
     if (!entity) throw new Error("upsertWithOutbox: entity obrigatório");
     if (!entity_id) throw new Error("upsertWithOutbox: entity_id obrigatório");
 
-    const evt = makeOutboxEvent(entity, "upsert", entity_id, payload);
+    const syncMeta = buildOutboxMetadata(entity, "upsert", entity_id, payload);
+    const objWithSync = attachSyncMetadata(obj, syncMeta, "upsert");
+    const payloadBase = payload && typeof payload === "object" ? payload : objWithSync;
+    const payloadWithSync = attachSyncMetadata(payloadBase, syncMeta, "upsert");
+    const evt = {
+      id: uuidv4(),
+      status: "PENDING",
+      store: String(storeName || entity || "UNKNOWN"),
+      entity,
+      action: "upsert",
+      entity_id,
+      payload: payloadWithSync || null,
+      created_at: objWithSync.updated_at || nowISO(),
+      updated_at: objWithSync.updated_at || nowISO(),
+      op_id: syncMeta.op_id,
+      device_id: syncMeta.device_id,
+      base_revision: syncMeta.base_revision,
+      entity_revision: syncMeta.entity_revision,
+      dedupe_key: syncMeta.dedupe_key,
+      next_attempt_at: 0,
+      retry_after_ms: 0,
+      sending_at: null,
+      dead_at: null,
+      done_at: null,
+      last_error: null
+    };
 
     await tx([storeName, STORE_OUTBOX, STORE_SYS_META, STORE_BACKUP_EVENTS, STORE_BUSINESS_AUDIT], "readwrite", (s) => {
       const main = s[storeName];
@@ -819,7 +1079,7 @@ req.onupgradeneeded = (e) => {
               entity,
               entity_id,
               beforeObj || null,
-              obj
+              objWithSync
             );
 
             if(audits && audits.length){
@@ -835,7 +1095,7 @@ req.onupgradeneeded = (e) => {
           // fail-closed: auditoria nunca deve quebrar fluxo
         }
 
-        main.put(obj);
+        main.put(objWithSync);
         s[STORE_OUTBOX].add(evt);
 
 
@@ -906,6 +1166,7 @@ req.onupgradeneeded = (e) => {
 
     // pós-commit: processa fila de backup sem travar UI
     _kickBackupWorker();
+    await _emitOutboxChanged();
 
     return { ok:true, outbox_id: evt.id };
   }
@@ -1093,6 +1354,110 @@ async function listRecentChanges(entity, opts){
     return o.updated_at || o.updatedAt || o.last_update || null;
   }
 
+  function _isTombstoneRecord(o){
+    return !!(o && typeof o === 'object' && (o.__tombstone__ === true || o.deleted === true || o.__deleted__ === true || o.deleted_at));
+  }
+
+  function _getStoreKeyValue(storeHandle, row){
+    if(!row || typeof row !== 'object') return null;
+    const keyPath = storeHandle && storeHandle.keyPath;
+    if(typeof keyPath === 'string' && keyPath){
+      const direct = row[keyPath];
+      if(direct != null && String(direct).trim()) return direct;
+      if(row.__record_id__ != null && String(row.__record_id__).trim()) return row.__record_id__;
+    }
+    if(Array.isArray(keyPath) && keyPath.length){
+      const values = keyPath.map((kp) => row[kp]);
+      if(values.every((value) => value != null && String(value).trim())) return values;
+      if(row.__record_id__ != null && String(row.__record_id__).trim()) return row.__record_id__;
+    }
+    const fallback = row.id ?? row.produto_id ?? row.uuid ?? row.key ?? row.code ?? row.tenant_id ?? row.lote_id ?? row.__record_id__ ?? null;
+    return (fallback != null && String(fallback).trim()) ? fallback : null;
+  }
+
+  function _normalizeRemoteAuthorityEntry(row){
+    if(!row || typeof row !== 'object') return null;
+    return {
+      entity_revision: Number(row.sync_rev ?? row.entity_revision ?? row.base_revision ?? row.revision) || 0,
+      updated_at: _pickUpdatedAt(row) || null,
+      deleted_at: row.deleted_at || null,
+      tombstone: _isTombstoneRecord(row),
+      op_id: String(row.last_synced_op_id || row.source_op_id || '').trim() || null,
+    };
+  }
+
+  function _compareAuthorityAgainstOutbox(authority, outboxRec){
+    const authorityRev = Number(authority && authority.entity_revision) || 0;
+    const outboxRev = Number(outboxRec && (outboxRec.entity_revision ?? outboxRec.sync_rev ?? outboxRec.base_revision ?? outboxRec.revision)) || 0;
+    if(authorityRev !== outboxRev) return authorityRev > outboxRev ? 1 : -1;
+
+    const authorityMs = Date.parse(String(authority && authority.updated_at || authority && authority.deleted_at || ''));
+    const outboxMs = Date.parse(String(outboxRec && (outboxRec.updated_at || outboxRec.created_at) || ''));
+    if(Number.isFinite(authorityMs) && Number.isFinite(outboxMs) && authorityMs !== outboxMs) return authorityMs > outboxMs ? 1 : -1;
+    if(Number.isFinite(authorityMs) && !Number.isFinite(outboxMs)) return 1;
+    if(!Number.isFinite(authorityMs) && Number.isFinite(outboxMs)) return -1;
+    return 0;
+  }
+
+  async function _reconcileOutboxWithImportedAuthorities(authorityByStore){
+    const storeNames = authorityByStore ? Object.keys(authorityByStore) : [];
+    if(!storeNames.length) return { done:0, dead:0, scanned:0 };
+
+    let done = 0;
+    let dead = 0;
+    let scanned = 0;
+
+    await tx([STORE_OUTBOX], 'readwrite', (stores) => {
+      const outbox = stores[STORE_OUTBOX];
+      const req = outbox.getAll();
+      req.onsuccess = () => {
+        const rows = Array.isArray(req.result) ? req.result : [];
+        for(const rec of rows){
+          if(!rec || !rec.id) continue;
+          const status = String(rec.status || '').toUpperCase();
+          if(status !== 'PENDING' && status !== 'SENDING') continue;
+          scanned++;
+
+          const storeName = String(rec.store || rec.store_name || rec.entity || '').trim();
+          const entityId = String(rec.entity_id || '').trim();
+          if(!storeName || !entityId) continue;
+          const authorityStore = authorityByStore[storeName];
+          const authority = authorityStore ? authorityStore[entityId] : null;
+          if(!authority) continue;
+
+          const authorityOpId = String(authority.op_id || '').trim();
+          const recOpId = String(rec.op_id || '').trim();
+          if(authorityOpId && recOpId && authorityOpId === recOpId){
+            rec.status = 'DONE';
+            rec.done_at = _safeIso(Date.now());
+            rec.last_error = null;
+            rec.last_ack = { ok:true, source:'snapshot_reconcile', op_id: recOpId };
+            try{ outbox.put(rec); }catch(_){ }
+            done++;
+            continue;
+          }
+
+          const cmp = _compareAuthorityAgainstOutbox(authority, rec);
+          if(cmp >= 0){
+            rec.status = 'DEAD';
+            rec.dead_at = _safeIso(Date.now());
+            rec.last_error = authority.tombstone ? 'remote_delete_superseded_local_op' : 'remote_newer_revision_superseded_local_op';
+            rec.remote_authority = {
+              entity_revision: authority.entity_revision || 0,
+              updated_at: authority.updated_at || authority.deleted_at || null,
+              tombstone: !!authority.tombstone,
+              op_id: authority.op_id || null,
+            };
+            try{ outbox.put(rec); }catch(_){ }
+            dead++;
+          }
+        }
+      };
+    });
+
+    return { done, dead, scanned };
+  }
+
   async function importDump(dump, opts){
     opts = opts || {};
     const mode = (opts.mode || "merge_newer"); // merge_newer | merge_keep_existing | replace_store
@@ -1102,29 +1467,28 @@ async function listRecentChanges(entity, opts){
 
     const db = await openDB();
     try{
-      // fail-closed: exige mesmo DB_NAME e versão compatível
       if(dump.schema.db_name && dump.schema.db_name !== DB_NAME){
         throw new Error("importDump: db_name divergente");
       }
 
       const storeNames = Array.from(db.objectStoreNames);
       const incomingStores = Object.keys(dump.data || {});
-      // fail-closed: só aceita stores que existam no DB atual
       for(const s of incomingStores){
         if(!storeNames.includes(s)){
           throw new Error("importDump: store inexistente no DB atual: " + s);
         }
       }
 
-      // Import por store (1 transação por store = mais seguro)
+      const authorityByStore = {};
+
       for(const s of incomingStores){
         const rows = _asArray(dump.data[s]);
+        authorityByStore[s] = authorityByStore[s] || {};
 
         await new Promise((resolve, reject) => {
           const tx0 = db.transaction([s], "readwrite");
           const st0 = tx0.objectStore(s);
 
-          // Importação robusta: evita que erro de item (put/get) aborte a transação.
           function softFail(req){
             if(!req) return;
             req.onerror = (ev) => {
@@ -1142,23 +1506,38 @@ async function listRecentChanges(entity, opts){
             clr.onerror = () => reject(clr.error);
             clr.onsuccess = () => {
               for(const r of rows){
+                const key = _getStoreKeyValue(st0, r);
+                if(key != null){
+                  const authority = _normalizeRemoteAuthorityEntry(r);
+                  if(authority) authorityByStore[s][String(key)] = authority;
+                }
+                if(_isTombstoneRecord(r)){
+                  if(key != null){
+                    try{ softFail(st0.delete(key)); }catch(_){ }
+                  }
+                  continue;
+                }
                 try{ softFail(st0.put(r)); }catch(_){ }
               }
             };
             return;
           }
 
-          // merge modes
           for(const r of rows){
-            // precisa de chave para merge; sem chave => put direto
-            const k = (r && typeof r === "object") ? (r.id || r.uuid || null) : null;
+            const key = _getStoreKeyValue(st0, r);
+            const tombstone = _isTombstoneRecord(r);
+            if(key != null){
+              const authority = _normalizeRemoteAuthorityEntry(r);
+              if(authority) authorityByStore[s][String(key)] = authority;
+            }
 
-            if(!k || mode === "merge_keep_existing"){
-              // merge_keep_existing: não tenta comparar, só insere se não existir (via get + put)
-              if(!k){
-                try{ softFail(st0.put(r)); }catch(_){ }
-              }else{
-                const g = st0.get(k);
+            if(!key || mode === "merge_keep_existing"){
+              if(!key){
+                if(!tombstone){
+                  try{ softFail(st0.put(r)); }catch(_){ }
+                }
+              }else if(!tombstone){
+                const g = st0.get(key);
                 softFail(g);
                 g.onsuccess = () => {
                   if(!g.result){
@@ -1169,40 +1548,49 @@ async function listRecentChanges(entity, opts){
               continue;
             }
 
-            // merge_newer (default): compara updated_at quando possível
-            const g = st0.get(k);
+            const g = st0.get(key);
             softFail(g);
             g.onsuccess = () => {
               const cur = g.result || null;
               if(!cur){
-                try{ softFail(st0.put(r)); }catch(_){ }
-                return;
-              }
-              const a = _pickUpdatedAt(cur);
-              const b = _pickUpdatedAt(r);
-
-              // se não dá pra comparar, mantém o mais “completo” (preferir incoming)
-              if(!a || !b){
-                try{ softFail(st0.put(r)); }catch(_){ }
+                if(tombstone){
+                  try{ softFail(st0.delete(key)); }catch(_){ }
+                }else{
+                  try{ softFail(st0.put(r)); }catch(_){ }
+                }
                 return;
               }
 
-              // compara ISO/date
-              const da = Date.parse(a);
-              const dbb = Date.parse(b);
-              if(isFinite(dbb) && (!isFinite(da) || dbb >= da)){
-                try{ softFail(st0.put(r)); }catch(_){ }
+              const precedence = compareSyncPriority(cur, r);
+              if(precedence > 0 || (precedence === 0 && tombstone)){
+                try{
+                  if(tombstone) softFail(st0.delete(key));
+                  else softFail(st0.put(r));
+                }catch(_){ }
+                return;
+              }
+
+              if(precedence === 0 && !tombstone){
+                const a = _pickUpdatedAt(cur);
+                const b = _pickUpdatedAt(r);
+                const da = Date.parse(a || '');
+                const dbb = Date.parse(b || '');
+                if(Number.isFinite(dbb) && (!Number.isFinite(da) || dbb >= da)){
+                  try{ softFail(st0.put(r)); }catch(_){ }
+                }
               }
             };
           }
         });
       }
 
-      return { ok:true, mode, importedStores: incomingStores };
+      const outboxReconciliation = await _reconcileOutboxWithImportedAuthorities(authorityByStore).catch((err) => ({ ok:false, error:String(err && (err.message || err) || err) }));
+      return { ok:true, mode, importedStores: incomingStores, outboxReconciliation };
     } finally {
-      try{ db.close(); }catch(_){}
+      try{ db.close(); }catch(_){ }
     }
   }
+
 
   // ============================================================
   // AUTO-BACKUP FASE 1 (PROTEÇÃO IMEDIATA)
@@ -1561,6 +1949,283 @@ async function importBackupFromJson(jsonText, opts){
     return await importDump(dump, opts || { mode:"merge_newer" });
   }
 
+
+  const EMPRESA_LOCAL_KEY = "empresa_local";
+  const EMPRESA_LS_KEY = "vsc_empresa_v1";
+  const EMPRESA_LS_META_KEY = "vsc_empresa_v1_meta";
+
+  function normalizeEmpresaSnapshot(raw){
+    const src = raw && typeof raw === "object" ? raw : {};
+    const pick = function(){
+      for (let i = 0; i < arguments.length; i++) {
+        const v = arguments[i];
+        if (v !== undefined && v !== null && String(v).trim() !== "") return v;
+      }
+      return "";
+    };
+    const out = Object.assign({}, src, {
+      id: String(src.id || EMPRESA_LOCAL_KEY),
+      cnpj: String(pick(src.cnpj, src.doc, src.documento) || ""),
+      razao_social: String(pick(src.razao_social, src.nome, src.razaoSocial) || ""),
+      nome_fantasia: String(pick(src.nome_fantasia, src.fantasia, src.nomeFantasia, src.nome) || ""),
+      ie: String(pick(src.ie, src.inscricao_estadual) || ""),
+      im: String(pick(src.im, src.inscricao_municipal) || ""),
+      cnae: String(pick(src.cnae, src.cnae_principal) || ""),
+      abertura: String(src.abertura || ""),
+      regime: String(pick(src.regime, src.regime_tributario) || ""),
+      telefone: String(pick(src.telefone, src.fone) || ""),
+      celular: String(src.celular || ""),
+      email: String(src.email || ""),
+      site: String(src.site || ""),
+      pix_tipo: String(pick(src.pix_tipo, src.pixTipo) || ""),
+      pix_nome: String(pick(src.pix_nome, src.pixNome, src.favorecido_pix) || ""),
+      pix_chave: String(pick(src.pix_chave, src.chave_pix, src.pixKey, src.pix, src.pix_chave_copia_cola) || ""),
+      pix_chave_norm: String(src.pix_chave_norm || ""),
+      cep: String(src.cep || ""),
+      uf: String(src.uf || ""),
+      logradouro: String(src.logradouro || ""),
+      numero: String(src.numero || ""),
+      complemento: String(src.complemento || ""),
+      bairro: String(src.bairro || ""),
+      cidade: String(src.cidade || ""),
+      ibge: String(src.ibge || ""),
+      crmv: String(src.crmv || ""),
+      crmv_uf: String(src.crmv_uf || ""),
+      obs: String(src.obs || ""),
+      __logoA: String(src.__logoA || src.logoA || ""),
+      __logoB: String(src.__logoB || src.logoB || ""),
+      updated_at: String(src.updated_at || nowISO())
+    });
+    out.cnpj_digits = String(out.cnpj || "").replace(/\D+/g, "");
+    out.razao_social_norm = String(out.razao_social || "").toLowerCase().trim();
+    return out;
+  }
+
+  function readEmpresaSnapshotFromLocalStorage(){
+    try{
+      const raw = localStorage.getItem(EMPRESA_LS_KEY);
+      if(!raw) return null;
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === "object" ? normalizeEmpresaSnapshot(parsed) : null;
+    }catch(_){ return null; }
+  }
+
+  function mirrorEmpresaSnapshotToLocalStorage(snapshot){
+    try{
+      const normalized = normalizeEmpresaSnapshot(snapshot || {});
+      localStorage.setItem(EMPRESA_LS_KEY, JSON.stringify(normalized));
+      localStorage.setItem(EMPRESA_LS_META_KEY, JSON.stringify({ version: 2, savedAt: nowISO(), source: "vsc_db" }));
+      localStorage.setItem("empresa_configurada", "1");
+      return normalized;
+    }catch(_){ return normalizeEmpresaSnapshot(snapshot || {}); }
+  }
+
+  async function getEmpresaSnapshot(options){
+    const opts = options && typeof options === "object" ? options : {};
+    const preferIdb = opts.preferIdb !== false;
+    const hydrateLocalStorage = opts.hydrateLocalStorage !== false;
+    const lsSnapshot = readEmpresaSnapshotFromLocalStorage();
+    if (!preferIdb && lsSnapshot) return lsSnapshot;
+
+    try{
+      const db = await openDB();
+      const rec = await new Promise((resolve, reject) => {
+        try{
+          const tx = db.transaction([STORE_EMPRESA], "readonly");
+          const st = tx.objectStore(STORE_EMPRESA);
+          const req = st.get(EMPRESA_LOCAL_KEY);
+          req.onsuccess = () => resolve(req.result || null);
+          req.onerror = () => reject(req.error || new Error("empresa_get_failed"));
+        }catch(e){ reject(e); }
+      });
+      try{ db.close(); }catch(_){ }
+      if (rec && typeof rec === "object") {
+        const normalized = normalizeEmpresaSnapshot(rec);
+        if (hydrateLocalStorage) mirrorEmpresaSnapshotToLocalStorage(normalized);
+        return normalized;
+      }
+    }catch(_){ }
+
+    return lsSnapshot || normalizeEmpresaSnapshot({});
+  }
+
+  async function saveEmpresaSnapshot(snapshot, options){
+    const opts = options && typeof options === "object" ? options : {};
+    const enqueueSync = opts.enqueueSync !== false;
+    const mirrorLocalStorage = opts.mirrorLocalStorage !== false;
+    const normalized = normalizeEmpresaSnapshot(snapshot || {});
+    normalized.id = EMPRESA_LOCAL_KEY;
+    normalized.updated_at = nowISO();
+
+    await tx([STORE_EMPRESA], "readwrite", (stores) => {
+      stores[STORE_EMPRESA].put(normalized);
+    });
+
+    if (mirrorLocalStorage) mirrorEmpresaSnapshotToLocalStorage(normalized);
+    if (enqueueSync) {
+      try{ await outboxEnqueue("empresa", "upsert", EMPRESA_LOCAL_KEY, normalized); }catch(_){ }
+    }
+    try{ window.dispatchEvent(new CustomEvent("vsc:empresa-updated", { detail: { snapshot: normalized } })); }catch(_){ }
+    return normalized;
+  }
+
+  function readRuntimeUserFromStorage(){
+    try{
+      const raw = localStorage.getItem("vsc_user") || sessionStorage.getItem("vsc_user") || "null";
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === "object" ? parsed : null;
+    }catch(_){ return null; }
+  }
+
+  function readRuntimeSessionIdFromStorage(){
+    try{
+      const sid = localStorage.getItem("vsc_session_id") || sessionStorage.getItem("vsc_session_id") || "";
+      return String(sid || "").trim().slice(0, 160);
+    }catch(_){ return ""; }
+  }
+
+  function readRuntimeTokenFromStorage(){
+    try{
+      const token =
+        localStorage.getItem("vsc_local_token") ||
+        sessionStorage.getItem("vsc_local_token") ||
+        localStorage.getItem("vsc_token") ||
+        sessionStorage.getItem("vsc_token") ||
+        "";
+      return String(token || "").trim();
+    }catch(_){ return ""; }
+  }
+
+  function normalizeTenantId(raw){
+    try{
+      const value = String(raw || "tenant-default")
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9._:-]+/g, "-")
+        .replace(/-+/g, "-")
+        .slice(0, 120);
+      return value || "tenant-default";
+    }catch(_){ return "tenant-default"; }
+  }
+
+  function readRuntimeTenantFromStorage(){
+    try{
+      const raw =
+        localStorage.getItem("vsc_tenant") ||
+        sessionStorage.getItem("vsc_tenant") ||
+        localStorage.getItem("VSC_TENANT") ||
+        sessionStorage.getItem("VSC_TENANT") ||
+        "tenant-default";
+      return normalizeTenantId(raw || "tenant-default");
+    }catch(_){ return "tenant-default"; }
+  }
+
+  async function getRuntimeContext(options){
+    const opts = options && typeof options === "object" ? options : {};
+    let authUser = null;
+    if (opts.preferAuthApi !== false) {
+      try{
+        if (window.VSC_AUTH && typeof window.VSC_AUTH.getCurrentUser === "function") {
+          authUser = await window.VSC_AUTH.getCurrentUser();
+        }
+      }catch(_){ authUser = null; }
+    }
+
+    const storedUser = readRuntimeUserFromStorage();
+    const user = authUser && typeof authUser === "object" ? authUser : (storedUser && typeof storedUser === "object" ? storedUser : null);
+    const tenantFromUser = user && (user.tenant || user.tenant_id || user.tenantId) ? normalizeTenantId(user.tenant || user.tenant_id || user.tenantId) : "";
+    const tenant = normalizeTenantId(tenantFromUser || readRuntimeTenantFromStorage() || "tenant-default");
+    const sessionId = readRuntimeSessionIdFromStorage();
+    const token = readRuntimeTokenFromStorage();
+    const userLabel = String(
+      user && (user.username || user.nome || user.name || user.usuario || user.email || user.id) ||
+      "anonymous"
+    ).trim().slice(0, 120) || "anonymous";
+
+    return {
+      tenant,
+      token,
+      sessionId,
+      user,
+      userLabel,
+      authorized: !!(token || sessionId),
+    };
+  }
+
+  async function getSyncAuthHeaders(extraHeaders, options){
+    const ctx = await getRuntimeContext(options);
+    const headers = Object.assign({}, extraHeaders || {}, {
+      "X-VSC-Tenant": String(ctx.tenant || "tenant-default"),
+    });
+    if (ctx.userLabel) headers["X-VSC-User"] = ctx.userLabel;
+    if (ctx.sessionId) headers["X-VSC-Client-Session"] = ctx.sessionId;
+    if (ctx.token) {
+      headers["X-VSC-Token"] = ctx.token;
+      headers["Authorization"] = `Bearer ${ctx.token}`;
+    }
+    return headers;
+  }
+
+
+
+  let __vscSwRegisterPromise = null;
+  function registerServiceWorkerOnce(){
+    try{
+      if(__vscSwRegisterPromise) return __vscSwRegisterPromise;
+      if(typeof window === "undefined" || !window.isSecureContext) return Promise.resolve(false);
+      if(!("serviceWorker" in navigator)) return Promise.resolve(false);
+      const proto = String(location.protocol || "").toLowerCase();
+      if(proto === "file:") return Promise.resolve(false);
+      __vscSwRegisterPromise = navigator.serviceWorker.register("/sw.js").then((reg) => {
+        try{ if(reg && typeof reg.update === "function") reg.update().catch(()=>{}); }catch(_){ }
+        return true;
+      }).catch(() => false);
+      return __vscSwRegisterPromise;
+    }catch(_){ return Promise.resolve(false); }
+  }
+
+
+  async function appendAuditEvent(storeName, record){
+    const id = (typeof crypto !== "undefined" && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + '-' + Math.random().toString(16).slice(2);
+    const runtime = getRuntimeContext();
+    const rec = {
+      id,
+      when: nowIso(),
+      user_id: runtime.user_id || runtime.username || null,
+      tenant: runtime.tenant || 'tenant-default',
+      ...Object(record || {}),
+    };
+    try{
+      await tx([storeName], 'readwrite', (stores) => {
+        stores[storeName].put(rec);
+      });
+      return rec;
+    }catch(_){
+      return null;
+    }
+  }
+
+  async function appendUxAudit(record){
+    return appendAuditEvent(STORE_UX_AUDIT, record);
+  }
+
+  async function listAuditEvents(storeName, limit = 200){
+    const db = await openDB();
+    try{
+      return await new Promise((resolve, reject) => {
+        const tx0 = db.transaction([storeName], 'readonly');
+        const st = tx0.objectStore(storeName);
+        const req = st.getAll();
+        req.onsuccess = () => {
+          const rows = Array.isArray(req.result) ? req.result.slice(0) : [];
+          rows.sort((a,b) => String(b && b.when || '').localeCompare(String(a && a.when || '')));
+          resolve(rows.slice(0, Math.max(1, Number(limit) || 200)));
+        };
+        req.onerror = () => reject(req.error || new Error('Falha audit getAll'));
+      });
+    } finally { try{ db.close(); }catch(_){ } }
+  }
+
   // ============================================================
   // Exposição GLOBAL (API canônica)
   // ============================================================
@@ -1588,9 +2253,23 @@ async function importBackupFromJson(jsonText, opts){
     importBackupFromJson,
     importBackupFile,
 
+    // empresa / branding / impressão (leitura canônica)
+    getEmpresaSnapshot,
+    saveEmpresaSnapshot,
+    mirrorEmpresaSnapshotToLocalStorage,
+
+    // contexto canônico de runtime (tenant / token / sessão / usuário)
+    getRuntimeContext,
+    getSyncAuthHeaders,
+    registerServiceWorkerOnce,
+    appendUxAudit,
+    listAuditEvents,
+
     // stores (mapa canônico)
     stores: {
       sync_queue: STORE_OUTBOX,
+      attachments_queue: STORE_ATTACHMENTS_QUEUE,
+      documents_store: STORE_DOCUMENTS,
 
       sys_meta: STORE_SYS_META,
       backup_events: STORE_BACKUP_EVENTS,
@@ -1601,6 +2280,7 @@ async function importBackupFromJson(jsonText, opts){
       produtos_master: STORE_PRODUTOS_MASTER,
       produtos_lotes: STORE_PRODUTOS_LOTES,
       clientes_master: STORE_CLIENTES_MASTER,
+      fornecedores_master: STORE_FORNECEDORES_MASTER,
       animais_master: STORE_ANIMAIS_MASTER,
 
       animais_racas: STORE_ANIMAIS_RACAS,
@@ -1608,6 +2288,8 @@ async function importBackupFromJson(jsonText, opts){
       animais_especies: STORE_ANIMAIS_ESPECIES,
 
       atendimentos_master: STORE_ATENDIMENTOS_MASTER,
+      animal_vitals_history: STORE_ANIMAL_VITALS_HISTORY,
+      animal_vaccines: STORE_ANIMAL_VACCINES,
 
       contas_pagar: STORE_CONTAS_PAGAR,
       contas_receber: STORE_CONTAS_RECEBER,
@@ -1622,6 +2304,7 @@ async function importBackupFromJson(jsonText, opts){
       auth_role_permissions: STORE_AUTH_ROLE_PERMS,
       auth_sessions: STORE_AUTH_SESSIONS,
       auth_audit_log: STORE_AUTH_AUDIT,
+      ux_audit_log: STORE_UX_AUDIT,
 
       // Reprodução Equina (v26)
       repro_cases:     STORE_REPRO_CASES,
@@ -1634,7 +2317,10 @@ async function importBackupFromJson(jsonText, opts){
 
       // Subscription/Billing (v30)
       tenant_subscription: STORE_TENANT_SUBSCRIPTION,
-      billing_events: STORE_BILLING_EVENTS
+      billing_events: STORE_BILLING_EVENTS,
+
+      // Empresa cadastral/fiscal (v36)
+      empresa: STORE_EMPRESA
     }
   };
 
@@ -1674,6 +2360,7 @@ async function importBackupFromJson(jsonText, opts){
     // Abre e fecha 1x para garantir que o schema está acessível agora.
     const db = await openDB();
     try{ db && db.close && db.close(); }catch(_){}
+    try{ await registerServiceWorkerOnce(); }catch(_){ }
 
     window.__VSC_DB_READY__ = true;              // compat legado (boolean)
     window.__VSC_DB_READY_FIRED = true;          // flag canônica
