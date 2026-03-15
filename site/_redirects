@@ -1,0 +1,12 @@
+http://vetsystemcontrol.com.br/* https://www.vetsystemcontrol.com.br/:splat 301
+https://vetsystemcontrol.com.br/* https://www.vetsystemcontrol.com.br/:splat 301
+http://www.vetsystemcontrol.com.br/* https://www.vetsystemcontrol.com.br/:splat 301
+/index.html / 301
+/login /login.html 302
+/erp https://app.vetsystemcontrol.com.br/login 302
+/erp/* https://app.vetsystemcontrol.com.br/:splat 302
+/assets/* /assets/:splat 200
+/previews/* /previews/:splat 200
+/site.webmanifest /site.webmanifest 200
+/robots.txt /robots.txt 200
+/sitemap.xml /sitemap.xml 200
