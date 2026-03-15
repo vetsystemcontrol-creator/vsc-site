@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://www.vetsystemcontrol.com.br/sitemap.xml
-Host: https://www.vetsystemcontrol.com.br
