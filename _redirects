@@ -1,17 +1,17 @@
-# login institucional
+# Vet System Control — Cloudflare Pages routing
+# Regras específicas primeiro, fallback por último.
+
 /login /login.html 302
-
-# acesso ERP
 /erp https://app.vetsystemcontrol.com.br/login 302
+/erp/* https://app.vetsystemcontrol.com.br/:splat 302
 
-# assets devem sempre ser servidos diretamente
 /assets/* /assets/:splat 200
-
-# arquivos estáticos
+/previews/* /previews/:splat 200
+/favicon.ico /assets/img/favicon.svg 200
 /robots.txt /robots.txt 200
 /sitemap.xml /sitemap.xml 200
 /site.webmanifest /site.webmanifest 200
-/favicon.ico /favicon.ico 200
 
-# fallback SPA (sempre por último)
+/index.html / 301
+
 /* /index.html 200
