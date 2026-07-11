@@ -186,8 +186,21 @@ function updateDemoPreview(key) {
   });
 }
 
+let lastFocusedBeforeModal = null;
+
+function getModalFocusable() {
+  if (!modal) return [];
+  return Array.from(
+    modal.querySelectorAll(
+      'a[href], button:not([disabled]), input, [tabindex]:not([tabindex="-1"])'
+    )
+  ).filter((el) => el.offsetParent !== null);
+}
+
 function openDemo() {
   if (!modal || !closeButton) return;
+  lastFocusedBeforeModal =
+    document.activeElement instanceof HTMLElement ? document.activeElement : null;
   modal.hidden = false;
   document.body.style.overflow = "hidden";
   updateDemoPreview("atendimentos");
@@ -205,6 +218,27 @@ function closeDemo() {
   if (!modal) return;
   modal.hidden = true;
   document.body.style.overflow = "";
+  // Acessibilidade: devolve o foco a quem abriu o modal.
+  if (lastFocusedBeforeModal && document.contains(lastFocusedBeforeModal)) {
+    lastFocusedBeforeModal.focus();
+  }
+  lastFocusedBeforeModal = null;
+}
+
+// Foco preso dentro do modal (Tab cicla apenas nos elementos do diálogo).
+function trapModalFocus(event) {
+  if (!modal || modal.hidden || event.key !== "Tab") return;
+  const focusable = getModalFocusable();
+  if (focusable.length === 0) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
 }
 
 openButtons.forEach((button) => {
@@ -222,7 +256,18 @@ if (modal) {
 }
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && modal && !modal.hidden) closeDemo();
+  if (event.key === "Escape") {
+    if (modal && !modal.hidden) {
+      closeDemo();
+      return;
+    }
+    if (nav && nav.classList.contains("is-open")) {
+      nav.classList.remove("is-open");
+      if (menuButton) menuButton.setAttribute("aria-expanded", "false");
+    }
+    return;
+  }
+  trapModalFocus(event);
 });
 
 demoSteps.forEach((step) => {
