@@ -470,7 +470,18 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .workflow-header strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   color: var(--vsc-slate-950);
+}
+
+.animal-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex: 0 0 auto;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.12);
 }
 
 .workflow-step {
