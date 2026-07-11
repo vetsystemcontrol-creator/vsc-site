@@ -506,6 +506,42 @@ img { max-width: 100%; height: auto; display: block; }
 .status.ok { background: var(--vsc-green-soft); color: var(--vsc-green-dark); }
 .status.neutral { background: var(--vsc-blue-soft); color: var(--vsc-blue); }
 
+/* Offline — fluxo de sincronização (mesma linguagem dos painéis de feature) */
+.offline-panel {
+  display: grid;
+  gap: 10px;
+  justify-items: center;
+}
+
+.sync-card {
+  width: 100%;
+  padding: 20px 22px;
+  border-radius: var(--radius-lg);
+  background: white;
+  border: 1px solid var(--vsc-slate-200);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.sync-card strong {
+  display: block;
+  margin: 12px 0 4px;
+  color: var(--vsc-slate-950);
+}
+
+.sync-card small {
+  display: block;
+  color: var(--vsc-slate-500);
+  line-height: 1.5;
+}
+
+.sync-arrow {
+  color: var(--vsc-green-dark);
+  font-size: 1.4rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
 /* Primeiro acesso — caminhos por persona (novo / vai assinar / já usa) */
 .start-paths { grid-template-columns: repeat(3, 1fr); margin-top: 8px; }
 
@@ -615,7 +651,7 @@ img { max-width: 100%; height: auto; display: block; }
   display: grid;
   grid-template-columns: 1.1fr 1fr;
   gap: 28px;
-  align-items: center;
+  align-items: start;
   padding: 30px;
   border-radius: var(--radius-lg);
   background: var(--vsc-green-soft);
@@ -652,14 +688,14 @@ img { max-width: 100%; height: auto; display: block; }
 }
 
 .install-version {
-  color: var(--vsc-slate-500);
+  color: var(--vsc-slate-700);
   font-size: 0.9rem;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .install-hint {
   margin-top: 14px;
-  color: var(--vsc-slate-500);
+  color: var(--vsc-slate-700);
   font-size: 0.9rem;
   line-height: 1.5;
 }
