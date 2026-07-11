@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Vet System Control Equine">
+  <title>Vet System Control Equine</title>
+  <rect x="169" y="32" width="174" height="448" rx="60" fill="#145AA0"/>
+  <rect x="32" y="169" width="448" height="174" rx="60" fill="#23AA78"/>
+  <polyline points="110,256 200,256 248,128 306,378 362,256 450,256" fill="none" stroke="#FFFFFF" stroke-width="28" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
