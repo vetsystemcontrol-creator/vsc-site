@@ -680,6 +680,37 @@ p { margin: 0; }
 
 /* ── Espécies atendidas ─────────────────────────────────────────────────── */
 
+/**
+ * A cena da equipe. Veio com CENÁRIO REAL (consultório) — por isso é uma imagem
+ * retangular emoldurada, e não um recorte flutuando: recorte de cena sem chão
+ * fica solto. `object-fit: cover` num quadro 4:3 apara o teto e o piso, que não
+ * dizem nada, e mantém o olhar na mesa.
+ */
+.species-scene {
+  margin: 0 auto clamp(40px, 5vw, 64px);
+  max-width: 760px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--paper);
+  box-shadow: var(--shadow-lift);
+}
+
+.species-scene img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  object-position: center 58%;
+}
+
+.species-scene figcaption {
+  padding: var(--space-4);
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  border-top: 1px solid var(--line);
+}
+
 .species-block + .species-block { margin-top: var(--space-7); }
 
 .species-label {
@@ -744,11 +775,10 @@ p { margin: 0; }
 
 /* WebP: mesma arte por ~1/7 do peso (61 KB contra 433 KB). O PNG fica no repo
    como mestre, mas quem carrega a página baixa o leve. */
-.species-art--cavalo { background-image: url("assets/mascotes/cavalo.webp"); }
-.species-art--bovino { background-image: url("assets/mascotes/bovino.webp"); }
-.species-art--cao { background-image: url("assets/mascotes/cao.webp"); }
-.species-art--gato { background-image: url("assets/mascotes/gato.webp"); }
-.species-art--gato { background-image: url("assets/mascotes/gato.webp"); }
+.species-art--cavalo { background-image: url("assets/mascotes/cavalo.webp?v=2"); }
+.species-art--bovino { background-image: url("assets/mascotes/bovino.webp?v=2"); }
+.species-art--cao { background-image: url("assets/mascotes/cao.webp?v=2"); }
+.species-art--gato { background-image: url("assets/mascotes/gato.webp?v=2"); }
 
 /* O cartão que explica a adaptação do sistema não tem bicho — tem a ideia. */
 .species-card.is-adaptive {

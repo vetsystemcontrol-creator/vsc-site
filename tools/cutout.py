@@ -53,24 +53,24 @@ JOBS = [
         "crop": (838, 45, 1005, 352),
         "height": 500,
     },
-    # A CENA da equipe discutindo o tratamento — o argumento visual de que o sistema
-    # atende a clínica inteira. O recorte exclui o título escrito na arte e as
-    # miniaturas das laterais; só a mesa e os quatro personagens.
+    # A CENA da equipe analisando um caso clínico — gerada com CENÁRIO REAL
+    # (consultório), e é isso que finalmente resolveu: não há fundo a remover, ela
+    # entra como ilustração retangular. Pedir "fundo transparente" ao gerador fazia
+    # ele DESENHAR um xadrez dentro da composição, que recorte nenhum limpa bem.
     {
         "name": "equipe",
-        "file": "Gemini_Generated_Image_kdjaw9kdjaw9kdja.png",
-        "crop": (232, 478, 848, 1024),
-        "height": 780,
-        "keep_all": True,  # a cena tem mesa, monitor e tablet: não filtrar por corpo
+        "file": "Gemini_Generated_Image_m8rv1pm8rv1pm8rv.png",
+        "height": 1024,
+        "keep_background": True,
     },
-    # Gato ISOLADO (arte regerada). As versões anteriores saíam da arte em GRUPO,
-    # onde o cão encosta nele: qualquer retângulo ou cortava o casaco em linha reta
-    # ou trazia a manga do vizinho — e como os corpos se tocam, nem o filtro de
-    # maior corpo separava.
+    # Gato em CHROMA KEY (fundo verde chapado): recorte exato, sem heurística. As
+    # versões anteriores saíam da arte em GRUPO, onde o cão encosta nele — qualquer
+    # retângulo cortava o casaco em linha reta ou trazia a manga do vizinho.
     {
         "name": "gato",
-        "file": "Gemini_Generated_Image_g8x4x6g8x4x6g8x4.png",
+        "file": "Gemini_Generated_Image_fxekvwfxekvwfxek.png",
         "height": 900,
+        "chroma": True,
     },
 ]
 
@@ -79,6 +79,57 @@ def cutout(session, path: Path) -> Image.Image:
     """Remove o fundo da imagem inteira e devolve RGBA com alfa real."""
     raw = path.read_bytes()
     return Image.open(BytesIO(remove(raw, session=session))).convert("RGBA")
+
+
+def chroma_key(image: Image.Image) -> Image.Image:
+    """
+    Recorta arte gerada sobre FUNDO VERDE CHAPADO (chroma key).
+
+    É o caminho limpo — e o motivo de ter pedido a arte assim. Pedir "fundo
+    transparente" ao gerador faz ele DESENHAR um xadrez dentro da composição, que
+    nenhum recorte remove bem.
+
+    ARMADILHA: o estetoscópio e a cruz do jaleco também são VERDES. Um chroma key
+    por cor comeria os dois. Por isso a remoção é por CONECTIVIDADE a partir da
+    borda: só sai o verde ligado ao lado de fora. O que está cercado pelo
+    personagem (estetoscópio, logotipo) fica.
+    """
+    rgba = image.convert("RGBA")
+    width, height = rgba.size
+    pixels = rgba.load()
+
+    def is_backdrop(x: int, y: int) -> bool:
+        r, g, b, _ = pixels[x, y]
+        # Verde dominante e saturado — o fundo. O verde do estetoscópio é escuro e
+        # dessaturado, e não passa neste teste nem por acidente.
+        return g > 90 and g > r * 1.35 and g > b * 1.35
+
+    seen = bytearray(width * height)
+    stack = [(x, y) for x in range(width) for y in (0, height - 1)]
+    stack += [(x, y) for y in range(height) for x in (0, width - 1)]
+
+    while stack:
+        x, y = stack.pop()
+        if not (0 <= x < width and 0 <= y < height):
+            continue
+        key = y * width + x
+        if seen[key] or not is_backdrop(x, y):
+            continue
+        seen[key] = 1
+        stack.extend(((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)))
+
+    for y in range(height):
+        for x in range(width):
+            r, g, b, a = pixels[x, y]
+            if seen[y * width + x]:
+                pixels[x, y] = (r, g, b, 0)
+            elif g > r and g > b and (g - max(r, b)) > 12:
+                # Franja verde herdada do fundo (spill) na borda do pelo: puxa o
+                # verde para o nível dos outros canais, senão o recorte fica com um
+                # contorno esverdeado sobre o fundo claro do site.
+                pixels[x, y] = (r, max(r, b), b, a)
+
+    return rgba
 
 
 def detect_board(image: Image.Image) -> tuple[int, int, float] | None:
@@ -265,13 +316,21 @@ def main() -> None:
     for job in JOBS:
         source = job["file"]
         if source not in cache:
-            cut = cutout(session, SOURCE_DIR / source)
-
-            # 2ª passada: apaga o xadrez que o modelo manteve DENTRO da cena.
             original = Image.open(SOURCE_DIR / source)
-            board = detect_board(original)
-            if board:
-                cut = erase_checker_inside(cut, board, find_phase(original, board))
+
+            if job.get("chroma"):
+                # Fundo verde chapado: recorte exato, sem modelo e sem heurística.
+                cut = chroma_key(original)
+            elif job.get("keep_background"):
+                # Cena com cenário REAL (consultório): não há o que recortar — a
+                # imagem é usada como ilustração retangular.
+                cut = original.convert("RGBA")
+            else:
+                cut = cutout(session, SOURCE_DIR / source)
+                # 2ª passada: apaga o xadrez que o modelo manteve DENTRO da cena.
+                board = detect_board(original)
+                if board:
+                    cut = erase_checker_inside(cut, board, find_phase(original, board))
 
             cache[source] = cut
 
