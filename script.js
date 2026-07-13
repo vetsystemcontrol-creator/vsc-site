@@ -43,7 +43,7 @@ const demoContent = {
   dashboard: {
     tag: "Módulo real do ERP",
     route: "dashboard",
-    section: "#recursos",
+    section: "#modulos",
     title: "Dashboard",
     text: "Abra a visão geral real do ERP com indicadores, alertas e rotina fictícia já preenchida.",
     routeText: "Visão central da operação demo, com alertas e próximos atendimentos.",
@@ -113,7 +113,7 @@ const demoContent = {
   financeiro: {
     tag: "Módulo real do ERP",
     route: "financeiro",
-    section: "#recursos",
+    section: "#financeiro",
     title: "Financeiro",
     text: "Abra o financeiro real para demonstrar contas, valores e organização operacional fictícia.",
     routeText: "Contas a receber e visão financeira da operação demo.",

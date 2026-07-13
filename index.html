@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Vet System Control | Equine — ERP completo para o veterinário de equinos (clínico, financeiro, fiscal e a campo)</title>
-  <meta name="description" content="ERP offline-first para médicos-veterinários de equinos: atendimento clínico, financeiro (parcelas, fechamento em lote, baixa automática), emissão de NFS-e, internação, estoque com lote e validade, agenda e vacinas. Funciona a campo mesmo sem internet e sincroniza depois — no computador e no celular." />
+  <title>Vet System Control | Equine — ERP para o veterinário de equinos: do haras à nota fiscal</title>
+  <meta name="description" content="ERP offline-first para o médico-veterinário de equinos. Prontuário, financeiro com parcelas, NFS-e, internação, estoque com lote e validade, agenda e vacinas. Funciona sem internet no haras e sincroniza depois — no computador e no celular. Comece grátis, sem cartão." />
   <meta name="robots" content="index, follow" />
-  <meta name="theme-color" content="#145AA0" />
+  <meta name="theme-color" content="#0E1A16" />
   <link rel="canonical" href="https://www.vetsystemcontrol.com.br/" />
   <link rel="icon" href="favicon.ico" sizes="any" />
   <link rel="icon" type="image/svg+xml" href="favicon.svg" />
@@ -14,8 +14,8 @@
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
   <link rel="apple-touch-icon" href="icon-192.png" />
 
-  <meta property="og:title" content="Vet System Control | Equine — ERP completo para o veterinário de equinos" />
-  <meta property="og:description" content="Do atendimento a campo à emissão de NFS-e: clínico, financeiro, fiscal, internação, estoque, agenda e vacinas em um só ERP offline-first. Funciona sem internet e sincroniza depois — no computador e no celular." />
+  <meta property="og:title" content="Vet System Control | Equine — ERP para o veterinário de equinos" />
+  <meta property="og:description" content="Do atendimento no haras à nota fiscal: prontuário, financeiro, NFS-e, internação e estoque num só ERP que funciona sem internet. Comece grátis, sem cartão." />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://www.vetsystemcontrol.com.br/" />
   <meta property="og:image" content="https://www.vetsystemcontrol.com.br/assets/VSC_horizontal_equine.png" />
@@ -25,8 +25,12 @@
 
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Vet System Control | Equine — ERP para o veterinário de equinos" />
-  <meta name="twitter:description" content="Clínico, financeiro, fiscal (NFS-e), internação, estoque, agenda e vacinas em um só ERP offline-first. Funciona a campo sem internet e sincroniza depois." />
+  <meta name="twitter:description" content="Prontuário, financeiro, NFS-e, internação e estoque num só ERP offline-first. Funciona no haras sem internet e sincroniza depois." />
   <meta name="twitter:image" content="https://www.vetsystemcontrol.com.br/assets/VSC_horizontal_equine.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <script type="application/ld+json">
   {
@@ -37,13 +41,13 @@
     "operatingSystem": "Web, Android",
     "inLanguage": "pt-BR",
     "url": "https://www.vetsystemcontrol.com.br/",
-    "description": "ERP offline-first para médicos-veterinários de equinos: atendimento clínico, financeiro, fiscal (NFS-e), internação, estoque, agenda e vacinas. Funciona a campo sem internet e sincroniza depois.",
-    "offers": {
-      "@type": "Offer",
-      "price": "0",
-      "priceCurrency": "BRL",
-      "description": "Plano grátis: 5 atendimentos por mês, sem cartão."
-    }
+    "description": "ERP offline-first para médicos-veterinários de equinos: prontuário, financeiro, fiscal (NFS-e), internação, estoque, agenda e vacinas. Funciona a campo sem internet e sincroniza depois.",
+    "offers": [
+      { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "BRL", "description": "5 atendimentos por mês, 1 usuário, sem cartão." },
+      { "@type": "Offer", "name": "Essencial", "price": "99", "priceCurrency": "BRL", "description": "Atendimentos ilimitados e emissão de NFS-e. 2 usuários." },
+      { "@type": "Offer", "name": "Profissional", "price": "149", "priceCurrency": "BRL", "description": "Compras com importação de XML e equipe. 5 usuários." },
+      { "@type": "Offer", "name": "Completo", "price": "249", "priceCurrency": "BRL", "description": "Todos os módulos, incluindo internação. Usuários ilimitados." }
+    ]
   }
   </script>
 
@@ -64,73 +68,67 @@
 
       <nav id="main-nav" class="main-nav" aria-label="Navegação principal" data-nav>
         <a href="#modulos">Módulos</a>
-        <a href="#financeiro">Financeiro e fiscal</a>
         <a href="#offline">Campo e offline</a>
+        <a href="#planos">Planos</a>
         <a href="#comecar">Começar</a>
         <a href="#faq">FAQ</a>
-        <button class="link-button" type="button" data-open-demo>Solicitar demonstração</button>
+        <button class="link-button" type="button" data-open-demo>Ver demonstração</button>
         <a class="button button-primary" href="https://app.vetsystemcontrol.com.br">Acessar ERP</a>
       </nav>
     </div>
   </header>
 
   <main id="conteudo">
+    <!-- ─────────────────────────── HERO ─────────────────────────── -->
     <section id="topo" class="hero">
       <div class="container hero-grid">
         <div class="hero-copy">
-          <p class="badge">ERP offline-first para o veterinário de equinos</p>
-          <h1>Do atendimento a campo à nota fiscal: um ERP completo para o veterinário de equinos.</h1>
+          <p class="badge">Feito por um médico-veterinário de equinos</p>
+          <h1>Do atendimento no haras <em>até a nota fiscal.</em></h1>
           <p class="hero-text">
-            Clínico, financeiro, fiscal, internação, estoque, agenda e vacinas em uma só plataforma — feita para a rotina real do atendimento equino. Registre no haras, na clínica ou a campo mesmo sem internet: os dados ficam no dispositivo e sincronizam quando a conexão voltar. No computador e no celular.
+            O ERP que entende a sua rotina: prontuário, financeiro, fiscal, internação e estoque no mesmo lugar — e que <b>funciona sem internet</b>. Você registra no curral, na estrada ou na baia; quando o sinal volta, tudo sincroniza sozinho.
           </p>
-          <div class="hero-highlights" aria-label="Principais diferenciais do sistema">
-            <span>Atendimento a campo</span>
-            <span>Offline-first</span>
-            <span>Financeiro + NFS-e</span>
-            <span>Internação e estoque</span>
-          </div>
           <div class="hero-actions">
-            <button class="button button-primary" type="button" data-open-demo>Solicitar demonstração</button>
-            <a class="button button-secondary" href="https://app.vetsystemcontrol.com.br">Acessar ERP</a>
+            <a class="button button-primary" href="https://app.vetsystemcontrol.com.br">Começar grátis</a>
+            <a class="button button-secondary" href="#planos">Ver planos e preços</a>
           </div>
-          <p class="microcopy">Para médicos-veterinários de equinos, clínicas e haras que querem clínica, dinheiro e fiscal organizados no mesmo lugar — sem depender de planilhas soltas.</p>
+          <p class="microcopy">5 atendimentos por mês de graça, <b>sem cartão de crédito</b>. Funciona no computador e no celular.</p>
         </div>
 
         <div class="hero-visual" aria-label="Resumo visual do sistema">
           <div class="browser-card">
             <div class="browser-top">
               <span></span><span></span><span></span>
-              <strong>Visão operacional</strong>
+              <strong>Visão do dia</strong>
             </div>
             <div class="dashboard-grid">
               <article class="metric-card">
-                <small>Atendimentos de hoje</small>
+                <small>Atendimentos hoje</small>
                 <strong>12</strong>
-                <span>Rotina clínica em andamento</span>
+                <span>3 a campo, 9 na clínica</span>
               </article>
               <article class="metric-card">
-                <small>Agenda em campo</small>
-                <strong>6</strong>
-                <span>Visitas e retornos previstos</span>
+                <small>A receber</small>
+                <strong>R$ 8.430</strong>
+                <span>2 parcelas vencendo</span>
               </article>
               <article class="metric-card">
-                <small>Estoque com atenção</small>
+                <small>Validade próxima</small>
                 <strong>8</strong>
-                <span>Lotes e validade em revisão</span>
+                <span>Lotes a revisar</span>
               </article>
-              <article class="metric-card">
-                <small>Sincronização pendente</small>
+              <article class="metric-card is-sync">
+                <small>Aguardando sinal</small>
                 <strong>3</strong>
-                <span>Registros locais aguardando conexão</span>
+                <span>Registros salvos no aparelho</span>
               </article>
             </div>
             <div class="mock-table">
-              <div><b>Atendimentos</b><span>Retorno — Apollo</span><em>09:30</em></div>
-              <div><b>Financeiro</b><span>Parcela baixada em dinheiro</span><em>Quitada</em></div>
+              <div><b>Atendimento</b><span>Retorno — Apollo</span><em>09:30</em></div>
+              <div><b>Financeiro</b><span>Parcela 1/3 em dinheiro</span><em class="is-ok">Quitada</em></div>
               <div><b>Fiscal</b><span>NFS-e do atendimento</span><em>Emitir</em></div>
-              <div><b>Internação</b><span>Baia 3 — sinais vitais</span><em>Estável</em></div>
-              <div><b>Offline-first</b><span>Registros preservados localmente</span><em>Sincronizar</em></div>
-              <p class="mock-note">Dados fictícios para demonstração visual. Ambiente real separado do ERP oficial.</p>
+              <div><b>Internação</b><span>Baia 3 — sinais vitais</span><em class="is-ok">Estável</em></div>
+              <p class="mock-note">Ilustração com dados fictícios.</p>
             </div>
           </div>
         </div>
@@ -138,215 +136,149 @@
     </section>
 
     <section class="trust-strip">
-      <div class="container trust-items" aria-label="Principais áreas do sistema">
-        <strong>Clínico, financeiro e fiscal no mesmo lugar — com rastreabilidade e continuidade a campo.</strong>
-        <span>Atendimento clínico</span>
-        <span>Financeiro e parcelas</span>
-        <span>NFS-e</span>
-        <span>Internação</span>
-        <span>Estoque com validade</span>
-        <span>Offline-first</span>
+      <div class="container trust-items" aria-label="Resumo do sistema">
+        <span>Funciona sem internet</span>
+        <span>Financeiro com parcelas</span>
+        <span>NFS-e a partir do atendimento</span>
+        <span>Internação e estoque</span>
+        <span>Android e navegador</span>
       </div>
     </section>
 
+    <!-- ────────────────────── POR QUE EXISTE ────────────────────── -->
     <section id="recursos" class="section">
       <div class="container">
         <div class="section-heading">
-          <p class="eyebrow">Problema real</p>
-          <h2>Quando a rotina acontece no campo, controles soltos começam a custar caro.</h2>
+          <p class="eyebrow">Por que este ERP existe</p>
+          <h2>Sistema de clínica de pequenos animais não foi feito para quem atende no campo.</h2>
           <p>
-            Atendimento sem histórico, dados anotados em papel, estoque sem rastreabilidade e informações financeiras espalhadas podem gerar retrabalho, perda de contexto e dificuldade de gestão.
+            Quem trabalha com equino conhece as três dores. Este sistema nasceu para resolver exatamente essas — não para ser mais um software genérico adaptado às pressas.
           </p>
         </div>
 
-        <div class="cards-grid pain-grid">
-          <article class="card">
-            <strong>Registro fora do sistema</strong>
-            <p>Em campo, anotações soltas podem dificultar a consulta e a continuidade do atendimento.</p>
+        <div class="cards-grid pillars-grid">
+          <article class="card pillar-card">
+            <span class="pillar-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.8a15 15 0 0 1 20 0"/><path d="M5 12.6a10 10 0 0 1 14 0"/><path d="M8.5 16.4a5 5 0 0 1 7 0"/><circle cx="12" cy="20" r=".6" fill="currentColor"/><path d="M3 3l18 18"/></svg>
+            </span>
+            <strong>No haras não tem sinal</strong>
+            <p>Um sistema que depende de internet trava justamente na hora do atendimento. Aqui o registro é salvo <b>no seu aparelho</b> e sobe sozinho quando a conexão volta. Nada se perde, nada é digitado duas vezes.</p>
           </article>
-          <article class="card">
-            <strong>Atendimento sem histórico</strong>
-            <p>Quando o registro fica solto, fica difícil consultar o que foi feito e dar continuidade ao caso.</p>
+          <article class="card pillar-card">
+            <span class="pillar-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18"/><path d="M17 6.5c0-1.7-2.2-2.5-5-2.5s-5 .9-5 2.8c0 4.3 10 2.2 10 6.6 0 2-2.2 3.1-5 3.1s-5-1-5-2.8"/></svg>
+            </span>
+            <strong>O dinheiro se perde no caminho</strong>
+            <p>Entre o atendimento, a cobrança e a nota, é onde o faturamento evapora. Aqui cada atendimento <b>vira título automaticamente</b> — à vista ou parcelado —, a baixa em dinheiro é automática, e a NFS-e sai do próprio atendimento.</p>
           </article>
-          <article class="card">
-            <strong>Estoque incorreto</strong>
-            <p>Entradas, saídas e uso em atendimento precisam estar conectados para evitar compras erradas.</p>
-          </article>
-          <article class="card">
-            <strong>Conexão instável</strong>
-            <p>Sem uma estrutura offline-first, a ausência de internet pode interromper registros importantes da rotina.</p>
+          <article class="card pillar-card">
+            <span class="pillar-mark" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V9l4-5h8l4 5v11"/><path d="M4 9h16"/><path d="M9 20v-5h6v5"/><path d="M12 4v5"/></svg>
+            </span>
+            <strong>O equino tem rotina própria</strong>
+            <p>Deslocamento por quilômetro, atendimento de vários animais do mesmo dono, internação em baia, vacinação com reforço, fechamento do mês do haras em um título só. Está tudo aqui — <b>porque foi feito por quem atende equino</b>.</p>
           </article>
         </div>
       </div>
     </section>
 
+    <!-- ───────────────────────── ATENDIMENTO ───────────────────────── -->
     <section id="atendimentos" class="section section-soft">
       <div class="container split-grid">
         <div>
-          <p class="eyebrow">Módulo principal</p>
-          <h2>Atendimentos com cliente, animal, histórico e operação no mesmo fluxo — inclusive a campo.</h2>
+          <p class="eyebrow">O centro da rotina</p>
+          <h2>Um atendimento que já nasce completo — e já sai cobrado.</h2>
           <p>
-            O módulo de Atendimentos é o centro da rotina. Ele ajuda a registrar o que foi feito, vincular o atendimento ao animal e ao proprietário, acompanhar retornos e manter o histórico organizado no haras, na clínica ou a campo.
+            Escolha o proprietário e o animal (ou vários, no mesmo atendimento), registre o exame, lance os itens usados, aplique desconto e o deslocamento por quilômetro. Ao finalizar, o sistema imprime o documento e gera a cobrança. Sem retrabalho, sem planilha paralela.
           </p>
           <ul class="check-list">
-            <li>Crie atendimento com cliente e animal já cadastrados.</li>
-            <li>Cadastre novo proprietário e novo animal durante o teste.</li>
-            <li>Consulte o histórico do animal com mais facilidade.</li>
-            <li>Trabalhe em campo mesmo com internet instável e sincronize depois.</li>
+            <li>Prontuário com sinais vitais, exame e conduta — com alerta quando um valor sai da faixa.</li>
+            <li>Vários animais do mesmo dono num único atendimento.</li>
+            <li>Deslocamento cobrado por km, com o valor da época preservado no documento.</li>
+            <li>Anexos (foto e PDF) e assinatura do veterinário no documento impresso.</li>
+            <li>Cadastre proprietário e animal <b>sem sair</b> do atendimento.</li>
           </ul>
         </div>
 
         <div class="workflow-panel">
           <div class="workflow-header">
-            <span>Atendimento</span>
+            <span>Atendimento ATD-2026-00054</span>
             <strong><img class="animal-avatar" src="assets/horse-avatar.svg" alt="" width="28" height="28" />Retorno — Apollo</strong>
           </div>
           <div class="workflow-step is-active">
-            <b>1. Proprietário</b>
-            <p>Mariana Costa Almeida</p>
+            <b>Proprietário e animal</b>
+            <p>Mariana Costa · Apollo, 8 anos</p>
           </div>
           <div class="workflow-step is-active">
-            <b>2. Animal</b>
-            <p>Apollo — equino cadastrado</p>
+            <b>Prontuário</b>
+            <p>FC 44 · Temp. 37,8 °C · hidratado</p>
           </div>
           <div class="workflow-step is-active">
-            <b>3. Registro</b>
-            <p>Atendimento salvo no histórico</p>
+            <b>Itens e deslocamento</b>
+            <p>2 medicamentos · 38 km rodados</p>
           </div>
           <div class="workflow-step">
-            <b>4. Sincronização</b>
-            <p>Dados enviados quando a internet voltar</p>
+            <b>Financeiro</b>
+            <p>Título gerado ao finalizar</p>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ─────────────────────────── OFFLINE ─────────────────────────── -->
     <section id="offline" class="section">
       <div class="container split-grid reverse">
-        <div class="offline-panel" aria-label="Exemplo de sincronização offline-first">
+        <div class="offline-panel" aria-label="Como funciona a sincronização">
           <div class="sync-card">
-            <span class="status neutral">Sem internet</span>
-            <strong>Atendimento salvo no dispositivo</strong>
-            <small>A equipe continua registrando a rotina.</small>
+            <span class="status neutral">Sem sinal, no curral</span>
+            <strong>Você registra normalmente</strong>
+            <small>O atendimento é salvo no próprio aparelho.</small>
           </div>
           <div class="sync-arrow" aria-hidden="true">↓</div>
           <div class="sync-card">
-            <span class="status ok">Internet voltou</span>
-            <strong>Sincronização quando houver conexão</strong>
-            <small>Os registros locais são enviados para o ambiente online.</small>
+            <span class="status ok">Sinal voltou</span>
+            <strong>Sobe sozinho</strong>
+            <small>Sem clicar em nada. Nada é digitado de novo.</small>
           </div>
           <div class="sync-arrow" aria-hidden="true">↓</div>
           <div class="sync-card">
-            <span class="status ok">Atualizado</span>
-            <strong>Equipe com dados centralizados</strong>
-            <small>A rotina volta a ficar alinhada no sistema.</small>
+            <span class="status ok">Em todos os aparelhos</span>
+            <strong>Celular e computador iguais</strong>
+            <small>A secretária vê na clínica o que você fez no haras.</small>
           </div>
         </div>
 
         <div>
-          <p class="eyebrow">Offline-first</p>
-          <h2>Continue trabalhando no campo, no haras ou na clínica mesmo sem internet.</h2>
+          <p class="eyebrow">Campo e offline</p>
+          <h2>Offline não é um extra. É a base de tudo aqui.</h2>
           <p>
-            O Vet System Control | Equine foi pensado para a rotina real, onde a conexão pode falhar.
-            O usuário pode continuar registrando informações offline, com dados preservados localmente, e sincronizar os registros quando houver acesso à internet.
+            A maioria dos sistemas manda um aviso de "sem conexão" e trava. Este foi construído ao contrário: <b>o sistema roda no seu aparelho</b> e a nuvem é só o encontro entre os dispositivos. Por isso ele é rápido e não depende do sinal do haras.
           </p>
           <ul class="check-list">
-            <li>Mais continuidade operacional em locais com sinal instável.</li>
-            <li>Menos dependência de anotações soltas em papel ou mensagens.</li>
-            <li>Registros ficam prontos para sincronização quando a conexão voltar.</li>
-            <li>Ideal para atendimento volante, haras, campo e clínicas.</li>
+            <li>Atendimento, financeiro, agenda e estoque — tudo funciona sem internet.</li>
+            <li>Sincronização automática, sem botão e sem risco de duplicar registro.</li>
+            <li>O número do atendimento é definitivo: nunca sai repetido, mesmo com vários aparelhos.</li>
+            <li>Fotos e anexos entram na fila e sobem quando dá.</li>
           </ul>
         </div>
       </div>
     </section>
 
-    <section id="estoque" class="section section-soft">
-      <div class="container split-grid">
-        <div>
-          <p class="eyebrow">Estoque com mais controle</p>
-          <h2>Lote, validade e movimentação em uma rotina mais organizada.</h2>
-          <p>
-            O controle de estoque ajuda a acompanhar produtos usados na operação, entradas, saídas,
-            lotes e validade. Isso reduz improviso e dá mais clareza para compra, uso e reposição.
-          </p>
-          <ul class="check-list">
-            <li>Acompanhe produtos e movimentações.</li>
-            <li>Tenha mais atenção a lotes e vencimentos.</li>
-            <li>Conecte uso de produtos à rotina de atendimento.</li>
-            <li>Evite depender apenas de planilhas paralelas.</li>
-          </ul>
-        </div>
-
-        <div class="feature-panel">
-          <div class="feature-row">
-            <span class="status warning">Atenção</span>
-            <strong>Lote 24A — validade próxima</strong>
-            <small>Produto com revisão recomendada</small>
-          </div>
-          <div class="feature-row">
-            <span class="status ok">Atualizado</span>
-            <strong>Entrada registrada</strong>
-            <small>Cadastro de produto e quantidade conferidos</small>
-          </div>
-          <div class="feature-row">
-            <span class="status neutral">Movimento</span>
-            <strong>Uso em atendimento</strong>
-            <small>Baixa operacional vinculada ao fluxo</small>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section id="xml" class="section">
-      <div class="container split-grid reverse">
-        <div class="xml-card">
-          <div class="xml-header">
-            <span>XML</span>
-            <strong>Importação assistida</strong>
-          </div>
-          <div class="xml-lines">
-            <span></span><span></span><span></span><span></span>
-          </div>
-          <div class="xml-result">
-            <b>Dados conferidos</b>
-            <p>Produtos e informações operacionais prontos para revisão.</p>
-          </div>
-        </div>
-
-        <div>
-          <p class="eyebrow">Importação XML</p>
-          <h2>Menos digitação manual. Mais agilidade no lançamento.</h2>
-          <p>
-            A Importação XML ajuda a trazer informações de documentos para dentro do ERP.
-            Isso reduz retrabalho de digitação e ajuda a diminuir erros humanos que afetam o estoque.
-          </p>
-          <ul class="check-list">
-            <li>Ajuda no cadastro e conferência de produtos.</li>
-            <li>Reduz lançamento manual repetido.</li>
-            <li>Apoia a consistência do estoque.</li>
-            <li>Facilita a rotina de compras e entradas.</li>
-          </ul>
-          <p class="note">
-            A Importação XML é sobre a <b>nota de compra</b> (entrada de estoque). Para <b>emitir</b> a sua nota de serviço, veja o módulo <a href="#fiscal">Fiscal — NFS-e</a>.
-          </p>
-        </div>
-      </div>
-    </section>
-
-
+    <!-- ────────────────────────── FINANCEIRO ────────────────────────── -->
     <section id="financeiro" class="section section-soft">
       <div class="container split-grid">
         <div>
           <p class="eyebrow">Financeiro que fecha</p>
-          <h2>Do atendimento à cobrança, sem a conta se perder no caminho.</h2>
+          <h2>Do atendimento à cobrança, sem a conta se perder no meio.</h2>
           <p>
-            Cada atendimento vira título financeiro à vista ou parcelado. Você registra pagamentos, dá baixa por parcela e acompanha o que está em aberto — com estorno auditável quando algo precisa ser corrigido. Recebeu em dinheiro? A entrada é baixada automaticamente, na data real do recebimento.
+            Cada atendimento vira um título — à vista ou parcelado, com vencimento por parcela. Recebeu em dinheiro? A baixa é automática, na data real. Pagou a mais? Vira crédito do cliente. Precisou corrigir? O estorno fica registrado, não some.
           </p>
           <ul class="check-list">
-            <li>Cobrança à vista ou parcelada, com vencimentos por parcela.</li>
-            <li>Baixa automática do dinheiro e crédito do cliente quando paga a mais.</li>
-            <li>Fechamento em lote: vários atendimentos do cliente em um título só.</li>
-            <li>Relatórios de faturamento e livro caixa exportáveis em CSV e impressão (PDF).</li>
+            <li><b>Fechamento em lote:</b> o mês inteiro do haras em um título só, com recibo do lote.</li>
+            <li>Baixa automática em dinheiro e crédito quando o cliente paga a mais.</li>
+            <li>Estorno auditável — o histórico nunca é apagado.</li>
+            <li>Contas a pagar com conferência da nota do fornecedor.</li>
+            <li>Faturamento e livro caixa em CSV e impressão (PDF) para o contador.</li>
           </ul>
         </div>
 
@@ -358,366 +290,397 @@
           </div>
           <div class="feature-row">
             <span class="status neutral">Em aberto</span>
-            <strong>Parcela 2/3 — cartão</strong>
-            <small>Vencimento acompanhado no contas a receber</small>
+            <strong>Parcela 2/3 — vence em 12 dias</strong>
+            <small>Lembrete pronto para enviar no WhatsApp</small>
           </div>
           <div class="feature-row">
             <span class="status warning">Lote</span>
-            <strong>Fechamento consolidado</strong>
-            <small>3 atendimentos do mesmo cliente em um título</small>
+            <strong>Fechamento do mês — Haras Santa Rita</strong>
+            <small>7 atendimentos consolidados em um título</small>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ──────────────────────────── FISCAL ──────────────────────────── -->
     <section id="fiscal" class="section">
       <div class="container split-grid reverse">
         <div class="xml-card">
           <div class="xml-header">
             <span>NFS-e</span>
-            <strong>Nota de serviço</strong>
+            <strong>Nota do serviço veterinário</strong>
           </div>
           <div class="feature-row">
             <span class="status neutral">Base</span>
-            <strong>Serviço veterinário</strong>
-            <small>Valor do atendimento</small>
+            <strong>Valor do atendimento</strong>
+            <small>Puxado do título, sem redigitar</small>
           </div>
           <div class="feature-row">
-            <span class="status neutral">ISS</span>
-            <strong>Alíquota e retenção</strong>
-            <small>Cálculo automático, arredondado a centavos</small>
+            <span class="status neutral">ISS e retenções</span>
+            <strong>Calculados para você</strong>
+            <small>IR, CSLL, COFINS, PIS e INSS — arredondados a centavos</small>
           </div>
           <div class="feature-row">
             <span class="status ok">Líquido</span>
-            <strong>Valor a receber</strong>
-            <small>Descontadas as retenções na fonte</small>
+            <strong>O que realmente entra</strong>
+            <small>Já descontadas as retenções na fonte</small>
           </div>
         </div>
 
         <div>
           <p class="eyebrow">Fiscal — NFS-e</p>
-          <h2>Emita a nota fiscal de serviço a partir do próprio atendimento.</h2>
+          <h2>A nota sai do atendimento. Você não digita nada duas vezes.</h2>
           <p>
-            O módulo fiscal gera a NFS-e do serviço veterinário com base de cálculo, alíquota de ISS, retenções (IR, CSLL, COFINS, PIS, INSS) e valor líquido calculados automaticamente — todos os valores arredondados a centavos, como a especificação exige.
+            O módulo fiscal emite a NFS-e do serviço veterinário direto do título: base de cálculo, alíquota de ISS, retenções e valor líquido saem prontos. Sem internet na hora? A emissão fica pendente e transmite quando a conexão voltar.
           </p>
           <ul class="check-list">
-            <li>NFS-e emitida a partir do título do atendimento.</li>
-            <li>ISS, retenções e valor líquido calculados para você.</li>
-            <li>Emissão fica pendente offline e transmite quando houver conexão.</li>
-            <li>Configuração de série, alíquota e certificado da empresa.</li>
+            <li>Emissão a partir do atendimento já cobrado.</li>
+            <li>ISS, retenções e valor líquido calculados automaticamente.</li>
+            <li>Série, alíquota e certificado digital configurados uma vez.</li>
           </ul>
           <p class="note">
-            A emissão depende de configuração do município (padrão ABRASF) e do certificado digital da sua empresa. Homologação e regras variam por prefeitura.
+            A emissão depende da configuração do seu município (padrão ABRASF) e do certificado digital da empresa — as regras variam por prefeitura.
           </p>
         </div>
       </div>
     </section>
 
+    <!-- ────────────────────────── INTERNAÇÃO ────────────────────────── -->
     <section id="internacao" class="section section-soft">
       <div class="container split-grid">
         <div>
           <p class="eyebrow">Internação equina</p>
-          <h2>Acompanhe o animal internado do check-in à alta.</h2>
+          <h2>Do check-in à alta, com a baia e a equipe sob controle.</h2>
           <p>
-            Para quem interna equinos, o módulo organiza baias e alas, sinais vitais, tarefas de tratamento e a evolução clínica de cada animal — até a alta com resumo. Tudo com a mesma base offline-first do resto do sistema.
+            Quem interna equino sabe: o problema não é o caso clínico, é a coordenação. Quem já medicou? Qual baia está livre? O que mudou desde ontem? O módulo organiza alas e baias, sinais vitais, tarefas de tratamento e a evolução de cada animal — até a alta com resumo.
           </p>
           <ul class="check-list">
-            <li>Ocupação de baias e alas, com triagem e isolamento.</li>
+            <li>Mapa de ocupação por ala e baia, com triagem e isolamento.</li>
             <li>Sinais vitais, tarefas de tratamento e evolução por animal.</li>
+            <li>Vários lançamentos ao mesmo tempo, sem um sobrescrever o outro.</li>
             <li>Alta com resumo e liberação da baia.</li>
-            <li>Registro seguro mesmo com vários lançamentos ao mesmo tempo.</li>
           </ul>
         </div>
 
         <div class="workflow-panel">
           <div class="workflow-header">
-            <span>Internação</span>
-            <strong><img class="animal-avatar" src="assets/horse-avatar.svg" alt="" width="28" height="28" />Baia 3 — Apollo</strong>
+            <span>Internação · Baia 3</span>
+            <strong><img class="animal-avatar" src="assets/horse-avatar.svg" alt="" width="28" height="28" />Apollo — 2º dia</strong>
           </div>
           <div class="workflow-step is-active">
             <b>Admissão</b>
-            <p>Triagem e baia definidas</p>
+            <p>Triagem feita, baia definida</p>
           </div>
           <div class="workflow-step is-active">
             <b>Sinais vitais</b>
-            <p>Temperatura, FC e FR registrados</p>
+            <p>Temp. 37,9 °C · FC 40 · FR 16</p>
           </div>
           <div class="workflow-step is-active">
             <b>Tratamento</b>
-            <p>Tarefas concluídas pela equipe</p>
+            <p>4 de 5 tarefas concluídas hoje</p>
           </div>
           <div class="workflow-step">
             <b>Alta</b>
-            <p>Resumo e baixa da baia</p>
+            <p>Resumo e liberação da baia</p>
           </div>
         </div>
       </div>
     </section>
 
-    <section id="diferenciais" class="section">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Diferenciais operacionais</p>
-          <h2>Não é apenas uma tela bonita. É operação em campo.</h2>
-          <p>
-            O Vet System Control | Equine foi criado para o médico-veterinário de equinos que precisa registrar, consultar e organizar informações mesmo longe da clínica, em haras, propriedades rurais, centros de treinamento ou locais com conexão instável.
-          </p>
+    <!-- ─────────────────── ESTOQUE + XML (compras) ─────────────────── -->
+    <section id="estoque" class="section">
+      <div class="container split-grid reverse">
+        <div class="xml-card" id="xml">
+          <div class="xml-header">
+            <span>XML</span>
+            <strong>Nota do fornecedor</strong>
+          </div>
+          <div class="xml-lines">
+            <span></span><span></span><span></span><span></span>
+          </div>
+          <div class="xml-result">
+            <b>Estoque montado sozinho</b>
+            <p>Os produtos da nota entram com lote, validade e custo. Você confere — não digita.</p>
+          </div>
         </div>
 
-        <div class="cards-grid differentials-grid">
-          <article class="card highlight-card">
-            <strong>Atendimento equino a campo</strong>
-            <p>Registre informações importantes da rotina mesmo em ambientes fora da clínica, com foco na realidade do veterinário que atende em haras e propriedades.</p>
-          </article>
-          <article class="card highlight-card">
-            <strong>Dados preservados localmente</strong>
-            <p>Continue registrando durante a ausência de internet, mantendo os dados no dispositivo até que a conexão esteja disponível para sincronização.</p>
-          </article>
-          <article class="card highlight-card">
-            <strong>Histórico por animal</strong>
-            <p>Organize atendimentos, registros, vacinas, exames e informações relevantes vinculadas ao equino.</p>
-          </article>
-          <article class="card highlight-card">
-            <strong>Controle financeiro e estoque</strong>
-            <p>Acompanhe valores, produtos, lotes, validade e movimentações da operação com mais clareza.</p>
-          </article>
-          <article class="card highlight-card">
-            <strong>Dashboard acionável</strong>
-            <p>Visualize indicadores, agenda, alertas e pendências para entender rapidamente o que exige atenção.</p>
-          </article>
-          <article class="card highlight-card">
-            <strong>Usuários e permissões</strong>
-            <p>Estruture o acesso da equipe com mais controle administrativo, respeitando perfis e responsabilidades quando aplicável.</p>
-          </article>
-          <article class="card highlight-card">
-            <strong>Rotina centralizada</strong>
-            <p>Clientes, animais, agenda, atendimentos, estoque e financeiro organizados em uma plataforma web profissional.</p>
-          </article>
-          <article class="card highlight-card">
-            <strong>Sincronização responsável</strong>
-            <p>As informações registradas localmente podem ser sincronizadas quando a internet estiver disponível.</p>
-          </article>
+        <div>
+          <p class="eyebrow">Estoque e compras</p>
+          <h2>O medicamento vencido custa caro. O comprado em dobro, também.</h2>
+          <p>
+            O estoque acompanha produto por local, lote e validade, e o consumo sai automaticamente do atendimento. O sistema usa o lote que vence primeiro (FEFO) e avisa antes do vencimento. Na entrada, o XML da nota de compra monta tudo sozinho.
+          </p>
+          <ul class="check-list">
+            <li>Lote, validade e alerta de vencimento — com baixa pelo que vence primeiro.</li>
+            <li>Estoque por local (clínica, caminhonete, filial).</li>
+            <li>Consumo do atendimento dá baixa sozinho.</li>
+            <li>Importação do XML da nota de compra: menos digitação, menos erro.</li>
+          </ul>
+          <p class="note">
+            A Importação XML é da <b>nota de compra</b> (entrada de estoque). Para <b>emitir</b> a sua nota de serviço, veja <a href="#fiscal">Fiscal — NFS-e</a>.
+          </p>
         </div>
       </div>
     </section>
 
-    <section id="modulos" class="section">
+    <!-- ─────────────────────────── MÓDULOS ─────────────────────────── -->
+    <section id="modulos" class="section section-soft">
       <div class="container">
         <div class="section-heading">
-          <p class="eyebrow">Módulos</p>
-          <h2>O sistema organiza as áreas que mais pesam na rotina equina.</h2>
-          <p>Uma base central para registrar, consultar e acompanhar a operação clínica, financeira e administrativa com mais clareza.</p>
+          <p class="eyebrow">Tudo que vem junto</p>
+          <h2>Dezesseis áreas da sua operação, num sistema só.</h2>
+          <p>Sem integração para contratar, sem planilha para manter em paralelo. O que você registra no atendimento chega ao financeiro, ao estoque e ao contador.</p>
         </div>
 
         <div class="cards-grid modules-grid">
-          <article class="module-card"><span>AT</span><strong>Atendimentos</strong><p>Centro da rotina: cliente, animal, prontuário, itens, desconto, deslocamento e retorno — inclusive multi-animal.</p></article>
-          <article class="module-card"><span>FI</span><strong>Financeiro</strong><p>Cobrança à vista ou parcelada, pagamentos, baixa (inclusive automática em dinheiro), crédito do cliente e estorno auditável.</p></article>
-          <article class="module-card"><span>LT</span><strong>Fechamento em lote</strong><p>Consolide vários atendimentos do mesmo cliente em um título só, com parcelas e recibo do lote.</p></article>
-          <article class="module-card"><span>NF</span><strong>Fiscal — NFS-e</strong><p>Emissão de nota fiscal de serviço com ISS, retenções e valor líquido calculados a partir do atendimento.</p></article>
-          <article class="module-card"><span>IN</span><strong>Internação</strong><p>Baias e alas, sinais vitais, tarefas de tratamento, evolução clínica e alta com resumo.</p></article>
-          <article class="module-card"><span>CP</span><strong>Contas a pagar</strong><p>Títulos a pagar, conferência da nota (XML) e baixa, com a data real do pagamento.</p></article>
-          <article class="module-card"><span>ES</span><strong>Estoque</strong><p>Produtos por local, lote e validade (FEFO), movimentação vinculada ao atendimento e alerta de vencimento.</p></article>
-          <article class="module-card"><span>XML</span><strong>Importação XML</strong><p>Cria e concilia produtos a partir da NF-e de compra, com menos digitação e menos erro de estoque.</p></article>
-          <article class="module-card"><span>RE</span><strong>Relatórios</strong><p>Faturamento por período, receita por tipo e livro caixa — em CSV e impressão (PDF) para o contador.</p></article>
+          <article class="module-card"><span>AT</span><strong>Atendimentos</strong><p>Cliente, animal, prontuário, itens, desconto, deslocamento e retorno — inclusive multi-animal.</p></article>
+          <article class="module-card"><span>FI</span><strong>Financeiro</strong><p>À vista ou parcelado, baixa automática em dinheiro, crédito do cliente e estorno auditável.</p></article>
+          <article class="module-card"><span>LT</span><strong>Fechamento em lote</strong><p>Vários atendimentos do mesmo cliente em um título só, com recibo do lote.</p></article>
+          <article class="module-card"><span>NF</span><strong>Fiscal — NFS-e</strong><p>Nota do serviço com ISS, retenções e valor líquido calculados a partir do atendimento.</p></article>
+          <article class="module-card"><span>IN</span><strong>Internação</strong><p>Alas e baias, sinais vitais, tarefas de tratamento, evolução e alta com resumo.</p></article>
+          <article class="module-card"><span>CP</span><strong>Contas a pagar</strong><p>Títulos a pagar com conferência da nota do fornecedor e baixa na data real.</p></article>
+          <article class="module-card"><span>ES</span><strong>Estoque</strong><p>Por local, lote e validade (FEFO), com baixa vinculada ao atendimento e alerta de vencimento.</p></article>
+          <article class="module-card"><span>XML</span><strong>Importação XML</strong><p>Cria e concilia produtos a partir da NF-e de compra — menos digitação, menos erro.</p></article>
+          <article class="module-card"><span>RE</span><strong>Relatórios</strong><p>Faturamento por período, receita por tipo e livro caixa — CSV e impressão (PDF).</p></article>
           <article class="module-card"><span>AG</span><strong>Agenda</strong><p>Visitas, retornos e compromissos, com retorno agendado direto do atendimento.</p></article>
-          <article class="module-card"><span>VA</span><strong>Vacinas</strong><p>Registro de vacinação e controle de reforço por animal.</p></article>
-          <article class="module-card"><span>CL</span><strong>Clientes e animais</strong><p>Cadastros de proprietários e equinos, vinculados e com histórico.</p></article>
-          <article class="module-card"><span>DB</span><strong>Dashboard</strong><p>Visão central da rotina: indicadores, agenda, alertas e pendências.</p></article>
-          <article class="module-card"><span>US</span><strong>Usuários e permissões</strong><p>Acesso da equipe por perfis, com ações sensíveis protegidas e auditoria.</p></article>
-          <article class="module-card"><span>BK</span><strong>Backup e segurança</strong><p>Cópia de segurança dos dados, com opção de proteção por senha.</p></article>
-          <article class="module-card"><span>OF</span><strong>Offline-first</strong><p>Registro local sem internet e sincronização automática quando a conexão volta — no computador e no celular.</p></article>
+          <article class="module-card"><span>VA</span><strong>Vacinas</strong><p>Registro de vacinação e controle de reforço por animal, com alerta do que está vencendo.</p></article>
+          <article class="module-card"><span>WA</span><strong>Lembretes no WhatsApp</strong><p>Reforço de vacina, compromisso da agenda e parcela vencida — mensagem pronta, você revisa e envia.</p></article>
+          <article class="module-card"><span>CL</span><strong>Clientes e animais</strong><p>Proprietários e equinos vinculados, com histórico e unificação de cadastro duplicado.</p></article>
+          <article class="module-card"><span>DB</span><strong>Dashboard</strong><p>O dia inteiro numa tela: agenda, alertas, vencimentos e pendências.</p></article>
+          <article class="module-card"><span>US</span><strong>Usuários e permissões</strong><p>Acesso por perfil, ações sensíveis protegidas por senha e trilha de auditoria.</p></article>
+          <article class="module-card"><span>BK</span><strong>Backup e LGPD</strong><p>Cópia de segurança, exportação dos dados do cliente e anonimização quando ele pedir.</p></article>
         </div>
       </div>
     </section>
 
+    <!-- ─────────────────────────── PLANOS ─────────────────────────── -->
+    <section id="planos" class="section">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Planos e preços</p>
+          <h2>Comece de graça. Pague quando o sistema já estiver trabalhando por você.</h2>
+          <p>Sem cartão para começar, sem fidelidade e sem taxa de implantação. Você muda de plano quando a operação crescer — e volta atrás se quiser.</p>
+        </div>
+
+        <div class="plans-grid">
+          <article class="plan-card">
+            <header class="plan-head">
+              <h3>Free</h3>
+              <p class="plan-price"><span class="plan-currency">R$</span>0<small>/mês</small></p>
+              <p class="plan-note">Para experimentar de verdade, sem cartão.</p>
+            </header>
+            <ul class="plan-list">
+              <li><b>5 atendimentos</b> por mês</li>
+              <li>1 usuário</li>
+              <li>Prontuário, financeiro e agenda</li>
+              <li>Estoque, vacinas e relatórios</li>
+              <li>Offline e app no celular</li>
+            </ul>
+            <a class="button button-secondary plan-cta" href="https://app.vetsystemcontrol.com.br">Começar grátis</a>
+          </article>
+
+          <article class="plan-card">
+            <header class="plan-head">
+              <h3>Essencial</h3>
+              <p class="plan-price"><span class="plan-currency">R$</span>99<small>/mês</small></p>
+              <p class="plan-note">Quando o volume passa de 5 por mês.</p>
+            </header>
+            <ul class="plan-list">
+              <li><b>Atendimentos ilimitados</b></li>
+              <li>2 usuários</li>
+              <li><b>Emissão de NFS-e</b></li>
+              <li>Tudo do Free</li>
+            </ul>
+            <button class="button button-secondary plan-cta" type="button" data-open-demo>Falar sobre o plano</button>
+          </article>
+
+          <article class="plan-card is-featured">
+            <span class="plan-flag">Mais escolhido</span>
+            <header class="plan-head">
+              <h3>Profissional</h3>
+              <p class="plan-price"><span class="plan-currency">R$</span>149<small>/mês</small></p>
+              <p class="plan-note">Para quem já tem equipe e compra em nota.</p>
+            </header>
+            <ul class="plan-list">
+              <li><b>5 usuários</b></li>
+              <li><b>Compras + importação de XML</b></li>
+              <li>Contas a pagar com conferência da nota</li>
+              <li>Tudo do Essencial</li>
+            </ul>
+            <button class="button button-primary plan-cta" type="button" data-open-demo>Falar sobre o plano</button>
+          </article>
+
+          <article class="plan-card">
+            <header class="plan-head">
+              <h3>Completo</h3>
+              <p class="plan-price"><span class="plan-currency">R$</span>249<small>/mês</small></p>
+              <p class="plan-note">Hospital, haras grande e operação com internação.</p>
+            </header>
+            <ul class="plan-list">
+              <li><b>Usuários ilimitados</b></li>
+              <li><b>Internação</b> completa</li>
+              <li>Todos os módulos</li>
+              <li>Tudo do Profissional</li>
+            </ul>
+            <button class="button button-secondary plan-cta" type="button" data-open-demo>Falar sobre o plano</button>
+          </article>
+        </div>
+
+        <p class="plans-footnote">
+          Preços por clínica, em reais, sem fidelidade. O plano Free é gratuito para sempre — não é período de teste.
+        </p>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── COMEÇAR ─────────────────────────── -->
     <section id="comecar" class="section section-soft">
       <div class="container">
         <div class="section-heading">
           <p class="eyebrow">Primeiro acesso</p>
-          <h2>Comece grátis hoje — e mude de plano só quando precisar.</h2>
-          <p>
-            Sem instalação e sem cartão. Abra no navegador do computador ou do celular, crie sua conta e já registre o primeiro atendimento. Funciona offline e sincroniza quando a internet voltar.
-          </p>
+          <h2>Do login ao primeiro recibo, em uma tarde.</h2>
+          <p>Nada para instalar no computador e nenhum técnico para chamar. Abra no navegador, crie a conta e comece — no celular, dá para instalar como aplicativo e levar a campo.</p>
         </div>
 
-        <div class="cards-grid start-paths">
-          <article class="card path-card is-free">
-            <span class="path-tag">Novo por aqui</span>
-            <strong>Comece grátis</strong>
-            <ul class="path-benefits">
-              <li>5 atendimentos por mês, sem cartão.</li>
-              <li>1 usuário e a rotina essencial já inclusa.</li>
-              <li>Clínico, financeiro, agenda, vacinas, estoque, contas a pagar e relatórios.</li>
-              <li>NFS-e e internação ficam nos planos pagos.</li>
-            </ul>
-            <a class="path-link" href="https://app.vetsystemcontrol.com.br">Acessar ERP e começar →</a>
-          </article>
-
-          <article class="card path-card">
-            <span class="path-tag">Quer mais</span>
-            <strong>Vai assinar</strong>
-            <p>Quando a operação crescer, os planos pagos liberam volume ilimitado, módulos premium e mais usuários:</p>
-            <ul class="path-benefits">
-              <li><b>Essencial</b> — NFS-e e atendimentos ilimitados.</li>
-              <li><b>Profissional</b> — importação de XML de compras e equipe.</li>
-              <li><b>Completo</b> — internação, reprodução e todos os módulos.</li>
-            </ul>
-            <button class="path-link" type="button" data-open-demo>Falar sobre planos →</button>
-          </article>
-
-          <article class="card path-card">
-            <span class="path-tag">Já utiliza</span>
-            <strong>Entrar na sua conta</strong>
-            <ul class="path-benefits">
-              <li>Acesse com seu login de sempre.</li>
-              <li>Seus dados continuam no dispositivo e seguros.</li>
-              <li>Sincroniza entre computador e celular.</li>
-              <li>Use a campo, mesmo sem internet.</li>
-            </ul>
-            <a class="path-link" href="https://app.vetsystemcontrol.com.br">Acessar ERP →</a>
-          </article>
-        </div>
-
-        <div class="steps-block">
-          <h3 class="steps-title">Primeiros passos, do login ao primeiro recibo</h3>
-          <ol class="steps-grid">
-            <li class="step-card">
-              <span class="step-num" aria-hidden="true">1</span>
-              <b>Acesse o ERP</b>
-              <p>Entre em app.vetsystemcontrol.com.br pelo navegador. No celular, instale como aplicativo para usar a campo.</p>
-            </li>
-            <li class="step-card">
-              <span class="step-num" aria-hidden="true">2</span>
-              <b>Configure a empresa</b>
-              <p>Preencha os dados da clínica e o valor por km do deslocamento. Nos planos com fiscal, defina série e alíquota da NFS-e.</p>
-            </li>
-            <li class="step-card">
-              <span class="step-num" aria-hidden="true">3</span>
-              <b>Monte seus cadastros</b>
-              <p>Cadastre clientes, animais, serviços e produtos. Já tem notas de compra? Importe o XML e o estoque se monta sozinho.</p>
-            </li>
-            <li class="step-card">
-              <span class="step-num" aria-hidden="true">4</span>
-              <b>Faça o primeiro atendimento</b>
-              <p>Escolha cliente e animal, registre prontuário, itens, desconto e deslocamento. Tudo funciona offline.</p>
-            </li>
-            <li class="step-card">
-              <span class="step-num" aria-hidden="true">5</span>
-              <b>Feche o financeiro</b>
-              <p>Gere a cobrança à vista ou parcelada; recebido em dinheiro, a baixa é automática. Emita a NFS-e nos planos com fiscal.</p>
-            </li>
-            <li class="step-card">
-              <span class="step-num" aria-hidden="true">6</span>
-              <b>Use no dia a dia, a campo</b>
-              <p>Tudo sincroniza entre os dispositivos quando a conexão volta. Comece grátis com 5 atendimentos por mês.</p>
-            </li>
-          </ol>
-        </div>
+        <ol class="steps-grid">
+          <li class="step-card">
+            <span class="step-num" aria-hidden="true">1</span>
+            <b>Crie sua conta</b>
+            <p>Entre em app.vetsystemcontrol.com.br pelo navegador do computador ou do celular.</p>
+          </li>
+          <li class="step-card">
+            <span class="step-num" aria-hidden="true">2</span>
+            <b>Configure a clínica</b>
+            <p>Dados da empresa e o valor que você cobra por quilômetro rodado. É o que o sistema usa no deslocamento.</p>
+          </li>
+          <li class="step-card">
+            <span class="step-num" aria-hidden="true">3</span>
+            <b>Monte os cadastros</b>
+            <p>Clientes, animais, serviços e produtos. Tem nota de compra? Importe o XML e o estoque se monta sozinho.</p>
+          </li>
+          <li class="step-card">
+            <span class="step-num" aria-hidden="true">4</span>
+            <b>Faça o primeiro atendimento</b>
+            <p>Prontuário, itens, desconto e deslocamento. Pode ser offline — sincroniza depois.</p>
+          </li>
+          <li class="step-card">
+            <span class="step-num" aria-hidden="true">5</span>
+            <b>Feche o financeiro</b>
+            <p>Cobrança à vista ou parcelada; em dinheiro, a baixa é automática. Nos planos com fiscal, emita a NFS-e.</p>
+          </li>
+          <li class="step-card">
+            <span class="step-num" aria-hidden="true">6</span>
+            <b>Leve para o campo</b>
+            <p>Instale no celular e use no haras. Quando o sinal voltar, tudo sincroniza sozinho.</p>
+          </li>
+        </ol>
 
         <div class="install-callout">
           <div>
-            <strong>Baixe o app para Android</strong>
-            <p>Instale o aplicativo direto no seu celular ou tablet Android. Funciona offline e sincroniza quando a internet volta.</p>
+            <strong>Leve o sistema no bolso</strong>
+            <p>No Android, baixe o aplicativo direto daqui. Funciona offline e sincroniza quando a internet volta.</p>
             <div class="install-actions">
-              <a class="button button-primary" href="downloads/vetsystemcontrol-equine.apk" download>Baixar app para Android (APK)</a>
+              <a class="button button-primary" href="downloads/vetsystemcontrol-equine.apk" download>Baixar app para Android</a>
               <span class="install-version">Android 7+ · ~4,7 MB · sempre a versão mais recente</span>
             </div>
-            <p class="install-hint">Ao abrir o arquivo, o Android pode pedir para permitir a instalação por vir de fora da loja — toque em Permitir/Instalar. Seus dados ficam seguros no aparelho.</p>
+            <p class="install-hint">Ao abrir o arquivo, o Android pede para permitir a instalação por vir de fora da loja — toque em Permitir. Seus dados ficam no aparelho.</p>
           </div>
           <ul class="install-steps">
             <li>
-              <b>Prefere sem baixar? Instale pelo navegador</b>
-              <span>No Android (Chrome), abra o ERP e toque no menu ⋮ → “Instalar app”: vira um app com ícone próprio e atualiza sozinho.</span>
+              <b>Prefere não baixar? Instale pelo navegador</b>
+              <span>No Chrome (Android), abra o ERP e toque no menu ⋮ → “Instalar app”. Vira um app com ícone próprio e atualiza sozinho.</span>
             </li>
             <li>
-              <b>iPhone / iPad (Safari)</b>
-              <span>Abra app.vetsystemcontrol.com.br → botão Compartilhar → “Adicionar à Tela de Início”.</span>
+              <b>iPhone e iPad</b>
+              <span>No Safari, abra app.vetsystemcontrol.com.br → Compartilhar → “Adicionar à Tela de Início”.</span>
             </li>
           </ul>
         </div>
       </div>
     </section>
 
+    <!-- ───────────────────────── SEUS DADOS ───────────────────────── -->
+    <section id="dados" class="section">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Seus dados</p>
+          <h2>O prontuário e o financeiro dos seus clientes são seus. Não nossos.</h2>
+          <p>
+            Você é o responsável pelos dados dos seus clientes perante a LGPD — e o sistema foi construído para te dar as ferramentas de cumprir isso, não para prender você.
+          </p>
+        </div>
+
+        <div class="cards-grid data-grid">
+          <article class="card data-card">
+            <strong>Exportação a qualquer momento</strong>
+            <p>Um clique e você leva todos os dados de um cliente — cadastro, animais, atendimentos, cobranças — num arquivo aberto. Sem pedir autorização a ninguém.</p>
+          </article>
+          <article class="card data-card">
+            <strong>Direito ao esquecimento (LGPD)</strong>
+            <p>Quando o cliente pede para ser apagado, o sistema anonimiza o cadastro e preserva o que a lei obriga a guardar (nota fiscal, financeiro). Do jeito certo.</p>
+          </article>
+          <article class="card data-card">
+            <strong>Trilha de auditoria</strong>
+            <p>Desconto, estorno, mudança de status, troca de responsável técnico: quem fez, quando e o quê. O histórico não se apaga.</p>
+          </article>
+          <article class="card data-card">
+            <strong>Cada clínica no seu banco</strong>
+            <p>Os dados da sua clínica ficam isolados dos de qualquer outra — não é uma tabela compartilhada com um filtro. E você mantém backup local.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── DEMO ─────────────────────────── -->
     <section id="demo" class="section demo-section">
       <div class="container demo-box">
         <div>
-          <p class="eyebrow">Demonstração guiada</p>
-          <h2>Conheça o ERP em uma operação fictícia e separada do ambiente oficial.</h2>
+          <p class="eyebrow">Demonstração</p>
+          <h2>Prefere ver funcionando antes de criar a conta?</h2>
           <p>
-            A demonstração apresenta fluxos essenciais como atendimentos, clientes, animais, estoque, financeiro e uso offline-first. Tudo com dados fictícios, em ambiente separado do ERP oficial.
+            Abra o sistema real em uma operação fictícia — com clientes, animais e atendimentos de mentira — e mexa à vontade. Ambiente separado do ERP oficial.
           </p>
         </div>
-        <button class="button button-light" type="button" data-open-demo>Solicitar demonstração</button>
+        <button class="button button-light" type="button" data-open-demo>Ver demonstração</button>
       </div>
     </section>
 
-
-    <section id="seguranca" class="section section-soft">
-      <div class="container">
-        <div class="section-heading">
-          <p class="eyebrow">Controle operacional</p>
-          <h2>Controle e rastreabilidade sem promessas exageradas.</h2>
-          <p>
-            O sistema foi pensado para organizar usuários, registros e dados da operação em uma estrutura mais controlada, com apoio à rastreabilidade e à continuidade da rotina veterinária equina.
-          </p>
-        </div>
-
-        <div class="cards-grid security-grid">
-          <article class="card highlight-card">
-            <strong>Demo com dados fictícios</strong>
-            <p>O visitante pode testar fluxos sem acessar dados reais de clientes, animais, financeiro ou operação.</p>
-          </article>
-          <article class="card highlight-card">
-            <strong>ERP oficial separado</strong>
-            <p>O ambiente real permanece em app.vetsystemcontrol.com.br, separado da demonstração pública.</p>
-          </article>
-          <article class="card highlight-card">
-            <strong>Usuários e permissões</strong>
-            <p>O sistema apoia a organização do acesso da equipe por usuários e perfis quando configurado.</p>
-          </article>
-          <article class="card highlight-card">
-            <strong>Sincronização responsável</strong>
-            <p>Registros locais podem ser sincronizados quando a conexão estiver disponível, sem prometer funcionamento absoluto em qualquer cenário.</p>
-          </article>
-        </div>
-      </div>
-    </section>
+    <!-- ─────────────────────────── FAQ ─────────────────────────── -->
     <section id="faq" class="section">
       <div class="container faq-grid">
         <div>
           <p class="eyebrow">FAQ</p>
           <h2>Perguntas frequentes</h2>
-          <p>Respostas simples para entender o sistema antes de solicitar uma apresentação.</p>
+          <p>O que os veterinários mais perguntam antes de começar.</p>
         </div>
 
         <div class="faq-list">
           <details>
-            <summary>O sistema funciona offline?</summary>
-            <p>Sim. O ERP é offline-first: você registra atendimento, financeiro e o resto da rotina sem internet, os dados ficam no dispositivo e sincronizam sozinhos quando a conexão volta.</p>
+            <summary>Funciona mesmo sem internet?</summary>
+            <p>Funciona. O sistema roda no seu aparelho: você registra atendimento, financeiro, agenda e estoque sem sinal nenhum. Quando a conexão volta, tudo sobe sozinho — sem apertar botão e sem duplicar registro.</p>
           </details>
           <details>
-            <summary>Funciona no celular? Precisa instalar da loja?</summary>
-            <p>Funciona no navegador do computador e do celular. No <b>Android</b>, você pode baixar o app (APK) direto do nosso site, na seção “Começar”. No <b>iPhone/iPad</b> (ou no Android, se preferir não baixar), dá para instalar como app pelo próprio navegador: no Chrome, menu → “Instalar app”; no Safari, Compartilhar → “Adicionar à Tela de Início”. Em todos os casos vira um app com ícone próprio, funciona offline e sincroniza depois. Não depende de loja.</p>
+            <summary>Como começo? Precisa de cartão?</summary>
+            <p>Não precisa de cartão. Acesse app.vetsystemcontrol.com.br, crie sua conta e comece: o plano Free dá 5 atendimentos por mês, para sempre, com a rotina essencial (prontuário, financeiro, agenda, vacinas, estoque, contas a pagar e relatórios). NFS-e, importação de XML e internação entram nos planos pagos.</p>
           </details>
           <details>
-            <summary>Tem plano grátis? Como começo?</summary>
-            <p>Sim. Você começa grátis, sem cartão: 5 atendimentos por mês, com 1 usuário e a rotina essencial (clínico, financeiro, agenda, vacinas, estoque, contas a pagar e relatórios). A emissão de NFS-e, a importação de XML e a internação entram nos planos pagos, que também liberam volume ilimitado e mais usuários. É só acessar o ERP e criar sua conta.</p>
+            <summary>Funciona no celular? Precisa baixar da loja?</summary>
+            <p>Funciona no navegador do computador e do celular. No <b>Android</b>, você pode baixar o app direto do nosso site (seção “Começar”). No <b>iPhone/iPad</b> — ou no Android, se preferir não baixar — dá para instalar pelo próprio navegador: no Chrome, menu → “Instalar app”; no Safari, Compartilhar → “Adicionar à Tela de Início”. Vira um app com ícone próprio e funciona offline. Não depende de loja.</p>
           </details>
           <details>
             <summary>O sistema emite nota fiscal de serviço (NFS-e)?</summary>
-            <p>Sim. O módulo Fiscal gera a NFS-e a partir do atendimento, com ISS, retenções e valor líquido calculados. A emissão depende da configuração do seu município (padrão ABRASF) e do certificado digital da empresa — as regras variam por prefeitura.</p>
+            <p>Sim, a partir do próprio atendimento, com ISS, retenções e valor líquido calculados. A emissão depende da configuração do seu município (padrão ABRASF) e do certificado digital da sua empresa — as regras variam por prefeitura.</p>
           </details>
           <details>
-            <summary>Dá para cobrar parcelado e fechar em lote?</summary>
-            <p>Sim. Cada atendimento vira título à vista ou parcelado, com baixa por parcela (e baixa automática quando o recebimento é em dinheiro). Também dá para consolidar vários atendimentos do mesmo cliente em um único título com o Fechamento em Lote.</p>
+            <summary>Dá para cobrar parcelado e fechar o mês do haras de uma vez?</summary>
+            <p>Dá. Cada atendimento vira título à vista ou parcelado, com baixa por parcela (automática quando o recebimento é em dinheiro). E o Fechamento em Lote consolida vários atendimentos do mesmo cliente em um único título, com recibo do lote.</p>
           </details>
           <details>
-            <summary>Tem controle de estoque e internação?</summary>
-            <p>Sim. O estoque organiza produtos por local, lote e validade (FEFO), com movimentação ligada ao atendimento. E há um módulo de Internação com baias, sinais vitais, tratamento e alta.</p>
+            <summary>Meus dados ficam presos no sistema?</summary>
+            <p>Não. Você exporta os dados de qualquer cliente a qualquer momento, em arquivo aberto, e faz backup local quando quiser. Os dados são seus — o sistema é ferramenta, não cofre.</p>
           </details>
           <details>
-            <summary>Para que serve a Importação XML?</summary>
-            <p>Ela é sobre a <b>nota de compra</b> (NF-e do fornecedor): cria e concilia produtos no estoque a partir do XML, reduzindo digitação. Não substitui a conferência responsável. Para <b>emitir</b> sua nota, use o módulo Fiscal.</p>
+            <summary>Posso trocar de plano ou cancelar depois?</summary>
+            <p>Pode, a qualquer momento e sem multa — não há fidelidade nem taxa de implantação. Se cancelar, seus dados continuam disponíveis para exportação.</p>
           </details>
           <details>
             <summary>A demonstração usa dados reais?</summary>
@@ -729,11 +692,12 @@
 
     <section class="section final-cta">
       <div class="container final-card">
-        <h2>Criado para a rotina real do veterinário de equinos.</h2>
-        <p>Clínico, financeiro, fiscal, internação e estoque em um só lugar — feito para o atendimento equino a campo. Registre no haras, na clínica ou na estrada mesmo sem internet: os dados ficam no dispositivo e sincronizam quando a conexão voltar. Comece grátis com 5 atendimentos por mês.</p>
+        <p class="eyebrow">Comece hoje</p>
+        <h2>O próximo atendimento já pode entrar organizado.</h2>
+        <p>Prontuário, dinheiro e nota fiscal no mesmo lugar — funcionando no haras, mesmo sem sinal. Grátis para os 5 primeiros atendimentos do mês, sem cartão.</p>
         <div class="hero-actions centered">
-          <button class="button button-primary" type="button" data-open-demo>Solicitar demonstração</button>
-          <a class="button button-secondary" href="https://app.vetsystemcontrol.com.br">Acessar ERP</a>
+          <a class="button button-primary" href="https://app.vetsystemcontrol.com.br">Começar grátis</a>
+          <button class="button button-secondary" type="button" data-open-demo>Ver demonstração</button>
         </div>
       </div>
     </section>
@@ -743,12 +707,14 @@
     <div class="container footer-grid">
       <div>
         <img src="assets/VSC_horizontal_equine.png" alt="Vet System Control | Equine" width="220" height="69" />
-        <p>ERP offline-first para o veterinário de equinos: clínico, financeiro, fiscal, internação e estoque — no campo, na clínica e no haras.</p>
+        <p>ERP offline-first para o médico-veterinário de equinos: prontuário, financeiro, fiscal, internação e estoque — no haras, na estrada e na clínica.</p>
       </div>
       <div>
-        <strong>Site oficial</strong>
-        <a href="https://www.vetsystemcontrol.com.br">www.vetsystemcontrol.com.br</a>
+        <strong>Sistema</strong>
         <a href="https://app.vetsystemcontrol.com.br">Acessar ERP</a>
+        <a href="#planos">Planos e preços</a>
+        <a href="#comecar">Baixar app Android</a>
+        <a href="#faq">Perguntas frequentes</a>
       </div>
       <div>
         <strong>Áreas</strong>
@@ -759,6 +725,10 @@
         <a href="#modulos">Todos os módulos</a>
       </div>
     </div>
+    <div class="container footer-legal">
+      <span>© 2026 Vet System Control | Equine</span>
+      <span>www.vetsystemcontrol.com.br</span>
+    </div>
   </footer>
 
   <div class="modal-backdrop" data-modal hidden>
@@ -768,7 +738,7 @@
       <h2 id="demo-title">Conheça o sistema em uma operação fictícia.</h2>
       <p>
         Escolha um módulo para abrir uma tela do ERP em ambiente demo separado.
-        A demonstração deve usar dados fictícios, empresa fictícia e banco separado do sistema real.
+        A demonstração usa dados fictícios, empresa fictícia e banco separado do sistema real.
       </p>
 
       <div class="demo-layout demo-layout-real">
