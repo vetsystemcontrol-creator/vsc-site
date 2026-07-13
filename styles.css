@@ -378,7 +378,28 @@ p { margin: 0; }
 
 /* ── Mock do produto ────────────────────────────────────────────────────── */
 
+/* O painel recua à direita para ABRIR o palco do mascote — sem isso, ele fica em
+   cima dos rótulos da tabela, e um personagem cobrindo texto é desleixo. */
+.hero-visual { position: relative; padding-left: 58px; }
+
+/**
+ * O mascote fica À FRENTE do painel, apoiado na base — a composição que faz o
+ * personagem parecer "apresentando" o produto, em vez de um adesivo colado ao
+ * lado. Some no celular: ali o espaço é do conteúdo, não da decoração.
+ */
+.hero-mascot {
+  position: absolute;
+  left: -46px;
+  bottom: -44px;
+  z-index: 2;
+  width: auto;
+  height: 372px;
+  pointer-events: none;
+  filter: drop-shadow(0 26px 30px rgba(14, 26, 22, 0.2));
+}
+
 .browser-card {
+  position: relative;
   background: var(--paper);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
@@ -657,7 +678,85 @@ p { margin: 0; }
   color: var(--ink);
 }
 
-.animal-avatar { width: 28px; height: 28px; border-radius: 999px; }
+/* ── Espécies atendidas ─────────────────────────────────────────────────── */
+
+.species-block + .species-block { margin-top: var(--space-7); }
+
+.species-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--line);
+}
+
+.species-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-4);
+}
+
+.species-card {
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--paper);
+}
+
+.species-card.is-primary { border-color: var(--green-line); background: var(--green-soft); }
+
+.species-card strong {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: var(--ink);
+  margin-bottom: var(--space-2);
+}
+
+.species-card p { color: var(--ink-soft); font-size: 0.94rem; }
+.species-card p b { color: var(--ink); font-weight: 600; }
+
+/**
+ * Palco da ilustração. A arte entra como BACKGROUND de propósito: se um arquivo
+ * faltar, o cartão continua íntegro — mostra só o palco verde, sem ícone de
+ * imagem quebrada. Trocar a arte = trocar o PNG, sem tocar no HTML.
+ *
+ * O personagem fica APOIADO na base do palco (`center bottom`): ele pisa no chão
+ * do cartão, em vez de flutuar no meio.
+ */
+.species-art {
+  display: block;
+  width: 100%;
+  height: 168px;
+  margin-bottom: var(--space-5);
+  border-radius: var(--radius-md);
+  background-color: var(--green-soft);
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: auto 158px;
+}
+
+.species-card.is-primary .species-art { background-color: var(--paper); }
+
+/* WebP: mesma arte por ~1/7 do peso (61 KB contra 433 KB). O PNG fica no repo
+   como mestre, mas quem carrega a página baixa o leve. */
+.species-art--cavalo { background-image: url("assets/mascotes/cavalo.webp"); }
+.species-art--bovino { background-image: url("assets/mascotes/bovino.webp"); }
+.species-art--cao { background-image: url("assets/mascotes/cao.webp"); }
+.species-art--gato { background-image: url("assets/mascotes/gato.webp"); }
+
+/* O cartão que explica a adaptação do sistema não tem bicho — tem a ideia. */
+.species-card.is-adaptive {
+  background: var(--ink);
+  border-color: var(--ink);
+}
+.species-card.is-adaptive strong { color: #fff; }
+.species-card.is-adaptive p { color: rgba(255, 255, 255, 0.74); }
+.species-card.is-adaptive p b { color: #fff; }
 
 /* A etapa cumprida é marcada por um trilho verde à esquerda — o progresso é
    informação, não enfeite. */
@@ -1339,6 +1438,9 @@ p { margin: 0; }
 }
 
 @media (max-width: 900px) {
+  .species-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Em coluna, o mascote roubaria a largura do painel e cortaria os números. */
+  .hero-mascot { display: none; }
   .menu-button { display: inline-flex; }
 
   .main-nav {
@@ -1385,6 +1487,7 @@ p { margin: 0; }
   .plans-grid,
   .steps-grid,
   .data-grid,
+  .species-grid,
   .dashboard-grid,
   .demo-actions { grid-template-columns: 1fr; }
   .button { width: 100%; }
