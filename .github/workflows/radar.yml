@@ -1,0 +1,42 @@
+# Radar equino — atualiza as manchetes uma vez por dia.
+#
+# Por que GitHub Action e não um Worker com cron: o site é 100% estático no
+# Cloudflare Pages. O robô roda aqui, regrava `radar.json` e faz commit; o Pages
+# republica sozinho a cada push. Sem worker novo, sem KV, sem CORS, sem custo de
+# execução — e se o job falhar, o `radar.json` anterior continua no ar.
+name: Radar equino
+
+on:
+  schedule:
+    # 09:10 UTC ≈ 06:10 em Brasília — as manchetes do dia anterior já estão nos feeds.
+    - cron: '10 9 * * *'
+  workflow_dispatch: # permite rodar na mão pelo painel do GitHub
+
+permissions:
+  contents: write
+
+jobs:
+  atualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Sem `npm install`: o robô roda com Node puro, de propósito.
+      - name: Buscar manchetes
+        run: node tools/radar.mjs
+
+      - name: Publicar se houve novidade
+        run: |
+          if [ -z "$(git status --porcelain radar.json)" ]; then
+            echo "Sem novidade — nada a publicar."
+            exit 0
+          fi
+          git config user.name "radar-bot"
+          git config user.email "radar-bot@users.noreply.github.com"
+          git add radar.json
+          git commit -m "chore(radar): atualiza manchetes"
+          git push
