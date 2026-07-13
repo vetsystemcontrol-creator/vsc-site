@@ -245,6 +245,11 @@ p { margin: 0; }
 
 /* `:not(.button)` é obrigatório: sem ele esta regra (mais específica que
    `.button-primary`) zeraria o fundo do botão "Acessar ERP" dentro do menu. */
+/**
+ * `padding-block` não é estética: sem ele o item do menu tem ~19px de altura e
+ * reprova o alvo de toque mínimo da WCAG 2.2 (2.5.8, 24×24px) — no celular e no
+ * tablet, o dedo erra. Medido com renderização real em 6 aparelhos.
+ */
 .main-nav a:not(.button),
 .link-button {
   font-size: 0.94rem;
@@ -252,7 +257,10 @@ p { margin: 0; }
   color: var(--ink-2);
   background: none;
   border: 0;
-  padding: 0;
+  padding: var(--space-1) 0;
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
   cursor: pointer;
   position: relative;
   transition: color 0.15s ease;
@@ -1372,6 +1380,8 @@ p { margin: 0; }
 }
 
 .footer-grid > div > a:hover { color: var(--green); }
+
+.footer-legal a { padding: var(--space-1) 0; display: inline-block; }
 
 .footer-legal {
   display: flex;
