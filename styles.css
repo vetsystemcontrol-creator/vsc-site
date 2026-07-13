@@ -748,6 +748,7 @@ p { margin: 0; }
 .species-art--bovino { background-image: url("assets/mascotes/bovino.webp"); }
 .species-art--cao { background-image: url("assets/mascotes/cao.webp"); }
 .species-art--gato { background-image: url("assets/mascotes/gato.webp"); }
+.species-art--gato { background-image: url("assets/mascotes/gato.webp"); }
 
 /* O cartão que explica a adaptação do sistema não tem bicho — tem a ideia. */
 .species-card.is-adaptive {

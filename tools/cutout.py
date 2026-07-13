@@ -58,20 +58,19 @@ JOBS = [
     # miniaturas das laterais; só a mesa e os quatro personagens.
     {
         "name": "equipe",
-        "file": "Gemini_Generated_Image_ag9xidag9xidag9x.png",
-        "crop": (225, 490, 905, 1024),
-        "height": 760,
-        "keep_all": True,  # a cena tem mesa, tablet e xícara: não filtrar por corpo
+        "file": "Gemini_Generated_Image_kdjaw9kdjaw9kdja.png",
+        "crop": (232, 478, 848, 1024),
+        "height": 780,
+        "keep_all": True,  # a cena tem mesa, monitor e tablet: não filtrar por corpo
     },
-    # O gato NÃO sai da arte em trio: o cão encosta nele, e qualquer retângulo ou
-    # corta o casaco do gato em linha reta ou traz a manga do cão junto (os corpos
-    # se tocam — nem o filtro de maior corpo separa). Vem da folha de variações,
-    # da figura ISOLADA do canto inferior esquerdo.
+    # Gato ISOLADO (arte regerada). As versões anteriores saíam da arte em GRUPO,
+    # onde o cão encosta nele: qualquer retângulo ou cortava o casaco em linha reta
+    # ou trazia a manga do vizinho — e como os corpos se tocam, nem o filtro de
+    # maior corpo separava.
     {
         "name": "gato",
-        "file": "Gemini_Generated_Image_wb4gp0wb4gp0wb4g.png",
-        "crop": (10, 690, 175, 960),  # o pé do recorte para ANTES da legenda escrita na arte
-        "height": 500,
+        "file": "Gemini_Generated_Image_g8x4x6g8x4x6g8x4.png",
+        "height": 900,
     },
 ]
 
