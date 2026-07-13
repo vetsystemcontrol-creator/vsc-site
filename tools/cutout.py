@@ -53,14 +53,25 @@ JOBS = [
         "crop": (838, 45, 1005, 352),
         "height": 500,
     },
-    # O gato da folha de variações é pequeno demais — o modelo devolveu um
-    # fantasma (alfa fraco). Este vem da arte em trio, onde ele é grande, cortando
-    # DEPOIS do cão; o que sobrar de vizinho cai no filtro de maior corpo.
+    # A CENA da equipe discutindo o tratamento — o argumento visual de que o sistema
+    # atende a clínica inteira. O recorte exclui o título escrito na arte e as
+    # miniaturas das laterais; só a mesa e os quatro personagens.
+    {
+        "name": "equipe",
+        "file": "Gemini_Generated_Image_ag9xidag9xidag9x.png",
+        "crop": (225, 490, 905, 1024),
+        "height": 760,
+        "keep_all": True,  # a cena tem mesa, tablet e xícara: não filtrar por corpo
+    },
+    # O gato NÃO sai da arte em trio: o cão encosta nele, e qualquer retângulo ou
+    # corta o casaco do gato em linha reta ou traz a manga do cão junto (os corpos
+    # se tocam — nem o filtro de maior corpo separa). Vem da folha de variações,
+    # da figura ISOLADA do canto inferior esquerdo.
     {
         "name": "gato",
-        "file": "Gemini_Generated_Image_vkk0g9vkk0g9vkk0.png",
-        "crop": (672, 395, 950, 990),
-        "height": 700,
+        "file": "Gemini_Generated_Image_wb4gp0wb4gp0wb4g.png",
+        "crop": (10, 690, 175, 960),  # o pé do recorte para ANTES da legenda escrita na arte
+        "height": 500,
     },
 ]
 
@@ -69,6 +80,97 @@ def cutout(session, path: Path) -> Image.Image:
     """Remove o fundo da imagem inteira e devolve RGBA com alfa real."""
     raw = path.read_bytes()
     return Image.open(BytesIO(remove(raw, session=session))).convert("RGBA")
+
+
+def detect_board(image: Image.Image) -> tuple[int, int, float] | None:
+    """
+    Descobre o tabuleiro desenhado pela IA: cor clara, cor escura e o tamanho da
+    célula — lendo o canto da imagem ORIGINAL (que é fundo puro).
+    """
+    probe = image.convert("RGB").crop((0, 0, 240, 240))
+    pixels = probe.load()
+
+    tones: dict[int, int] = {}
+    for y in range(240):
+        for x in range(240):
+            r, g, b = pixels[x, y]
+            if max(r, g, b) - min(r, g, b) <= 8:  # acromático = fundo
+                tone = (r + g + b) // 3
+                tones[tone] = tones.get(tone, 0) + 1
+
+    if len(tones) < 2:
+        return None
+
+    ranked = sorted(tones.items(), key=lambda item: -item[1])
+    first = ranked[0][0]
+    second = next((tone for tone, _ in ranked if abs(tone - first) > 20), None)
+    if second is None:
+        return None
+
+    light, dark = max(first, second), min(first, second)
+    middle = (light + dark) / 2
+
+    runs, start = [], 0
+    was_light = sum(pixels[0, 3]) / 3 >= middle
+    for x in range(1, 240):
+        is_light = sum(pixels[x, 3]) / 3 >= middle
+        if is_light != was_light:
+            runs.append(x - start)
+            start, was_light = x, is_light
+
+    cell = sum(runs) / len(runs) if len(runs) >= 4 else 21.0
+    return light, dark, max(6.0, cell)
+
+
+def erase_checker_inside(
+    image: Image.Image, board: tuple[int, int, float], offset: tuple[int, int]
+) -> Image.Image:
+    """
+    Apaga o xadrez que sobrou DENTRO do recorte.
+
+    O modelo (rembg) tira o fundo de FORA, mas o xadrez desenhado entre os
+    personagens e sobre a mesa ele entende como parte do sujeito — e mantém.
+
+    O teste é de DUAS CÉLULAS, e é isso que protege o jaleco: um pixel só é fundo
+    se ele bate com a cor esperada da SUA célula E o pixel a uma célula de
+    distância bate com a cor esperada da célula VIZINHA (que é a oposta). O
+    tabuleiro alterna claro/escuro; o jaleco branco é uniforme — ele passa no
+    primeiro teste, mas nunca no segundo. Foi assim que o recorte por cor deixou de
+    comer o jaleco.
+    """
+    light, dark, cell = board
+    ox, oy = offset
+    tolerance = min(16, (light - dark) // 3)
+    step = int(round(cell))
+
+    rgba = image.convert("RGBA")
+    pixels = rgba.load()
+    width, height = rgba.size
+
+    def expected(x: int, y: int) -> int:
+        cx = int((x + ox) // cell)
+        cy = int((y + oy) // cell)
+        return light if (cx + cy) % 2 == 0 else dark
+
+    def matches(x: int, y: int) -> bool:
+        if not (0 <= x < width and 0 <= y < height):
+            return False
+        r, g, b, a = pixels[x, y]
+        if a == 0:
+            return True
+        if max(r, g, b) - min(r, g, b) > 10:  # tem cor → é o personagem
+            return False
+        return abs((r + g + b) // 3 - expected(x, y)) <= tolerance
+
+    for y in range(height):
+        for x in range(width):
+            r, g, b, a = pixels[x, y]
+            if a == 0:
+                continue
+            if matches(x, y) and (matches(x + step, y) or matches(x - step, y)):
+                pixels[x, y] = (r, g, b, 0)
+
+    return rgba
 
 
 def keep_largest_subject(image: Image.Image) -> Image.Image:
@@ -125,6 +227,36 @@ def trim(image: Image.Image) -> Image.Image:
     return image.crop(box) if box else image
 
 
+def find_phase(original: Image.Image, board: tuple[int, int, float]) -> tuple[int, int]:
+    """Acha o deslocamento do tabuleiro testando os offsets contra a moldura."""
+    light, dark, cell = board
+    tolerance = min(16, (light - dark) // 3)
+    rgb = original.convert("RGB")
+    pixels = rgb.load()
+    width, height = rgb.size
+
+    border = [(x, y) for x in range(0, width, 5) for y in (2, 6, height - 3)]
+    border += [(x, y) for y in range(0, height, 5) for x in (2, 6, width - 3)]
+
+    best, best_hits = (0, 0), -1
+    for oy in range(0, int(cell)):
+        for ox in range(0, int(cell)):
+            hits = 0
+            for x, y in border:
+                r, g, b = pixels[x, y]
+                if max(r, g, b) - min(r, g, b) > 8:
+                    continue
+                cx = int((x + ox) // cell)
+                cy = int((y + oy) // cell)
+                want = light if (cx + cy) % 2 == 0 else dark
+                if abs((r + g + b) // 3 - want) <= tolerance:
+                    hits += 1
+            if hits > best_hits:
+                best, best_hits = (ox, oy), hits
+
+    return best
+
+
 def main() -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     session = new_session("isnet-general-use")  # melhor recorte p/ pelo e cauda
@@ -134,12 +266,23 @@ def main() -> None:
     for job in JOBS:
         source = job["file"]
         if source not in cache:
-            cache[source] = cutout(session, SOURCE_DIR / source)
+            cut = cutout(session, SOURCE_DIR / source)
+
+            # 2ª passada: apaga o xadrez que o modelo manteve DENTRO da cena.
+            original = Image.open(SOURCE_DIR / source)
+            board = detect_board(original)
+            if board:
+                cut = erase_checker_inside(cut, board, find_phase(original, board))
+
+            cache[source] = cut
 
         image = cache[source]
         if job.get("crop"):
             image = image.crop(job["crop"])
-            image = keep_largest_subject(image)
+            # `keep_all`: numa CENA, mesa, tablet e xícara são corpos separados —
+            # ficar só com o maior apagaria metade da ilustração.
+            if not job.get("keep_all"):
+                image = keep_largest_subject(image)
 
         image = trim(image)
 
