@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-13T10:22:38.708Z",
+  "updatedAt": "2026-07-14T10:54:14.457Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -57,15 +57,6 @@
       "publishedAt": "2026-07-06T13:59:46.000Z"
     },
     {
-      "title": "CFMV lança novas diretrizes para responsáveis técnicos em estabelecimentos de produtos de origem animal",
-      "url": "https://www.cfmv.gov.br/cfmv-lanca-novas-diretrizes-para-responsaveis-tecnicos-em-estabelecimentos-de-produtos-de-origem-animal/comunicacao/noticias/2026/07/03/",
-      "source": "CFMV",
-      "sourceKind": "profissao",
-      "sourceLabel": "Conselho Federal de Medicina Veterinária",
-      "lang": "pt",
-      "publishedAt": "2026-07-03T19:37:39.000Z"
-    },
-    {
       "title": "Segurança sanitária, responsabilidade técnica e bem-estar animal marcam segundo dia da 2ª Câmara Nacional de Presidentes",
       "url": "https://www.cfmv.gov.br/seguranca-sanitaria-responsabilidade-tecnica-e-bem-estar-animal-marcam-segundo-dia-da-2a-camara-nacional-de-presidentes/comunicacao/noticias/2026/07/02/",
       "source": "CFMV",
@@ -75,40 +66,31 @@
       "publishedAt": "2026-07-02T12:40:07.000Z"
     },
     {
-      "title": "Diretriz de Gestão para os Conselhos Regionais de Medicina Veterinária",
-      "url": "https://www.cfmv.gov.br/diretriz-de-gestao-para-os-conselhos-regionais-de-medicina-veterinaria/comunicacao/publicacoes/2026/06/30/",
-      "source": "CFMV",
-      "sourceKind": "profissao",
-      "sourceLabel": "Conselho Federal de Medicina Veterinária",
-      "lang": "pt",
-      "publishedAt": "2026-06-30T19:02:03.000Z"
-    },
-    {
-      "title": "Zoetis reúne especialistas de quatro países no Fórum de Sanidade de Equídeos na XXVI Conferência da ABRAVEQ",
-      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxOMTZJNTJMZHNRNnJoamM0REdFQ1A2LTZNZzM3WS1CeDRXNjZMSmNqcC1UUjNOTDZfRzB5S0xIblJfLTBPYzNQYnBGYkY3dGhzcDVzc0tsWnVkdktpc21MSFNWek5NR2dnS0l0cFhLRzZEYjZDVHowc0FNWVRhUlJQQ1NERDA4SF8xVnhkam10c2tieUh4bk8tRjVtM1FQbmdXLXpzMlozd0o0MlQwcUZUeXBrNFlMbTYwZnltYml2bjJqRWxCMWVnRmFZSHE0OTExeTZuaVhUSGFKcGdSeG9tTEhkb0pQSjg?oc=5",
-      "source": "Gazeta da Semana",
+      "title": "Vetnil fortalece atuação na medicina veterinária equina durante a XXVI edição da Conferência Anual da ABRAVEQ",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQa3paWjl5Q19XLW4zWXpHT0oyYlRvNWJwaTlwVk9oX21NX1ZYalN5SVFDNi1FS25rU3FwWFBVUFVFUFpubDNTOVd0ZFlNdGwyN19JeVBCeVNGZnFJWllOVm9SNG8yVEYyTjhmczYyX0Flamw2eElJamoxSEpPN2lfSXktVHBwQzA?oc=5",
+      "source": "Pelo Mundo DF",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-06-28T11:53:50.000Z"
+      "publishedAt": "2026-07-01T19:37:00.000Z"
     },
     {
-      "title": "Médica Veterinária alerta para cuidados com a Anemia Infecciosa Equina",
-      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxPN1ZZNjZtVTNxNVh2R210RFVoRW5hVnl5c2FTQ3Rtal81VjJPQ0dGanl1RlVtRk5oNUt3V2FRUnc1eEl2YVRLLWI1WkhLdWwwUjFMdkpXSWdFQkxGLVRTWUxUTmRPSWhtQkV1TkN4dW5hLUdGaTFtWldoVjVESWxxYk43TzVUQy1FSjhaeFFfN1JldGVMX1o1RnRqVnJ6dWhud25hSE9WeG9uWEh2X3ZmTk5lMzNybmlyMUoyb21YZnRJQWtNWFROTy1jaHZBdEJya0NsaHNiOFRCZw?oc=5",
-      "source": "Tua Rádio",
+      "title": "Ciência impulsiona evolução da medicina equina",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOTjFIcjJwUlI0ODdvdG41ZndFaHMzelRNSFhLRzBtRGtiSWE4enBRRjEtbzFpVm53Mll4TngtU0NUakJMVlRYNE0xV0RfVUsxa25aRm9aNDZMdXZUT0k2a1g1TTluTzVvR1h0dXB1RTNzYi1nalBqdkU0RldteE5tWk5RMW5CVmw5S1ZvX1hMZjVITm5OMHc0?oc=5",
+      "source": "AgroRevenda",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-06-15T07:00:00.000Z"
+      "publishedAt": "2026-07-01T18:30:48.000Z"
     },
     {
-      "title": "Referência em cavalos Quarto de Milha, Haras WV recebe alunos de medicina veterinária da FAI",
-      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxNTmZmY1AzT2E5SmlyQW9tMzJ2YWhTSnFVaHV2ZFR0N2FWbVI0MmhaUlR6a19lWm9ad2U2NWRtTmhCbFh0ZzAxZVo3QnQ2Qm1ZamdqOTlaRUwwYkhuQVJlZk5FdlVGN1hOS3lpamlqMm5hejhDcUdMWVY4LUc5NGJwVURFamlFWEJHaVBNcElhN3F2WkNyR2RoUGZ5cF94eVFvLUYyOXpkT0UwNmxKVURFaDhjNTZrUTZWSTVBMkc0Z3RzWG5SYVZqRF83NFlhM0E?oc=5",
-      "source": "Siga Mais",
+      "title": "Ela imuniza dois em cada três bebês do planeta, começou dentro de um haras de cavalos de corrida em Pune e se tornou a maior fabricante de vacinas do mundo sem que quase ninguém saiba o seu nome",
+      "url": "https://news.google.com/rss/articles/CBMixwJBVV95cUxORnZvRWVUY1U3TkVOM1FXUVMtRVNBZGpPTG5DXzExODhzZHotYWxtT29Pclp3UEhWT2lWWkxjRDgxbDYtU0lua0xkSkRMNTIxOVQ5Q04zLUVuOEhMY3d0SVZfdGlNY2s1OFI1dHhoWHRpeXlKN3lwNlVZOXREVEQ3MjVfUE96R0VKdXRjV2IyZGZqT2NnQVpncDlNUTNnNUlIZldLUEdRYVhjaWNlOER1cERhR1Q0VENabnhXWnFvX0NYeDFoU2Y1MTlWZmRjZlh5UW9mSkx1NTlJRFRXWWVXMno1X3RTY2Rvc2ZuTFFuV2FQUllRR1dNM09pWWlfWV94RkxYSUlTTUdCajNJRWRqWGg1S2FjdmdPendZWTVDV1FqMWZZaWNOYVJmWVI4aTI4QkVwaTNqaEpWX1dma2RxQlJrdlNpZ0U?oc=5",
+      "source": "CPG Click Petróleo e Gás",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-06-04T07:00:00.000Z"
+      "publishedAt": "2026-07-01T07:00:00.000Z"
     },
     {
       "title": "Platelet indices’ dynamic in broodmares: Effects of parity and lactation",
