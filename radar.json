@@ -1,7 +1,16 @@
 {
-  "updatedAt": "2026-07-14T10:54:14.457Z",
+  "updatedAt": "2026-07-15T11:00:05.094Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Estão abertas as Inscrições para o Exame de Certificação do Título de Especialista em Endocanabinologia Veterinária",
+      "url": "https://www.cfmv.gov.br/estao-abertas-as-inscricoes-para-o-exame-de-certificacao-do-titulo-de-especialista-em-endocanabinologia-veterinaria/comunicacao/noticias/2026/07/14/",
+      "source": "CFMV",
+      "sourceKind": "profissao",
+      "sourceLabel": "Conselho Federal de Medicina Veterinária",
+      "lang": "pt",
+      "publishedAt": "2026-07-14T19:13:16.000Z"
+    },
     {
       "title": "CRMV-SP reforça protagonismo na Medicina Veterinária equina durante conferência da Abraveq",
       "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPZU9YX1RzZjczYTNOaFVOM0hJYWpCdk5hbnRMbzJyQ3ZJelVsNnRRQ2xaaG1iQjVhbEJaN0pybnB3ZDhQc1JySTdOZUdQR0g0ZERYU2tiaEY2VHg5bjU3THMzVDY4UFZ0cWVCakRpbDNGTDlSaE15Z29Kd040WVZ4YnpFMU1ncEM3NVpyTHJtSUFtaWVXUVFCQ2dRdnc4NS00ODVQVVZNMXl4UlRLWDkxRFNRWQ?oc=5",
@@ -66,15 +75,6 @@
       "publishedAt": "2026-07-02T12:40:07.000Z"
     },
     {
-      "title": "Vetnil fortalece atuação na medicina veterinária equina durante a XXVI edição da Conferência Anual da ABRAVEQ",
-      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQa3paWjl5Q19XLW4zWXpHT0oyYlRvNWJwaTlwVk9oX21NX1ZYalN5SVFDNi1FS25rU3FwWFBVUFVFUFpubDNTOVd0ZFlNdGwyN19JeVBCeVNGZnFJWllOVm9SNG8yVEYyTjhmczYyX0Flamw2eElJamoxSEpPN2lfSXktVHBwQzA?oc=5",
-      "source": "Pelo Mundo DF",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-07-01T19:37:00.000Z"
-    },
-    {
       "title": "Ciência impulsiona evolução da medicina equina",
       "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOTjFIcjJwUlI0ODdvdG41ZndFaHMzelRNSFhLRzBtRGtiSWE4enBRRjEtbzFpVm53Mll4TngtU0NUakJMVlRYNE0xV0RfVUsxa25aRm9aNDZMdXZUT0k2a1g1TTluTzVvR1h0dXB1RTNzYi1nalBqdkU0RldteE5tWk5RMW5CVmw5S1ZvX1hMZjVITm5OMHc0?oc=5",
       "source": "AgroRevenda",
@@ -91,6 +91,15 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-07-01T07:00:00.000Z"
+    },
+    {
+      "title": "Zoetis reúne especialistas de quatro países no Fórum de Sanidade de Equídeos na XXVI Conferência da ABRAVEQ",
+      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxOMTZJNTJMZHNRNnJoamM0REdFQ1A2LTZNZzM3WS1CeDRXNjZMSmNqcC1UUjNOTDZfRzB5S0xIblJfLTBPYzNQYnBGYkY3dGhzcDVzc0tsWnVkdktpc21MSFNWek5NR2dnS0l0cFhLRzZEYjZDVHowc0FNWVRhUlJQQ1NERDA4SF8xVnhkam10c2tieUh4bk8tRjVtM1FQbmdXLXpzMlozd0o0MlQwcUZUeXBrNFlMbTYwZnltYml2bjJqRWxCMWVnRmFZSHE0OTExeTZuaVhUSGFKcGdSeG9tTEhkb0pQSjg?oc=5",
+      "source": "Gazeta da Semana",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-06-28T11:53:50.000Z"
     },
     {
       "title": "Platelet indices’ dynamic in broodmares: Effects of parity and lactation",
