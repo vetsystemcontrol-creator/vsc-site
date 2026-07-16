@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-15T11:00:05.094Z",
+  "updatedAt": "2026-07-16T11:07:29.577Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -75,6 +75,15 @@
       "publishedAt": "2026-07-02T12:40:07.000Z"
     },
     {
+      "title": "Vetnil fortalece atuação na medicina veterinária equina durante a XXVI edição da Conferência Anual da ABRAVEQ",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQa3paWjl5Q19XLW4zWXpHT0oyYlRvNWJwaTlwVk9oX21NX1ZYalN5SVFDNi1FS25rU3FwWFBVUFVFUFpubDNTOVd0ZFlNdGwyN19JeVBCeVNGZnFJWllOVm9SNG8yVEYyTjhmczYyX0Flamw2eElJamoxSEpPN2lfSXktVHBwQzA?oc=5",
+      "source": "Pelo Mundo DF",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-07-01T19:37:00.000Z"
+    },
+    {
       "title": "Ciência impulsiona evolução da medicina equina",
       "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOTjFIcjJwUlI0ODdvdG41ZndFaHMzelRNSFhLRzBtRGtiSWE4enBRRjEtbzFpVm53Mll4TngtU0NUakJMVlRYNE0xV0RfVUsxa25aRm9aNDZMdXZUT0k2a1g1TTluTzVvR1h0dXB1RTNzYi1nalBqdkU0RldteE5tWk5RMW5CVmw5S1ZvX1hMZjVITm5OMHc0?oc=5",
       "source": "AgroRevenda",
@@ -93,13 +102,13 @@
       "publishedAt": "2026-07-01T07:00:00.000Z"
     },
     {
-      "title": "Zoetis reúne especialistas de quatro países no Fórum de Sanidade de Equídeos na XXVI Conferência da ABRAVEQ",
-      "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxOMTZJNTJMZHNRNnJoamM0REdFQ1A2LTZNZzM3WS1CeDRXNjZMSmNqcC1UUjNOTDZfRzB5S0xIblJfLTBPYzNQYnBGYkY3dGhzcDVzc0tsWnVkdktpc21MSFNWek5NR2dnS0l0cFhLRzZEYjZDVHowc0FNWVRhUlJQQ1NERDA4SF8xVnhkam10c2tieUh4bk8tRjVtM1FQbmdXLXpzMlozd0o0MlQwcUZUeXBrNFlMbTYwZnltYml2bjJqRWxCMWVnRmFZSHE0OTExeTZuaVhUSGFKcGdSeG9tTEhkb0pQSjg?oc=5",
-      "source": "Gazeta da Semana",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-06-28T11:53:50.000Z"
+      "title": "Thermal microchips for non-invasive body temperature monitoring in dairy donkeys",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003175?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
     },
     {
       "title": "Platelet indices’ dynamic in broodmares: Effects of parity and lactation",
@@ -140,15 +149,6 @@
     {
       "title": "Quantitative assessment of bone mineral density in donkey (Equus asinus) metacarpal and metatarsal bones using aluminum-calibrated digital radiography in comparison with DEXA",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003047?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "The progression values of heart rate and biochemical plasma parameters during training of 3-years old warmblood stallions for breeding licensing",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626002972?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
