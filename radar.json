@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-17T10:56:37.628Z",
+  "updatedAt": "2026-07-18T10:34:35.412Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -10,15 +10,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-07-16T19:38:27.000Z"
-    },
-    {
-      "title": "Parceria entre UCS e ONG já garantiu tratamento a 29 cavalos resgatados de maus-tratos no RS",
-      "url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxPbVNaenF2Y3FDaE93VjQyeUFCTVhqLWZSU242Q21OMTgzZlIwZVdqdWthLUNKYTVpNUZxZHIwaU1DRXVkdmVEY04wMFV6M2hMV1ZBVE9fQk5mUGNBeXJHZlpUcnlWYjJ1aWIwcnl6ekVMNS00X1RpRFJMT3Fnb1dKb240Z2h3NlhZV0c1MzNvaFFvVDdRd04wRUQwa0N2alJfTWEwYVBtb2RIZkYybl9HLXRxSXJaZkNvUVd6N0tTQ0ZsZ2tmNHZPeHV3MDZNbDJuNWNtdDdsY0F4VUVhSkhn?oc=5",
-      "source": "Tua Rádio",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-07-16T03:00:00.000Z"
     },
     {
       "title": "Estão abertas as Inscrições para o Exame de Certificação do Título de Especialista em Endocanabinologia Veterinária",
@@ -93,13 +84,31 @@
       "publishedAt": "2026-07-02T12:40:07.000Z"
     },
     {
-      "title": "Vetnil fortalece atuação na medicina veterinária equina durante a XXVI edição da Conferência Anual da ABRAVEQ",
-      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQa3paWjl5Q19XLW4zWXpHT0oyYlRvNWJwaTlwVk9oX21NX1ZYalN5SVFDNi1FS25rU3FwWFBVUFVFUFpubDNTOVd0ZFlNdGwyN19JeVBCeVNGZnFJWllOVm9SNG8yVEYyTjhmczYyX0Flamw2eElJamoxSEpPN2lfSXktVHBwQzA?oc=5",
-      "source": "Pelo Mundo DF",
+      "title": "Ciência impulsiona evolução da medicina equina",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOTjFIcjJwUlI0ODdvdG41ZndFaHMzelRNSFhLRzBtRGtiSWE4enBRRjEtbzFpVm53Mll4TngtU0NUakJMVlRYNE0xV0RfVUsxa25aRm9aNDZMdXZUT0k2a1g1TTluTzVvR1h0dXB1RTNzYi1nalBqdkU0RldteE5tWk5RMW5CVmw5S1ZvX1hMZjVITm5OMHc0?oc=5",
+      "source": "AgroRevenda",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-07-01T19:37:00.000Z"
+      "publishedAt": "2026-07-01T18:30:48.000Z"
+    },
+    {
+      "title": "Ela imuniza dois em cada três bebês do planeta, começou dentro de um haras de cavalos de corrida em Pune e se tornou a maior fabricante de vacinas do mundo sem que quase ninguém saiba o seu nome",
+      "url": "https://news.google.com/rss/articles/CBMixwJBVV95cUxORnZvRWVUY1U3TkVOM1FXUVMtRVNBZGpPTG5DXzExODhzZHotYWxtT29Pclp3UEhWT2lWWkxjRDgxbDYtU0lua0xkSkRMNTIxOVQ5Q04zLUVuOEhMY3d0SVZfdGlNY2s1OFI1dHhoWHRpeXlKN3lwNlVZOXREVEQ3MjVfUE96R0VKdXRjV2IyZGZqT2NnQVpncDlNUTNnNUlIZldLUEdRYVhjaWNlOER1cERhR1Q0VENabnhXWnFvX0NYeDFoU2Y1MTlWZmRjZlh5UW9mSkx1NTlJRFRXWWVXMno1X3RTY2Rvc2ZuTFFuV2FQUllRR1dNM09pWWlfWV94RkxYSUlTTUdCajNJRWRqWGg1S2FjdmdPendZWTVDV1FqMWZZaWNOYVJmWVI4aTI4QkVwaTNqaEpWX1dma2RxQlJrdlNpZ0U?oc=5",
+      "source": "CPG Click Petróleo e Gás",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-07-01T07:00:00.000Z"
+    },
+    {
+      "title": "Plasma and urinary concentrations of synephrine in horses following controlled oral administration",
+      "url": "https://www.sciencedirect.com/science/article/pii/S073708062600331X?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
     },
     {
       "title": "Thermal microchips for non-invasive body temperature monitoring in dairy donkeys",
@@ -111,44 +120,35 @@
       "publishedAt": null
     },
     {
+      "title": "Fetal dystocia in a crossbred jenny due to forelimb flexion and fetopelvic disproportion",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003138?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
+      "title": "When genes meet money: Genotype-by-prize interaction in Quarter Horses",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003163?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
+      "title": "Clinical and microbiological evaluation of a phytotherapeutic intrauterine therapy in mares with bacterial endometritis: a preliminary study",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003126?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "Platelet indices’ dynamic in broodmares: Effects of parity and lactation",
       "url": "https://www.sciencedirect.com/science/article/pii/S073708062600314X?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Sixty minutes of daily solitary turnout improved physiological and behavioral indicators of stress and welfare in stall-housed horses",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003102?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Fecal microbiota of weaned equine and mule foals grazing bermudagrass pastures",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003059?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Short-term provision of moderate dietary starch alters fecal microbiota but does not exacerbate exercise-induced inflammation in yearling Quarter Horses",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003060?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Quantitative assessment of bone mineral density in donkey (Equus asinus) metacarpal and metatarsal bones using aluminum-calibrated digital radiography in comparison with DEXA",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003047?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
