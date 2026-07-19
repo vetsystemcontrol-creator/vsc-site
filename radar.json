@@ -1,7 +1,16 @@
 {
-  "updatedAt": "2026-07-18T10:34:35.412Z",
+  "updatedAt": "2026-07-19T10:41:06.275Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Cavalos levados para uma ilha de areia há mais de 250 anos formaram uma população selvagem de 420 animais que vive sem ração, abrigo ou veterinário",
+      "url": "https://news.google.com/rss/articles/CBMinwJBVV95cUxQOG5FMGNpa2R0a2dEZ2h3YlZUWE1JTDkzb0g2dFI2cHhUeXNwek5ZYm1aOTcyUm9sQTVBbjZLS3YzR3NMWUY1dTJKb2RDeGY1V3d4RmFiVUVQbmtDOXktNXQwX2Y0TW4wMDlJc3l2ZExWMTlyc2duYlF0ZElQQlF1THUtY3VGZHZiaXM4dXNjVWt1cW9DczcwRXpiTUJGc0xKU0RqSnlOcE5yYXJDM2lwZGVDV0tPaHFHNVd2TGYwYWxKVFMxOWc3Z1NhdkVfR3MyS1pUekg4WkZ0LTV2Snl3RDhheWg1SzFxX05HUU9BODUzRzZxMGIwdi1vRW94S2hMZkZCN3diWWZhWVlRajJEOWRQaGM3UXZub0xGYkRBRQ?oc=5",
+      "source": "Revista Oeste",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-07-18T19:00:00.000Z"
+    },
     {
       "title": "Parceria entre Medicina Veterinária da UCS e ONG reabilita cavalos abandonados no Rio Grande do Sul",
       "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxPdkdpRjh3ek1QV2RMVFptR1ZDQ1lFTlozTmxiUmU3a3YtcHNhVHZ2OXJ0ZEdPX05kZVE0Z1E5SlUzWGJkdVB4Rl9xTU9DSkZ0REREb1FBTmJHQzExQURWbmtqQVU4dWJ2RXA1NWpEd0w4S0ozRXFpN2M3Yy1QX3BJLTk2X1FzYWNKSmoxRVd2azY1N0ZKc1gyUFF6WDBKYW5OUFJvQkpaWVBHZTVpRHJRWm8zdGxKMlduR3M5NWp3bzRSMUM4RTRudVFfbHZXV3lZX2VlSVZR?oc=5",
@@ -93,15 +102,6 @@
       "publishedAt": "2026-07-01T18:30:48.000Z"
     },
     {
-      "title": "Ela imuniza dois em cada três bebês do planeta, começou dentro de um haras de cavalos de corrida em Pune e se tornou a maior fabricante de vacinas do mundo sem que quase ninguém saiba o seu nome",
-      "url": "https://news.google.com/rss/articles/CBMixwJBVV95cUxORnZvRWVUY1U3TkVOM1FXUVMtRVNBZGpPTG5DXzExODhzZHotYWxtT29Pclp3UEhWT2lWWkxjRDgxbDYtU0lua0xkSkRMNTIxOVQ5Q04zLUVuOEhMY3d0SVZfdGlNY2s1OFI1dHhoWHRpeXlKN3lwNlVZOXREVEQ3MjVfUE96R0VKdXRjV2IyZGZqT2NnQVpncDlNUTNnNUlIZldLUEdRYVhjaWNlOER1cERhR1Q0VENabnhXWnFvX0NYeDFoU2Y1MTlWZmRjZlh5UW9mSkx1NTlJRFRXWWVXMno1X3RTY2Rvc2ZuTFFuV2FQUllRR1dNM09pWWlfWV94RkxYSUlTTUdCajNJRWRqWGg1S2FjdmdPendZWTVDV1FqMWZZaWNOYVJmWVI4aTI4QkVwaTNqaEpWX1dma2RxQlJrdlNpZ0U?oc=5",
-      "source": "CPG Click Petróleo e Gás",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-07-01T07:00:00.000Z"
-    },
-    {
       "title": "Plasma and urinary concentrations of synephrine in horses following controlled oral administration",
       "url": "https://www.sciencedirect.com/science/article/pii/S073708062600331X?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -129,6 +129,15 @@
       "publishedAt": null
     },
     {
+      "title": "Density gradient centrifugation preserves sperm kinetics and morphology in stallion ejaculates with severe urospermia",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003151?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "When genes meet money: Genotype-by-prize interaction in Quarter Horses",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003163?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -140,15 +149,6 @@
     {
       "title": "Clinical and microbiological evaluation of a phytotherapeutic intrauterine therapy in mares with bacterial endometritis: a preliminary study",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003126?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Platelet indices’ dynamic in broodmares: Effects of parity and lactation",
-      "url": "https://www.sciencedirect.com/science/article/pii/S073708062600314X?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
