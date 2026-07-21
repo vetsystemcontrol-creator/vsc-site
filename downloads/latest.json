@@ -1,9 +1,9 @@
 {
-  "versionCode": 3447035,
+  "versionCode": 3447055,
   "versionName": "26.1.820 (e50b4a59)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
   "sizeBytes": 4946867,
-  "sha256": "c8037bde75b87c2ffcb622c09f0c93c6e5d1c7a1c40f0fb5d7af706552eb2f7d",
-  "publishedAt": "2026-07-21T21:38:08.840Z",
-  "notes": "Correcao da instalacao da atualizacao"
+  "sha256": "f7a646ecce57a8451447ecf204ff466d522c186cbf94822d8a1ede1defd22c60",
+  "publishedAt": "2026-07-21T21:58:42.556Z",
+  "notes": "Instalacao da atualizacao corrigida"
 }
