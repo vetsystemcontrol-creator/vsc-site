@@ -1,9 +1,9 @@
 {
-  "versionCode": 3449376,
-  "versionName": "26.1.827 (34d888e6)",
+  "versionCode": 3449567,
+  "versionName": "26.1.836 (cdd0bfbc)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4951503,
-  "sha256": "19295ec29e788e2e487097e253e28d5a351a2633339867c82b6d82e922e772c3",
-  "publishedAt": "2026-07-23T12:38:45.965Z",
-  "notes": "Correcao: PIX/dinheiro a vista voltam a baixar o titulo; vencimento no dia certo"
+  "sizeBytes": 4952251,
+  "sha256": "7a3fe0e1a506581e8fafabb3a8f31777fc5719f2d19acd6b1b38dafed41859b3",
+  "publishedAt": "2026-07-23T15:50:11.498Z",
+  "notes": "Telas do celular redistribuidas, alvo de toque 44px e correcao de recebimento duplicado"
 }
