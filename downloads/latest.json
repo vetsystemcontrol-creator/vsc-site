@@ -1,9 +1,9 @@
 {
-  "versionCode": 3449567,
-  "versionName": "26.1.836 (cdd0bfbc)",
+  "versionCode": 3449731,
+  "versionName": "26.1.839 (22ff28c6)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4952251,
-  "sha256": "7a3fe0e1a506581e8fafabb3a8f31777fc5719f2d19acd6b1b38dafed41859b3",
-  "publishedAt": "2026-07-23T15:50:11.498Z",
-  "notes": "Telas do celular redistribuidas, alvo de toque 44px e correcao de recebimento duplicado"
+  "sizeBytes": 4952903,
+  "sha256": "8ec47e992c517518b00ad1e5ae79ab0ee4e01510bbab8e0755d24ed1a1706b4e",
+  "publishedAt": "2026-07-23T18:37:53.139Z",
+  "notes": "Filtros recolhidos no celular, matriz de permissoes vira lista por perfil"
 }
