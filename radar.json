@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-21T11:15:17.132Z",
+  "updatedAt": "2026-07-23T11:17:47.927Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -9,7 +9,7 @@
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-07-20T17:13:14.000Z"
+      "publishedAt": "2026-07-20T21:03:21.000Z"
     },
     {
       "title": "Cavalos levados para uma ilha de areia há mais de 250 anos formaram uma população selvagem de 420 animais que vive sem ração, abrigo ou veterinário",
@@ -93,15 +93,6 @@
       "publishedAt": "2026-07-06T13:59:46.000Z"
     },
     {
-      "title": "Segurança sanitária, responsabilidade técnica e bem-estar animal marcam segundo dia da 2ª Câmara Nacional de Presidentes",
-      "url": "https://www.cfmv.gov.br/seguranca-sanitaria-responsabilidade-tecnica-e-bem-estar-animal-marcam-segundo-dia-da-2a-camara-nacional-de-presidentes/comunicacao/noticias/2026/07/02/",
-      "source": "CFMV",
-      "sourceKind": "profissao",
-      "sourceLabel": "Conselho Federal de Medicina Veterinária",
-      "lang": "pt",
-      "publishedAt": "2026-07-02T12:40:07.000Z"
-    },
-    {
       "title": "Plasma and urinary concentrations of synephrine in horses following controlled oral administration",
       "url": "https://www.sciencedirect.com/science/article/pii/S073708062600331X?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -129,6 +120,15 @@
       "publishedAt": null
     },
     {
+      "title": "Electrocardiographic recordings of foals using a new smartphone-based digital device",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003321?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "Density gradient centrifugation preserves sperm kinetics and morphology in stallion ejaculates with severe urospermia",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003151?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -140,15 +140,6 @@
     {
       "title": "When genes meet money: Genotype-by-prize interaction in Quarter Horses",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003163?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Clinical and microbiological evaluation of a phytotherapeutic intrauterine therapy in mares with bacterial endometritis: a preliminary study",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003126?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
