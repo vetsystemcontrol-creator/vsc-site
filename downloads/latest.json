@@ -1,9 +1,9 @@
 {
-  "versionCode": 3450712,
-  "versionName": "26.1.844 (dfeb7426)",
+  "versionCode": 3450734,
+  "versionName": "26.1.846 (ef00cda7)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4953129,
-  "sha256": "1d7ebe65a1970ffb67b3b4c558fa27d13a664c2522d92800db7b8c2ee4942a11",
-  "publishedAt": "2026-07-24T10:53:18.926Z",
-  "notes": "Fim do R$ NaN nos atendimentos importados e exclusao sincronizada no reparo da migracao"
+  "sizeBytes": 4953261,
+  "sha256": "9e66ae1b0225201d1a02f457ea0b303ff5aa4c25c588d9a23d109dac57bc2933",
+  "publishedAt": "2026-07-24T11:23:51.613Z",
+  "notes": "App passa a verificar versao nova junto da sincronizacao, sem precisar fechar o aplicativo"
 }
