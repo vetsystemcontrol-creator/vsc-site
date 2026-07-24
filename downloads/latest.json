@@ -1,9 +1,9 @@
 {
-  "versionCode": 3449731,
-  "versionName": "26.1.839 (22ff28c6)",
+  "versionCode": 3450712,
+  "versionName": "26.1.844 (dfeb7426)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4952903,
-  "sha256": "8ec47e992c517518b00ad1e5ae79ab0ee4e01510bbab8e0755d24ed1a1706b4e",
-  "publishedAt": "2026-07-23T18:37:53.139Z",
-  "notes": "Filtros recolhidos no celular, matriz de permissoes vira lista por perfil"
+  "sizeBytes": 4953129,
+  "sha256": "1d7ebe65a1970ffb67b3b4c558fa27d13a664c2522d92800db7b8c2ee4942a11",
+  "publishedAt": "2026-07-24T10:53:18.926Z",
+  "notes": "Fim do R$ NaN nos atendimentos importados e exclusao sincronizada no reparo da migracao"
 }
