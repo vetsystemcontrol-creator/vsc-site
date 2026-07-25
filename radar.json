@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-24T11:07:32.950Z",
+  "updatedAt": "2026-07-25T10:41:04.892Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -21,15 +21,6 @@
       "publishedAt": "2026-07-18T19:00:00.000Z"
     },
     {
-      "title": "Parceria entre Medicina Veterinária da UCS e ONG reabilita cavalos abandonados no Rio Grande do Sul",
-      "url": "https://news.google.com/rss/articles/CBMi1gFBVV95cUxPdkdpRjh3ek1QV2RMVFptR1ZDQ1lFTlozTmxiUmU3a3YtcHNhVHZ2OXJ0ZEdPX05kZVE0Z1E5SlUzWGJkdVB4Rl9xTU9DSkZ0REREb1FBTmJHQzExQURWbmtqQVU4dWJ2RXA1NWpEd0w4S0ozRXFpN2M3Yy1QX3BJLTk2X1FzYWNKSmoxRVd2azY1N0ZKc1gyUFF6WDBKYW5OUFJvQkpaWVBHZTVpRHJRWm8zdGxKMlduR3M5NWp3bzRSMUM4RTRudVFfbHZXV3lZX2VlSVZR?oc=5",
-      "source": "difusora973fm.com.br",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-07-16T19:38:27.000Z"
-    },
-    {
       "title": "Parceria entre UCS e ONG já garantiu tratamento a 29 cavalos resgatados de maus-tratos no RS",
       "url": "https://news.google.com/rss/articles/CBMi3wFBVV95cUxPbVNaenF2Y3FDaE93VjQyeUFCTVhqLWZSU242Q21OMTgzZlIwZVdqdWthLUNKYTVpNUZxZHIwaU1DRXVkdmVEY04wMFV6M2hMV1ZBVE9fQk5mUGNBeXJHZlpUcnlWYjJ1aWIwcnl6ekVMNS00X1RpRFJMT3Fnb1dKb240Z2h3NlhZV0c1MzNvaFFvVDdRd04wRUQwa0N2alJfTWEwYVBtb2RIZkYybl9HLXRxSXJaZkNvUVd6N0tTQ0ZsZ2tmNHZPeHV3MDZNbDJuNWNtdDdsY0F4VUVhSkhn?oc=5",
       "source": "Tua Rádio",
@@ -48,15 +39,6 @@
       "publishedAt": "2026-07-14T19:13:16.000Z"
     },
     {
-      "title": "CRMV-SP reforça protagonismo na Medicina Veterinária equina durante conferência da Abraveq",
-      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPZU9YX1RzZjczYTNOaFVOM0hJYWpCdk5hbnRMbzJyQ3ZJelVsNnRRQ2xaaG1iQjVhbEJaN0pybnB3ZDhQc1JySTdOZUdQR0g0ZERYU2tiaEY2VHg5bjU3THMzVDY4UFZ0cWVCakRpbDNGTDlSaE15Z29Kd040WVZ4YnpFMU1ncEM3NVpyTHJtSUFtaWVXUVFCQ2dRdnc4NS00ODVQVVZNMXl4UlRLWDkxRFNRWQ?oc=5",
-      "source": "CRMV-SP",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-07-08T17:10:00.000Z"
-    },
-    {
       "title": "Cães & Gatos | Criminalização do exercício ilegal da Medicina Veterinária se torna realidade",
       "url": "https://www.cfmv.gov.br/caes-gatos-criminalizacao-do-exercicio-ilegal-da-medicina-veterinaria-se-torna-realidade/cfmv-em-noticias/2026/07/08/",
       "source": "CFMV",
@@ -64,6 +46,15 @@
       "sourceLabel": "Conselho Federal de Medicina Veterinária",
       "lang": "pt",
       "publishedAt": "2026-07-08T15:07:27.000Z"
+    },
+    {
+      "title": "CRMV-SP reforça protagonismo na Medicina Veterinária equina durante conferência da Abraveq",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPZU9YX1RzZjczYTNOaFVOM0hJYWpCdk5hbnRMbzJyQ3ZJelVsNnRRQ2xaaG1iQjVhbEJaN0pybnB3ZDhQc1JySTdOZUdQR0g0ZERYU2tiaEY2VHg5bjU3THMzVDY4UFZ0cWVCakRpbDNGTDlSaE15Z29Kd040WVZ4YnpFMU1ncEM3NVpyTHJtSUFtaWVXUVFCQ2dRdnc4NS00ODVQVVZNMXl4UlRLWDkxRFNRWQ?oc=5",
+      "source": "CRMV-SP",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-07-08T07:00:00.000Z"
     },
     {
       "title": "CFMV habilita AMEC-VET para conceder título de especialista em Endocanabinologia Veterinária",
@@ -82,6 +73,15 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-07-07T14:44:06.000Z"
+    },
+    {
+      "title": "Conferência da ABRAVEQ encerra 26ª edição com expectativa de novo recorde e reforça protagonismo da medicina veterinária equina",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1BWWowNW9PRGxHQUFkQ25wNHZ2SktsaEJPSjY0OFhkOXpkRVNnNkZIaW0yZVN0aHNONUNNdTMxNGNuS1FBWEVfN2J3TUQ2NzFMUk5DMGVaMUdRaDFqb0k2N1FUYUVxSTBSMzdoVENHZFp4QQ?oc=5",
+      "source": "Portal Cavalus",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-07-07T10:00:00.000Z"
     },
     {
       "title": "GTFisc discute melhorias em instrumentos de fiscalização para aprimorar as ações em campo",
