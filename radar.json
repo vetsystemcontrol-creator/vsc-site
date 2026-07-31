@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-07-30T11:17:11.878Z",
+  "updatedAt": "2026-07-31T11:33:19.211Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -68,7 +68,7 @@
     {
       "title": "Vetnil reforça compromisso com a medicina veterinária equina na Conferência Anual da ABRAVEQ",
       "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNTkhkZGtBS3lOMUg5Mm0wTGdwN3VqX0JDX21fSWlKa0NueEVjbEJEdmVIeWRPdEtuaFBvM0tSRXJ6ZzBsNkczX1k2Mkt3d2hVNjBNUEMwa3F6bFd3ejRoa2hGUUFhT2pzSndRSEZsMUctOWN0WFNOWV9Vd205LTM4YXBfai1PQXY2aWRBcVBOOEpQOUpONGRVVDJjcVJmUEpBRUZzRlBrU3ExRmVZUE91THFNVmtHYzF2aWZ3TWVXSXRsT1p1YzZpNlZBbDVkOVMybHBzZzdXa2Y1Zw?oc=5",
-      "source": "portal.saladanoticia.com.br",
+      "source": "Sala da Notícia",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -120,6 +120,15 @@
       "publishedAt": null
     },
     {
+      "title": "Effects of a dimethylformamide–glycerol combination on freezing behavior, post-thaw sperm quality, and sperm–oocyte interaction in Arabian stallions",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003370?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "Electrocardiographic recordings of foals using a new smartphone-based digital device",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003321?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -131,15 +140,6 @@
     {
       "title": "Density gradient centrifugation preserves sperm kinetics and morphology in stallion ejaculates with severe urospermia",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003151?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "When genes meet money: Genotype-by-prize interaction in Quarter Horses",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003163?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
