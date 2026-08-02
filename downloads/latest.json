@@ -1,9 +1,9 @@
 {
-  "versionCode": 3464137,
-  "versionName": "26.1.919 (1e200cb9)",
+  "versionCode": 3464180,
+  "versionName": "26.1.920 (6bf18573)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4972691,
-  "sha256": "840b258d6c634190b2867c98660bda502a6b9c73e98d94ed5a6ef5c000967640",
-  "publishedAt": "2026-08-02T18:39:45.660Z",
-  "notes": "Posologia por principio ativo e especie, com aviso de dose fora da faixa no receituario"
+  "sizeBytes": 4973831,
+  "sha256": "57a897c4386df3a6e4d17b77b408fbb128f00e237db8e36944b876e30938f2dc",
+  "publishedAt": "2026-08-02T19:22:38.360Z",
+  "notes": "Cadastro de produtos: principio ativo, concentracao, tarja e dados fiscais agora tem onde ser preenchidos"
 }
