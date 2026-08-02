@@ -1,9 +1,9 @@
 {
-  "versionCode": 3463808,
-  "versionName": "26.1.913 (f890b28a)",
+  "versionCode": 3464137,
+  "versionName": "26.1.919 (1e200cb9)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4967577,
-  "sha256": "5b7efaed0343c5c3f1db2b876177790b59b6f38ada0ba52eda8a29f72daad209",
-  "publishedAt": "2026-08-02T13:10:05.127Z",
-  "notes": "Receituario: volume que o proprietario mede em destaque, busca de medicamento no catalogo e espaco para assinar"
+  "sizeBytes": 4972691,
+  "sha256": "840b258d6c634190b2867c98660bda502a6b9c73e98d94ed5a6ef5c000967640",
+  "publishedAt": "2026-08-02T18:39:45.660Z",
+  "notes": "Posologia por principio ativo e especie, com aviso de dose fora da faixa no receituario"
 }
