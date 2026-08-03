@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-02T10:46:53.959Z",
+  "updatedAt": "2026-08-03T12:34:12.275Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -84,6 +84,15 @@
       "publishedAt": null
     },
     {
+      "title": "Hypothalamic-pituitary-adrenal axis response and glucose homeostasis during exercise to fatigue before and after training in old and young adult Standardbred mares",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003382?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "Effects of a dimethylformamide–glycerol combination on freezing behavior, post-thaw sperm quality, and sperm–oocyte interaction in Arabian stallions",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003370?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -95,15 +104,6 @@
     {
       "title": "Electrocardiographic recordings of foals using a new smartphone-based digital device",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003321?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Density gradient centrifugation preserves sperm kinetics and morphology in stallion ejaculates with severe urospermia",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003151?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
