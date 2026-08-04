@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-03T12:34:12.275Z",
+  "updatedAt": "2026-08-04T11:31:08.063Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -30,22 +30,40 @@
       "publishedAt": "2026-07-16T03:00:00.000Z"
     },
     {
+      "title": "Estão abertas as Inscrições para o Exame de Certificação do Título de Especialista em Endocanabinologia Veterinária",
+      "url": "https://www.cfmv.gov.br/estao-abertas-as-inscricoes-para-o-exame-de-certificacao-do-titulo-de-especialista-em-endocanabinologia-veterinaria/comunicacao/noticias/2026/07/14/",
+      "source": "CFMV",
+      "sourceKind": "profissao",
+      "sourceLabel": "Conselho Federal de Medicina Veterinária",
+      "lang": "pt",
+      "publishedAt": "2026-07-14T19:13:16.000Z"
+    },
+    {
+      "title": "Cães & Gatos | Criminalização do exercício ilegal da Medicina Veterinária se torna realidade",
+      "url": "https://www.cfmv.gov.br/caes-gatos-criminalizacao-do-exercicio-ilegal-da-medicina-veterinaria-se-torna-realidade/cfmv-em-noticias/2026/07/08/",
+      "source": "CFMV",
+      "sourceKind": "profissao",
+      "sourceLabel": "Conselho Federal de Medicina Veterinária",
+      "lang": "pt",
+      "publishedAt": "2026-07-08T15:07:27.000Z"
+    },
+    {
       "title": "CRMV-SP reforça protagonismo na Medicina Veterinária equina durante conferência da Abraveq",
       "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPZU9YX1RzZjczYTNOaFVOM0hJYWpCdk5hbnRMbzJyQ3ZJelVsNnRRQ2xaaG1iQjVhbEJaN0pybnB3ZDhQc1JySTdOZUdQR0g0ZERYU2tiaEY2VHg5bjU3THMzVDY4UFZ0cWVCakRpbDNGTDlSaE15Z29Kd040WVZ4YnpFMU1ncEM3NVpyTHJtSUFtaWVXUVFCQ2dRdnc4NS00ODVQVVZNMXl4UlRLWDkxRFNRWQ?oc=5",
-      "source": "CRMV-SP",
+      "source": "crmvsp.gov.br",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-07-08T07:00:00.000Z"
     },
     {
-      "title": "Conferência da ABRAVEQ encerra 26ª edição com expectativa de novo recorde e reforça protagonismo da medicina veterinária equina",
-      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1BWWowNW9PRGxHQUFkQ25wNHZ2SktsaEJPSjY0OFhkOXpkRVNnNkZIaW0yZVN0aHNONUNNdTMxNGNuS1FBWEVfN2J3TUQ2NzFMUk5DMGVaMUdRaDFqb0k2N1FUYUVxSTBSMzdoVENHZFp4QQ?oc=5",
-      "source": "Portal Cavalus",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
+      "title": "CFMV habilita AMEC-VET para conceder título de especialista em Endocanabinologia Veterinária",
+      "url": "https://www.cfmv.gov.br/cfmv-habilita-amec-vet-para-conceder-titulo-de-especialista-em-endocanabinologia-veterinaria/comunicacao/noticias/2026/07/07/",
+      "source": "CFMV",
+      "sourceKind": "profissao",
+      "sourceLabel": "Conselho Federal de Medicina Veterinária",
       "lang": "pt",
-      "publishedAt": "2026-07-07T10:00:00.000Z"
+      "publishedAt": "2026-07-07T18:21:09.000Z"
     },
     {
       "title": "Vetnil reforça compromisso com a medicina veterinária equina na Conferência Anual da ABRAVEQ",
@@ -55,6 +73,24 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-07-07T07:00:00.000Z"
+    },
+    {
+      "title": "Conferência da ABRAVEQ encerra 26ª edição com expectativa de novo recorde e reforça protagonismo da medicina veterinária equina",
+      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1BWWowNW9PRGxHQUFkQ25wNHZ2SktsaEJPSjY0OFhkOXpkRVNnNkZIaW0yZVN0aHNONUNNdTMxNGNuS1FBWEVfN2J3TUQ2NzFMUk5DMGVaMUdRaDFqb0k2N1FUYUVxSTBSMzdoVENHZFp4QQ?oc=5",
+      "source": "Portal Cavalus",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-07-07T07:00:00.000Z"
+    },
+    {
+      "title": "GTFisc discute melhorias em instrumentos de fiscalização para aprimorar as ações em campo",
+      "url": "https://www.cfmv.gov.br/gtfisc-discute-melhorias-em-instrumentos-de-fiscalizacao-para-aprimorar-as-acoes-em-campo/destaque/2026/07/06/",
+      "source": "CFMV",
+      "sourceKind": "profissao",
+      "sourceLabel": "Conselho Federal de Medicina Veterinária",
+      "lang": "pt",
+      "publishedAt": "2026-07-06T13:59:46.000Z"
     },
     {
       "title": "Plasma and urinary concentrations of synephrine in horses following controlled oral administration",
