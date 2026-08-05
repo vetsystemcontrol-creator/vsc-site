@@ -1,9 +1,9 @@
 {
-  "versionCode": 3464180,
-  "versionName": "26.1.920 (6bf18573)",
+  "versionCode": 3467367,
+  "versionName": "26.1.935 (2edda126)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4973831,
-  "sha256": "57a897c4386df3a6e4d17b77b408fbb128f00e237db8e36944b876e30938f2dc",
-  "publishedAt": "2026-08-02T19:22:38.360Z",
-  "notes": "Cadastro de produtos: principio ativo, concentracao, tarja e dados fiscais agora tem onde ser preenchidos"
+  "sizeBytes": 4975071,
+  "sha256": "ef48a8d678e1bfd5380fd1580f877e5a1934aaf52fbbb91e01bca2f48762ab9a",
+  "publishedAt": "2026-08-04T21:30:00.000Z",
+  "notes": "Venda sem animal volta a finalizar; dose e concentracao aparecem na busca do item; unidade da dose (mcg/kg, UI/kg) deixa de virar mg/kg na receita"
 }
