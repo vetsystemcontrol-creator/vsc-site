@@ -1,9 +1,9 @@
 {
-  "versionCode": 3467367,
-  "versionName": "26.1.935 (2edda126)",
+  "versionCode": 3467929,
+  "versionName": "26.1.936 (a7479e9d)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4975071,
-  "sha256": "ef48a8d678e1bfd5380fd1580f877e5a1934aaf52fbbb91e01bca2f48762ab9a",
-  "publishedAt": "2026-08-04T21:30:00.000Z",
-  "notes": "Venda sem animal volta a finalizar; dose e concentracao aparecem na busca do item; unidade da dose (mcg/kg, UI/kg) deixa de virar mg/kg na receita"
+  "sizeBytes": 4975715,
+  "sha256": "d7b2adfffe76a44fc1afa20df7a0a652a2461d4e367cb74a17ace562ad916254",
+  "publishedAt": "2026-08-04T22:20:00.000Z",
+  "notes": "Correcao de dose: penicilina volta a 20.000 UI/kg (estava 20); botao Ver doses no lancamento de item; venda sem animal volta a finalizar"
 }
