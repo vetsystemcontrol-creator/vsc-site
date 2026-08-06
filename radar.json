@@ -1,7 +1,16 @@
 {
-  "updatedAt": "2026-08-05T11:26:40.362Z",
+  "updatedAt": "2026-08-06T11:30:01.152Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Simpósio de Sanidade Equina – CCR",
+      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNREUyRnBZUnZTU3pLRzQ4clVuZi1fUlJzUFdQQmpHSnNCY3pLdjZoc3RZd3RYRFBCMDhucXY4QjFxOC1oNGEyRjBJeXMybjZRQkhNWURKQTNFTmtqbXgtb3d6NXBsZUhoTE5pYWtwYjA4bGhsVFRfclo4Q3dJY3JPNHdRM1NqOE9YMGFJ?oc=5",
+      "source": "UFSM",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-05T14:39:00.000Z"
+    },
     {
       "title": "Tétano em equinos: uma ameaça silenciosa com alta letalidade | SEGS Portal Nacional de Seguros, Saúde,...",
       "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxNM0pvNVNhNDZ2aWpHS3JjZUpXOVAwSHpKd3l6dEpsMkdiRXRNdVhjMkdldXA2dXo2MDZZeTBfSWtGSmRzVThQYzQwQ1ZsMEVQd0xEY2dubWJDYXR1aGl2eGtTSFFfUWNGTEFwZ281MVktN3dJOGg0bmd1MzBxd0wxUy1LQXAtanhHVUpyOXFnNDVmbmdMMGpzWFBodGpaSkVaaEHSAacBQVVfeXFMTk4zN2x2Wk9UMnlBRXp6UHhJdUZTbHFkYkYxVkk4WlBicEdlVXFadkVzcFkzNnNacGxoa0lCTjdDT09ZQlFvWUEwa2l3QlVUQkpiUnk1VEtaTXpMX19uTklwTVptZ281MkRYZllWSUJLb1V2bm5vTkd5Q3Y1ZTZlOHRxQzJ0LTFDNzRHQ2ZxNGp5QWg4M0s5czhhcVdhUVd5M1I0T3JBdFU?oc=5",
@@ -39,6 +48,15 @@
       "publishedAt": "2026-07-14T19:13:16.000Z"
     },
     {
+      "title": "CRMV-SP reforça protagonismo na Medicina Veterinária equina durante conferência da Abraveq",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPZU9YX1RzZjczYTNOaFVOM0hJYWpCdk5hbnRMbzJyQ3ZJelVsNnRRQ2xaaG1iQjVhbEJaN0pybnB3ZDhQc1JySTdOZUdQR0g0ZERYU2tiaEY2VHg5bjU3THMzVDY4UFZ0cWVCakRpbDNGTDlSaE15Z29Kd040WVZ4YnpFMU1ncEM3NVpyTHJtSUFtaWVXUVFCQ2dRdnc4NS00ODVQVVZNMXl4UlRLWDkxRFNRWQ?oc=5",
+      "source": "CRMV-SP",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-07-08T17:36:08.000Z"
+    },
+    {
       "title": "Cães & Gatos | Criminalização do exercício ilegal da Medicina Veterinária se torna realidade",
       "url": "https://www.cfmv.gov.br/caes-gatos-criminalizacao-do-exercicio-ilegal-da-medicina-veterinaria-se-torna-realidade/cfmv-em-noticias/2026/07/08/",
       "source": "CFMV",
@@ -46,15 +64,6 @@
       "sourceLabel": "Conselho Federal de Medicina Veterinária",
       "lang": "pt",
       "publishedAt": "2026-07-08T15:07:27.000Z"
-    },
-    {
-      "title": "CRMV-SP reforça protagonismo na Medicina Veterinária equina durante conferência da Abraveq",
-      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPZU9YX1RzZjczYTNOaFVOM0hJYWpCdk5hbnRMbzJyQ3ZJelVsNnRRQ2xaaG1iQjVhbEJaN0pybnB3ZDhQc1JySTdOZUdQR0g0ZERYU2tiaEY2VHg5bjU3THMzVDY4UFZ0cWVCakRpbDNGTDlSaE15Z29Kd040WVZ4YnpFMU1ncEM3NVpyTHJtSUFtaWVXUVFCQ2dRdnc4NS00ODVQVVZNMXl4UlRLWDkxRFNRWQ?oc=5",
-      "source": "CRMV-SP",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-07-08T07:00:00.000Z"
     },
     {
       "title": "CFMV habilita AMEC-VET para conceder título de especialista em Endocanabinologia Veterinária",
@@ -69,15 +78,6 @@
       "title": "Vetnil reforça compromisso com a medicina veterinária equina na Conferência Anual da ABRAVEQ",
       "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNTkhkZGtBS3lOMUg5Mm0wTGdwN3VqX0JDX21fSWlKa0NueEVjbEJEdmVIeWRPdEtuaFBvM0tSRXJ6ZzBsNkczX1k2Mkt3d2hVNjBNUEMwa3F6bFd3ejRoa2hGUUFhT2pzSndRSEZsMUctOWN0WFNOWV9Vd205LTM4YXBfai1PQXY2aWRBcVBOOEpQOUpONGRVVDJjcVJmUEpBRUZzRlBrU3ExRmVZUE91THFNVmtHYzF2aWZ3TWVXSXRsT1p1YzZpNlZBbDVkOVMybHBzZzdXa2Y1Zw?oc=5",
       "source": "Sala da Notícia",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-07-07T07:00:00.000Z"
-    },
-    {
-      "title": "Conferência da ABRAVEQ encerra 26ª edição com expectativa de novo recorde e reforça protagonismo da medicina veterinária equina",
-      "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1BWWowNW9PRGxHQUFkQ25wNHZ2SktsaEJPSjY0OFhkOXpkRVNnNkZIaW0yZVN0aHNONUNNdTMxNGNuS1FBWEVfN2J3TUQ2NzFMUk5DMGVaMUdRaDFqb0k2N1FUYUVxSTBSMzdoVENHZFp4QQ?oc=5",
-      "source": "Portal Cavalus",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -120,6 +120,15 @@
       "publishedAt": null
     },
     {
+      "title": "Comparison of xylazine–ketamine–guaifenesin and xylazine–tiletamine–zolazepam protocols for constant rate infusion anesthesia in horses undergoing field castration",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003448?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "Hypothalamic-pituitary-adrenal axis response and glucose homeostasis during exercise to fatigue before and after training in old and young adult Standardbred mares",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003382?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -131,15 +140,6 @@
     {
       "title": "Effects of a dimethylformamide–glycerol combination on freezing behavior, post-thaw sperm quality, and sperm–oocyte interaction in Arabian stallions",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003370?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Electrocardiographic recordings of foals using a new smartphone-based digital device",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003321?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
