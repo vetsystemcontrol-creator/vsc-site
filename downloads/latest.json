@@ -1,9 +1,9 @@
 {
-  "versionCode": 3467929,
-  "versionName": "26.1.936 (a7479e9d)",
+  "versionCode": 3469358,
+  "versionName": "26.1.937 (ff385a0a)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4975715,
-  "sha256": "d7b2adfffe76a44fc1afa20df7a0a652a2461d4e367cb74a17ace562ad916254",
-  "publishedAt": "2026-08-04T22:20:00.000Z",
-  "notes": "Correcao de dose: penicilina volta a 20.000 UI/kg (estava 20); botao Ver doses no lancamento de item; venda sem animal volta a finalizar"
+  "sizeBytes": 4975659,
+  "sha256": "76113cd9dbbf600605cda83534feafadeb96add5a55c0c7d6edceb8d7d6bdf0c",
+  "publishedAt": "2026-08-06T09:38:52.674Z",
+  "notes": "Correcao de dose: a unidade (UI/kg, mcg/kg) parou de virar mg/kg ao abrir a ficha; dose do butorfanol nao cai mais na buprenorfina; botao Ver doses no lancamento de item"
 }
