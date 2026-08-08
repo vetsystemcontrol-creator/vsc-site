@@ -1,11 +1,11 @@
 {
-  "updatedAt": "2026-08-07T10:07:48.288Z",
+  "updatedAt": "2026-08-08T09:49:29.352Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
       "title": "Simpósio de Sanidade Equina – CCR",
       "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNREUyRnBZUnZTU3pLRzQ4clVuZi1fUlJzUFdQQmpHSnNCY3pLdjZoc3RZd3RYRFBCMDhucXY4QjFxOC1oNGEyRjBJeXMybjZRQkhNWURKQTNFTmtqbXgtb3d6NXBsZUhoTE5pYWtwYjA4bGhsVFRfclo4Q3dJY3JPNHdRM1NqOE9YMGFJ?oc=5",
-      "source": "ufsm.br",
+      "source": "UFSM",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -36,7 +36,7 @@
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-07-16T03:00:00.000Z"
+      "publishedAt": "2026-07-16T07:00:00.000Z"
     },
     {
       "title": "Estão abertas as Inscrições para o Exame de Certificação do Título de Especialista em Endocanabinologia Veterinária",
@@ -84,15 +84,6 @@
       "publishedAt": "2026-07-07T07:00:00.000Z"
     },
     {
-      "title": "GTFisc discute melhorias em instrumentos de fiscalização para aprimorar as ações em campo",
-      "url": "https://www.cfmv.gov.br/gtfisc-discute-melhorias-em-instrumentos-de-fiscalizacao-para-aprimorar-as-acoes-em-campo/destaque/2026/07/06/",
-      "source": "CFMV",
-      "sourceKind": "profissao",
-      "sourceLabel": "Conselho Federal de Medicina Veterinária",
-      "lang": "pt",
-      "publishedAt": "2026-07-06T13:59:46.000Z"
-    },
-    {
       "title": "Plasma and urinary concentrations of synephrine in horses following controlled oral administration",
       "url": "https://www.sciencedirect.com/science/article/pii/S073708062600331X?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -104,6 +95,15 @@
     {
       "title": "Thermal microchips for non-invasive body temperature monitoring in dairy donkeys",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003175?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
+      "title": "Oxidative stress and immunomarkers in equine dermal melanomatosis: single-case comparison with healthy individual",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003394?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -131,15 +131,6 @@
     {
       "title": "Hypothalamic-pituitary-adrenal axis response and glucose homeostasis during exercise to fatigue before and after training in old and young adult Standardbred mares",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003382?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Effects of a dimethylformamide–glycerol combination on freezing behavior, post-thaw sperm quality, and sperm–oocyte interaction in Arabian stallions",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003370?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
