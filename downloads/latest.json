@@ -1,9 +1,9 @@
 {
-  "versionCode": 3469358,
-  "versionName": "26.1.937 (ff385a0a)",
+  "versionCode": 3472633,
+  "versionName": "26.1.946 (a8b40dcd)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4975659,
-  "sha256": "76113cd9dbbf600605cda83534feafadeb96add5a55c0c7d6edceb8d7d6bdf0c",
-  "publishedAt": "2026-08-06T09:38:52.674Z",
-  "notes": "Correcao de dose: a unidade (UI/kg, mcg/kg) parou de virar mg/kg ao abrir a ficha; dose do butorfanol nao cai mais na buprenorfina; botao Ver doses no lancamento de item"
+  "sizeBytes": 4977795,
+  "sha256": "5c8c7dbc9834221f3e4edecdcfefe9726a199925b3944f3e4ce991c008b6bd67",
+  "publishedAt": "2026-08-08T16:13:48.333Z",
+  "notes": "Anexos: laudo e foto entram em atendimento ja finalizado (registrado como adendo no prontuario, sem precisar reabrir); um aparelho deixa de marcar como perdido o anexo que outro ja enviou."
 }
