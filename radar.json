@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-08T09:49:29.352Z",
+  "updatedAt": "2026-08-09T09:50:57.523Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -23,7 +23,7 @@
     {
       "title": "Cavalos levados para uma ilha de areia há mais de 250 anos formaram uma população selvagem de 420 animais que vive sem ração, abrigo ou veterinário",
       "url": "https://news.google.com/rss/articles/CBMinwJBVV95cUxQOG5FMGNpa2R0a2dEZ2h3YlZUWE1JTDkzb0g2dFI2cHhUeXNwek5ZYm1aOTcyUm9sQTVBbjZLS3YzR3NMWUY1dTJKb2RDeGY1V3d4RmFiVUVQbmtDOXktNXQwX2Y0TW4wMDlJc3l2ZExWMTlyc2duYlF0ZElQQlF1THUtY3VGZHZiaXM4dXNjVWt1cW9DczcwRXpiTUJGc0xKU0RqSnlOcE5yYXJDM2lwZGVDV0tPaHFHNVd2TGYwYWxKVFMxOWc3Z1NhdkVfR3MyS1pUekg4WkZ0LTV2Snl3RDhheWg1SzFxX05HUU9BODUzRzZxMGIwdi1vRW94S2hMZkZCN3diWWZhWVlRajJEOWRQaGM3UXZub0xGYkRBRQ?oc=5",
-      "source": "Revista Oeste",
+      "source": "revistaoeste.com",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -66,18 +66,9 @@
       "publishedAt": "2026-07-08T15:07:27.000Z"
     },
     {
-      "title": "CFMV habilita AMEC-VET para conceder título de especialista em Endocanabinologia Veterinária",
-      "url": "https://www.cfmv.gov.br/cfmv-habilita-amec-vet-para-conceder-titulo-de-especialista-em-endocanabinologia-veterinaria/comunicacao/noticias/2026/07/07/",
-      "source": "CFMV",
-      "sourceKind": "profissao",
-      "sourceLabel": "Conselho Federal de Medicina Veterinária",
-      "lang": "pt",
-      "publishedAt": "2026-07-07T18:21:09.000Z"
-    },
-    {
       "title": "Vetnil reforça compromisso com a medicina veterinária equina na Conferência Anual da ABRAVEQ",
       "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNTkhkZGtBS3lOMUg5Mm0wTGdwN3VqX0JDX21fSWlKa0NueEVjbEJEdmVIeWRPdEtuaFBvM0tSRXJ6ZzBsNkczX1k2Mkt3d2hVNjBNUEMwa3F6bFd3ejRoa2hGUUFhT2pzSndRSEZsMUctOWN0WFNOWV9Vd205LTM4YXBfai1PQXY2aWRBcVBOOEpQOUpONGRVVDJjcVJmUEpBRUZzRlBrU3ExRmVZUE91THFNVmtHYzF2aWZ3TWVXSXRsT1p1YzZpNlZBbDVkOVMybHBzZzdXa2Y1Zw?oc=5",
-      "source": "Sala da Notícia",
+      "source": "portal.saladanoticia.com.br",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -120,8 +111,8 @@
       "publishedAt": null
     },
     {
-      "title": "Comparison of xylazine–ketamine–guaifenesin and xylazine–tiletamine–zolazepam protocols for constant rate infusion anesthesia in horses undergoing field castration",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003448?dgcid=rss_sd_all",
+      "title": "Postoperative recumbency behavior in horses undergoing minimally invasive surgery",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003369?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -129,8 +120,8 @@
       "publishedAt": null
     },
     {
-      "title": "Hypothalamic-pituitary-adrenal axis response and glucose homeostasis during exercise to fatigue before and after training in old and young adult Standardbred mares",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003382?dgcid=rss_sd_all",
+      "title": "Comparison of xylazine–ketamine–guaifenesin and xylazine–tiletamine–zolazepam protocols for constant rate infusion anesthesia in horses undergoing field castration",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003448?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
