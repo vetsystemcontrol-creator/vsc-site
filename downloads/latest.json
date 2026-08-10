@@ -1,9 +1,9 @@
 {
-  "versionCode": 3472633,
-  "versionName": "26.1.946 (a8b40dcd)",
+  "versionCode": 3475973,
+  "versionName": "26.1.952 (dfb44f35)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4977795,
-  "sha256": "5c8c7dbc9834221f3e4edecdcfefe9726a199925b3944f3e4ce991c008b6bd67",
-  "publishedAt": "2026-08-08T16:13:48.333Z",
-  "notes": "Anexos: laudo e foto entram em atendimento ja finalizado (registrado como adendo no prontuario, sem precisar reabrir); um aparelho deixa de marcar como perdido o anexo que outro ja enviou."
+  "sizeBytes": 4978175,
+  "sha256": "eaf704c79ef3c0cd0667526fa3b97828c23de50fdd04d8e8b302bba6a4aca712",
+  "publishedAt": "2026-08-10T23:54:20.664Z",
+  "notes": "Cobranca do km rodado corrigida: o deslocamento volta a entrar no total, uma cobranca por viagem (nao por animal), e o resumo financeiro impresso passa a fechar a conta."
 }
