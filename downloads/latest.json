@@ -1,9 +1,9 @@
 {
-  "versionCode": 3475973,
-  "versionName": "26.1.952 (dfb44f35)",
+  "versionCode": 3477422,
+  "versionName": "26.1.963 (69356120)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4978175,
-  "sha256": "eaf704c79ef3c0cd0667526fa3b97828c23de50fdd04d8e8b302bba6a4aca712",
-  "publishedAt": "2026-08-10T23:54:20.664Z",
-  "notes": "Cobranca do km rodado corrigida: o deslocamento volta a entrar no total, uma cobranca por viagem (nao por animal), e o resumo financeiro impresso passa a fechar a conta."
+  "sizeBytes": 4978199,
+  "sha256": "70b9ee41c85f4c8327532c86ff004545e7b046d73f806d191dc168ca70defcd6",
+  "publishedAt": "2026-08-12T00:03:48.745Z",
+  "notes": "Cobranca do km rodado corrigida e conferida; resumo financeiro impresso fecha a conta; uma viagem cobra um deslocamento; anexo entra em atendimento finalizado."
 }
