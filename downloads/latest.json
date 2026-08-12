@@ -1,9 +1,9 @@
 {
-  "versionCode": 3477422,
-  "versionName": "26.1.963 (69356120)",
+  "versionCode": 3478078,
+  "versionName": "26.1.965 (c55a9902)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4978199,
-  "sha256": "70b9ee41c85f4c8327532c86ff004545e7b046d73f806d191dc168ca70defcd6",
-  "publishedAt": "2026-08-12T00:03:48.745Z",
-  "notes": "Cobranca do km rodado corrigida e conferida; resumo financeiro impresso fecha a conta; uma viagem cobra um deslocamento; anexo entra em atendimento finalizado."
+  "sizeBytes": 4989811,
+  "sha256": "43698ae8ee9532abe6f3b649dbcbd751ec862129382a682558e8728441a0cfde",
+  "publishedAt": "2026-08-12T10:59:28.157Z",
+  "notes": "Renderizador de PDF atualizado (fecha o alerta de seguranca que tocava o app). Teste importante nesta versao: abrir um anexo em PDF e imprimir um atendimento."
 }
