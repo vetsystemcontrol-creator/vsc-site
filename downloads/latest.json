@@ -1,9 +1,9 @@
 {
-  "versionCode": 3478078,
-  "versionName": "26.1.965 (c55a9902)",
+  "versionCode": 3479677,
+  "versionName": "26.1.967 (ca38509e)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4989811,
-  "sha256": "43698ae8ee9532abe6f3b649dbcbd751ec862129382a682558e8728441a0cfde",
-  "publishedAt": "2026-08-12T10:59:28.157Z",
-  "notes": "Renderizador de PDF atualizado (fecha o alerta de seguranca que tocava o app). Teste importante nesta versao: abrir um anexo em PDF e imprimir um atendimento."
+  "sizeBytes": 4990471,
+  "sha256": "651314cafa99dae571029a36ac921936e5cfa7022cb35b36f1d2f6137eb6bab5",
+  "publishedAt": "2026-08-13T13:37:37.710Z",
+  "notes": "Anexos disponiveis offline: no dialogo de Anexos, a barra mostra quantos abrem sem internet e permite baixar os que faltam antes de sair para o campo."
 }
