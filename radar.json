@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-12T10:16:32.525Z",
+  "updatedAt": "2026-08-13T10:17:58.992Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -10,15 +10,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-08-09T22:44:29.000Z"
-    },
-    {
-      "title": "Simpósio de Sanidade Equina – CCR",
-      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNREUyRnBZUnZTU3pLRzQ4clVuZi1fUlJzUFdQQmpHSnNCY3pLdjZoc3RZd3RYRFBCMDhucXY4QjFxOC1oNGEyRjBJeXMybjZRQkhNWURKQTNFTmtqbXgtb3d6NXBsZUhoTE5pYWtwYjA4bGhsVFRfclo4Q3dJY3JPNHdRM1NqOE9YMGFJ?oc=5",
-      "source": "UFSM",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-08-05T14:39:00.000Z"
     },
     {
       "title": "Tétano em equinos: uma ameaça silenciosa com alta letalidade | SEGS Portal Nacional de Seguros, Saúde,...",
@@ -75,6 +66,15 @@
       "publishedAt": "2026-07-08T15:07:27.000Z"
     },
     {
+      "title": "Vetnil reforça compromisso com a medicina veterinária equina na Conferência Anual da ABRAVEQ",
+      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNTkhkZGtBS3lOMUg5Mm0wTGdwN3VqX0JDX21fSWlKa0NueEVjbEJEdmVIeWRPdEtuaFBvM0tSRXJ6ZzBsNkczX1k2Mkt3d2hVNjBNUEMwa3F6bFd3ejRoa2hGUUFhT2pzSndRSEZsMUctOWN0WFNOWV9Vd205LTM4YXBfai1PQXY2aWRBcVBOOEpQOUpONGRVVDJjcVJmUEpBRUZzRlBrU3ExRmVZUE91THFNVmtHYzF2aWZ3TWVXSXRsT1p1YzZpNlZBbDVkOVMybHBzZzdXa2Y1Zw?oc=5",
+      "source": "Sala da Notícia",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-07-07T07:00:00.000Z"
+    },
+    {
       "title": "Plasma and urinary concentrations of synephrine in horses following controlled oral administration",
       "url": "https://www.sciencedirect.com/science/article/pii/S073708062600331X?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -111,8 +111,8 @@
       "publishedAt": null
     },
     {
-      "title": "Postoperative recumbency behavior in horses undergoing minimally invasive surgery",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003369?dgcid=rss_sd_all",
+      "title": "Effects of quercetin supplementation in cooling extender on sperm quality of stallions",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003576?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -120,8 +120,8 @@
       "publishedAt": null
     },
     {
-      "title": "Comparison of xylazine–ketamine–guaifenesin and xylazine–tiletamine–zolazepam protocols for constant rate infusion anesthesia in horses undergoing field castration",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003448?dgcid=rss_sd_all",
+      "title": "Evaluation of serum specific IgE sensitization profiles in a Korean domestic horse population using a multiplex allergen line-blot assay: A cross-sectional screening study",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003539?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
