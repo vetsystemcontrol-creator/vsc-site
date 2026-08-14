@@ -1,9 +1,9 @@
 {
-  "versionCode": 3479677,
-  "versionName": "26.1.967 (ca38509e)",
+  "versionCode": 3481126,
+  "versionName": "26.1.973 (a991d85e)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4990471,
-  "sha256": "651314cafa99dae571029a36ac921936e5cfa7022cb35b36f1d2f6137eb6bab5",
-  "publishedAt": "2026-08-13T13:37:37.710Z",
-  "notes": "Anexos disponiveis offline: no dialogo de Anexos, a barra mostra quantos abrem sem internet e permite baixar os que faltam antes de sair para o campo."
+  "sizeBytes": 4991251,
+  "sha256": "eb1e44a56e207dabb61fdf722713482182199cd0bd62f32231262902ddb2dd14",
+  "publishedAt": "2026-08-14T13:46:54.244Z",
+  "notes": "Desconto na baixa: ao registrar um recebimento, agora da para informar um desconto concedido — a parte do saldo que nao sera cobrada. O titulo fecha, e o valor recebido continua sendo exatamente o que entrou no caixa."
 }
