@@ -1,16 +1,7 @@
 {
-  "updatedAt": "2026-08-19T09:43:01.021Z",
+  "updatedAt": "2026-08-20T09:44:49.485Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
-    {
-      "title": "Acadêmicos e residentes de Medicina Veterinária da Unimar apresentam trabalhos científicos em Conferência Nacional de Equinos",
-      "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxOdDh3TGdyMEpuWlQ0c1c3V2FnRDYzYThualhwangwbTAxUk54VFAxcGM0cXF3NDBTQmlnMVNlTUlHOHU5cDR5QlcxeVRyVVYtLWQ1eTlQeExfekx3enloTlZMWVlMWHk4U1dldXRiSm5hZG1TYzBsN2JKdHhtZmZFQTRUeHY0Z0pmS3pDV0kyTEYwTjRnRHRweEtZTU82SDNMY2xTMlJBeWV2MVp2VDFNb0p1djlPLVRHZG5zWTh2NjZOb21sRTBUcVpVcnlDYm1wUWZsSFl0aTZNcjFDSm9rekppUUpHNHd4NU03bUl2YlVSNk9saHc?oc=5",
-      "source": "Grupo Portal de Notícias",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-08-18T22:42:59.000Z"
-    },
     {
       "title": "Conheça as pesquisas da UFU sobre a saúde de equinos",
       "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPNExhbVR6M3dDOVoxMlNpZlJqckpKZTRCSG43Q0lGejZhUjdWY1pFVlNTNzFwTlJTMGQzYmdTNndOeVZUZkdJa2Rlck1ZOTdKU1J1dmtqZjBBU01xWjI5Z0JzZkxSZGlLTm01ZEIxeVFnZXpQcFpUM19iZk9jbllaZGE3eE9tVUQtT2dUVlI0LVNaZw?oc=5",
@@ -41,7 +32,7 @@
     {
       "title": "Simpósio de Sanidade Equina – CCR",
       "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNREUyRnBZUnZTU3pLRzQ4clVuZi1fUlJzUFdQQmpHSnNCY3pLdjZoc3RZd3RYRFBCMDhucXY4QjFxOC1oNGEyRjBJeXMybjZRQkhNWURKQTNFTmtqbXgtb3d6NXBsZUhoTE5pYWtwYjA4bGhsVFRfclo4Q3dJY3JPNHdRM1NqOE9YMGFJ?oc=5",
-      "source": "ufsm.br",
+      "source": "UFSM",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -55,6 +46,42 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-07-18T07:00:00.000Z"
+    },
+    {
+      "title": "CRMV-SP reforça protagonismo na Medicina Veterinária equina durante conferência da Abraveq",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPZU9YX1RzZjczYTNOaFVOM0hJYWpCdk5hbnRMbzJyQ3ZJelVsNnRRQ2xaaG1iQjVhbEJaN0pybnB3ZDhQc1JySTdOZUdQR0g0ZERYU2tiaEY2VHg5bjU3THMzVDY4UFZ0cWVCakRpbDNGTDlSaE15Z29Kd040WVZ4YnpFMU1ncEM3NVpyTHJtSUFtaWVXUVFCQ2dRdnc4NS00ODVQVVZNMXl4UlRLWDkxRFNRWQ?oc=5",
+      "source": "CRMV-SP",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-07-08T07:00:00.000Z"
+    },
+    {
+      "title": "Leptomeningeal dissemination of a poorly differentiated carcinoma involving the trigeminal ganglion in a horse: a case report",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003588?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
+      "title": "Seroprevalence, risk factors and hematological parameters associated with equine infectious anemia from Casanare, Colombia",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003436?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
+      "title": "The effect of intravenous fluids administered prior to competition: A randomized clinical trial",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003564?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
     },
     {
       "title": "Plasma and urinary concentrations of synephrine in horses following controlled oral administration",
@@ -77,33 +104,6 @@
     {
       "title": "Ultrasonographic assessment of in utero fetal presentation, position and posture can be essential: case report",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003400?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Oxidative stress and immunomarkers in equine dermal melanomatosis: single-case comparison with healthy individual",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003394?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Fetal dystocia in a crossbred jenny due to forelimb flexion and fetopelvic disproportion",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003138?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Effects of quercetin supplementation in cooling extender on sperm quality of stallions",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003576?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
