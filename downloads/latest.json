@@ -1,9 +1,9 @@
 {
-  "versionCode": 3481126,
-  "versionName": "26.1.973 (a991d85e)",
+  "versionCode": 3491628,
+  "versionName": "26.1.1019 (23abe834)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4991251,
-  "sha256": "eb1e44a56e207dabb61fdf722713482182199cd0bd62f32231262902ddb2dd14",
-  "publishedAt": "2026-08-14T13:46:54.244Z",
-  "notes": "Desconto na baixa: ao registrar um recebimento, agora da para informar um desconto concedido — a parte do saldo que nao sera cobrada. O titulo fecha, e o valor recebido continua sendo exatamente o que entrou no caixa."
+  "sizeBytes": 4995610,
+  "sha256": "70c68e416f5a9d9d3d829f50c68dd2134ed5580dc242f211b6f1bc4945f859e1",
+  "publishedAt": "2026-08-21T20:51:07.357Z",
+  "notes": "Rodada ampla de melhorias do sistema:\n• O app abre mais rapido: a tela aparece assim que os dados do proprio aparelho carregam; a sincronizacao com o servidor passou para segundo plano e nao trava mais a abertura.\n• Cadastros agora conferem CPF/CNPJ (cliente, fornecedor e empresa) e a data de nascimento do animal.\n• Painel corrigido: dias em atraso, rotulos e percentuais.\n• Receituario ajustado a norma: vias do medicamento controlado, idade no documento e prazo da receita simples.\n• Sincronizacao mais confiavel entre aparelhos (reproducao e notas de compra nao se perdem mais)."
 }
