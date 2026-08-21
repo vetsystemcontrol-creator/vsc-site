@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-20T09:44:49.485Z",
+  "updatedAt": "2026-08-21T09:47:35.435Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -9,7 +9,7 @@
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-08-14T17:44:00.000Z"
+      "publishedAt": "2026-08-18T07:00:00.000Z"
     },
     {
       "title": "“A paixão que tenho pelos cavalos me fez escolher cursar Medicina Veterinária”",
@@ -57,8 +57,26 @@
       "publishedAt": "2026-07-08T07:00:00.000Z"
     },
     {
+      "title": "The effects of clomiphene citrate on reproductive parameters in the mare",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003606?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "Leptomeningeal dissemination of a poorly differentiated carcinoma involving the trigeminal ganglion in a horse: a case report",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003588?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
+      "title": "Equine upper limb kinematics: Comparison between biplanar high-speed fluoroscopic kinematography and optoelectronic motion capture in one Mini Shetland Pony",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003291?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -86,24 +104,6 @@
     {
       "title": "Plasma and urinary concentrations of synephrine in horses following controlled oral administration",
       "url": "https://www.sciencedirect.com/science/article/pii/S073708062600331X?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Thermal microchips for non-invasive body temperature monitoring in dairy donkeys",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003175?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Ultrasonographic assessment of in utero fetal presentation, position and posture can be essential: case report",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003400?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
