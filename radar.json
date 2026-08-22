@@ -1,7 +1,16 @@
 {
-  "updatedAt": "2026-08-21T09:47:35.435Z",
+  "updatedAt": "2026-08-22T09:36:13.118Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Hospital Veterinário da UPF realiza cirurgia rara para retirada de tumor ósseo em potra",
+      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNWE5IM1A0eGlyMFpURjRyT19ueWxGVEV2Y3JkN0drMmFzSVYxTVRFRmF6Y00wbE9QNmJoWEZIdXduQmF0clZHbUFQZG5qQ0ExLUhKSnFJTHdyc3ZwVDJnbTcwaFdPYzlKdGtKNENGWEtISUFWRlZWem4tVmpkdnNwRnFyYVN2LU9YeVdfVzFBWGhGMnI0cVp1Wl9uY0lodzZhZnp0aEJ3Q1NkbDd5UEJUVw?oc=5",
+      "source": "Planalto News",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-21T11:42:13.000Z"
+    },
     {
       "title": "Conheça as pesquisas da UFU sobre a saúde de equinos",
       "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPNExhbVR6M3dDOVoxMlNpZlJqckpKZTRCSG43Q0lGejZhUjdWY1pFVlNTNzFwTlJTMGQzYmdTNndOeVZUZkdJa2Rlck1ZOTdKU1J1dmtqZjBBU01xWjI5Z0JzZkxSZGlLTm01ZEIxeVFnZXpQcFpUM19iZk9jbllaZGE3eE9tVUQtT2dUVlI0LVNaZw?oc=5",
@@ -22,8 +31,8 @@
     },
     {
       "title": "Da prevenção à emergência: podcast Voz Equestre destaca diferentes áreas da medicina veterinária equina no…",
-      "url": "https://news.google.com/rss/articles/CBMi_AFBVV95cUxNQkx1OXpvNk1FeWhWQ0NMT1hLNU5fVkxSMWdWOGNyeGJhS3Q4S0I4b1dxbm9KOE5Jcnp0eU9DWU1oZ29SLVNJOF9FRTg1dGJqNUFvNnF2dTZBd3BzQXJxQkptV1BNLUNWSjlEblZPTkxndjhXTHZIaHlPRlBRRHBib1Y1OTJHSkJlS0dhRkdTUmUyS3g3SFo4NTRrUHM1TnZpMEF5RWR0Mmc4bXJLaE9DX2VIUjdnTmRZcTYzN09wR1hLcXZLVzJYWnB4bGctSl9IUmItRlNFWkc0ajdkMjE1Sk5wcU5qTDhmZHhTZjdMRC12aDZQaDlXaWNhMU8?oc=5",
-      "source": "Sala da Notícia",
+      "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxNUDZVUk01aU1CaTFKdWdTMy1tTlBnQkk0Q1FXNVRlYlpPVG1JRVdjYTlqeUJXdnZwZ3NxZzNIVUdoSzlaWGlIaElmV25WdGVYNVp3eGpSTG83ZkJaYkNnMW9qbXQtYXFkdmFSWGxvUHhsTTJaeFp2RmQxOGxIX1d0WEtuMXJ0ZEJ6cjdGTTlUOUZ5U1NEbS13VUdMZFBpTkZocTg1WnFQNkRGWnhsX2FJSHU5U1JWUXpDWndibVpoZ0ZLSGoyMk5OMl9NLWhUTk96RXFwMk4tQXRDUS1DOWhTWi1XUW9pTEdnVmJNcUlYZWNzMWVqd2c?oc=5",
+      "source": "Gazeta da Semana",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -48,17 +57,17 @@
       "publishedAt": "2026-07-18T07:00:00.000Z"
     },
     {
-      "title": "CRMV-SP reforça protagonismo na Medicina Veterinária equina durante conferência da Abraveq",
-      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPZU9YX1RzZjczYTNOaFVOM0hJYWpCdk5hbnRMbzJyQ3ZJelVsNnRRQ2xaaG1iQjVhbEJaN0pybnB3ZDhQc1JySTdOZUdQR0g0ZERYU2tiaEY2VHg5bjU3THMzVDY4UFZ0cWVCakRpbDNGTDlSaE15Z29Kd040WVZ4YnpFMU1ncEM3NVpyTHJtSUFtaWVXUVFCQ2dRdnc4NS00ODVQVVZNMXl4UlRLWDkxRFNRWQ?oc=5",
-      "source": "CRMV-SP",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-07-08T07:00:00.000Z"
-    },
-    {
       "title": "The effects of clomiphene citrate on reproductive parameters in the mare",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003606?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
+      "title": "Concurrent small intestinal neoplasia and large colon volvulus in a standardbred yearling",
+      "url": "https://www.sciencedirect.com/science/article/pii/S073708062600359X?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -95,15 +104,6 @@
     {
       "title": "The effect of intravenous fluids administered prior to competition: A randomized clinical trial",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003564?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Plasma and urinary concentrations of synephrine in horses following controlled oral administration",
-      "url": "https://www.sciencedirect.com/science/article/pii/S073708062600331X?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
