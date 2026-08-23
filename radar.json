@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-22T09:36:13.118Z",
+  "updatedAt": "2026-08-23T09:36:58.099Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -19,15 +19,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-08-18T07:00:00.000Z"
-    },
-    {
-      "title": "“A paixão que tenho pelos cavalos me fez escolher cursar Medicina Veterinária”",
-      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQM3NnUGMtX2t4VEpKN0NyUkNiYjlBNmRBZW9uZ1ZhMnVfMzVmNnBqVmZXZ1k4UHFGbjA5SXF0QXl4al84ODAwcDB4bGZaWm5ENnJfT2RvaVNkOHNhQnE3eFBUanZiVTFrWWp1MXBvU0RqbVdyR0FTV3FvNnBMVWNTMVhFMzdnUURtT0hMaDJKUVJJQ0VtMTZETjJtektFTmFXYmgyc2VZZEw5YnBWQnRRUnNkN3RBVEZaUlhzZHFCc0FhUQ?oc=5",
-      "source": "Grupo A Hora",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-08-14T10:51:00.000Z"
     },
     {
       "title": "Da prevenção à emergência: podcast Voz Equestre destaca diferentes áreas da medicina veterinária equina no…",
@@ -57,6 +48,15 @@
       "publishedAt": "2026-07-18T07:00:00.000Z"
     },
     {
+      "title": "CRMV-SP reforça protagonismo na Medicina Veterinária equina durante conferência da Abraveq",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxPZU9YX1RzZjczYTNOaFVOM0hJYWpCdk5hbnRMbzJyQ3ZJelVsNnRRQ2xaaG1iQjVhbEJaN0pybnB3ZDhQc1JySTdOZUdQR0g0ZERYU2tiaEY2VHg5bjU3THMzVDY4UFZ0cWVCakRpbDNGTDlSaE15Z29Kd040WVZ4YnpFMU1ncEM3NVpyTHJtSUFtaWVXUVFCQ2dRdnc4NS00ODVQVVZNMXl4UlRLWDkxRFNRWQ?oc=5",
+      "source": "CRMV-SP",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-07-08T07:00:00.000Z"
+    },
+    {
       "title": "The effects of clomiphene citrate on reproductive parameters in the mare",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003606?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -84,6 +84,15 @@
       "publishedAt": null
     },
     {
+      "title": "Wound healing of experimental cutaneous wounds in horses: comparison between a topical formulation containing powdered coconut water and an antimicrobial ointment",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003618?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "Equine upper limb kinematics: Comparison between biplanar high-speed fluoroscopic kinematography and optoelectronic motion capture in one Mini Shetland Pony",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003291?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -95,15 +104,6 @@
     {
       "title": "Seroprevalence, risk factors and hematological parameters associated with equine infectious anemia from Casanare, Colombia",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003436?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "The effect of intravenous fluids administered prior to competition: A randomized clinical trial",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003564?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
