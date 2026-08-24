@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-23T09:36:58.099Z",
+  "updatedAt": "2026-08-24T09:57:28.458Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -21,6 +21,15 @@
       "publishedAt": "2026-08-18T07:00:00.000Z"
     },
     {
+      "title": "“A paixão que tenho pelos cavalos me fez escolher cursar Medicina Veterinária”",
+      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQM3NnUGMtX2t4VEpKN0NyUkNiYjlBNmRBZW9uZ1ZhMnVfMzVmNnBqVmZXZ1k4UHFGbjA5SXF0QXl4al84ODAwcDB4bGZaWm5ENnJfT2RvaVNkOHNhQnE3eFBUanZiVTFrWWp1MXBvU0RqbVdyR0FTV3FvNnBMVWNTMVhFMzdnUURtT0hMaDJKUVJJQ0VtMTZETjJtektFTmFXYmgyc2VZZEw5YnBWQnRRUnNkN3RBVEZaUlhzZHFCc0FhUQ?oc=5",
+      "source": "Grupo A Hora",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-14T10:51:00.000Z"
+    },
+    {
       "title": "Da prevenção à emergência: podcast Voz Equestre destaca diferentes áreas da medicina veterinária equina no…",
       "url": "https://news.google.com/rss/articles/CBMi9gFBVV95cUxNUDZVUk01aU1CaTFKdWdTMy1tTlBnQkk0Q1FXNVRlYlpPVG1JRVdjYTlqeUJXdnZwZ3NxZzNIVUdoSzlaWGlIaElmV25WdGVYNVp3eGpSTG83ZkJaYkNnMW9qbXQtYXFkdmFSWGxvUHhsTTJaeFp2RmQxOGxIX1d0WEtuMXJ0ZEJ6cjdGTTlUOUZ5U1NEbS13VUdMZFBpTkZocTg1WnFQNkRGWnhsX2FJSHU5U1JWUXpDWndibVpoZ0ZLSGoyMk5OMl9NLWhUTk96RXFwMk4tQXRDUS1DOWhTWi1XUW9pTEdnVmJNcUlYZWNzMWVqd2c?oc=5",
       "source": "Gazeta da Semana",
@@ -28,15 +37,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-08-11T12:53:06.000Z"
-    },
-    {
-      "title": "Simpósio de Sanidade Equina – CCR",
-      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNREUyRnBZUnZTU3pLRzQ4clVuZi1fUlJzUFdQQmpHSnNCY3pLdjZoc3RZd3RYRFBCMDhucXY4QjFxOC1oNGEyRjBJeXMybjZRQkhNWURKQTNFTmtqbXgtb3d6NXBsZUhoTE5pYWtwYjA4bGhsVFRfclo4Q3dJY3JPNHdRM1NqOE9YMGFJ?oc=5",
-      "source": "UFSM",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-08-05T14:39:00.000Z"
     },
     {
       "title": "Cavalos levados para uma ilha de areia há mais de 250 anos formaram uma população selvagem de 420 animais que vive sem ração, abrigo ou veterinário",
@@ -84,6 +84,15 @@
       "publishedAt": null
     },
     {
+      "title": "Questionnaire-based investigation into stallion management practices in 28 countries",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003631?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "Wound healing of experimental cutaneous wounds in horses: comparison between a topical formulation containing powdered coconut water and an antimicrobial ointment",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003618?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -95,15 +104,6 @@
     {
       "title": "Equine upper limb kinematics: Comparison between biplanar high-speed fluoroscopic kinematography and optoelectronic motion capture in one Mini Shetland Pony",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003291?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Seroprevalence, risk factors and hematological parameters associated with equine infectious anemia from Casanare, Colombia",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003436?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
