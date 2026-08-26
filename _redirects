@@ -1,0 +1,5 @@
+# O Cloudflare Pages redireciona (308) URLs .html para a versao sem extensao.
+# A verificacao por ARQUIVO do Google Search Console busca a URL .html EXATA e
+# pode falhar com o 308. Esta regra serve o conteudo com status 200 (rewrite),
+# sem redirecionar, so para o arquivo de verificacao do Google.
+/google93ae3e981b6f9b75.html    /google93ae3e981b6f9b75    200
