@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-27T19:48:12.507Z",
+  "updatedAt": "2026-08-28T20:48:53.335Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -84,6 +84,15 @@
       "publishedAt": null
     },
     {
+      "title": "Inter- and intra-rater reliability of linear scoring in warmblood breeding",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003424?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "Questionnaire-based investigation into stallion management practices in 28 countries",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003631?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -95,15 +104,6 @@
     {
       "title": "Wound healing of experimental cutaneous wounds in horses: comparison between a topical formulation containing powdered coconut water and an antimicrobial ointment",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003618?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Equine upper limb kinematics: Comparison between biplanar high-speed fluoroscopic kinematography and optoelectronic motion capture in one Mini Shetland Pony",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003291?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
