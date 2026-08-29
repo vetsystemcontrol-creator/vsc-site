@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-28T20:48:53.335Z",
+  "updatedAt": "2026-08-29T14:24:34.225Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -14,7 +14,7 @@
     {
       "title": "Hospital Veterinário da UPF realiza cirurgia rara para retirada de tumor ósseo em potra",
       "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNWE5IM1A0eGlyMFpURjRyT19ueWxGVEV2Y3JkN0drMmFzSVYxTVRFRmF6Y00wbE9QNmJoWEZIdXduQmF0clZHbUFQZG5qQ0ExLUhKSnFJTHdyc3ZwVDJnbTcwaFdPYzlKdGtKNENGWEtISUFWRlZWem4tVmpkdnNwRnFyYVN2LU9YeVdfVzFBWGhGMnI0cVp1Wl9uY0lodzZhZnp0aEJ3Q1NkbDd5UEJUVw?oc=5",
-      "source": "Planalto News",
+      "source": "Rádio Planalto",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -39,6 +39,15 @@
       "publishedAt": "2026-08-17T07:00:00.000Z"
     },
     {
+      "title": "“A paixão que tenho pelos cavalos me fez escolher cursar Medicina Veterinária”",
+      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQM3NnUGMtX2t4VEpKN0NyUkNiYjlBNmRBZW9uZ1ZhMnVfMzVmNnBqVmZXZ1k4UHFGbjA5SXF0QXl4al84ODAwcDB4bGZaWm5ENnJfT2RvaVNkOHNhQnE3eFBUanZiVTFrWWp1MXBvU0RqbVdyR0FTV3FvNnBMVWNTMVhFMzdnUURtT0hMaDJKUVJJQ0VtMTZETjJtektFTmFXYmgyc2VZZEw5YnBWQnRRUnNkN3RBVEZaUlhzZHFCc0FhUQ?oc=5",
+      "source": "Grupo A Hora",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-14T07:00:00.000Z"
+    },
+    {
       "title": "Simpósio de Sanidade Equina – CCR",
       "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNREUyRnBZUnZTU3pLRzQ4clVuZi1fUlJzUFdQQmpHSnNCY3pLdjZoc3RZd3RYRFBCMDhucXY4QjFxOC1oNGEyRjBJeXMybjZRQkhNWURKQTNFTmtqbXgtb3d6NXBsZUhoTE5pYWtwYjA4bGhsVFRfclo4Q3dJY3JPNHdRM1NqOE9YMGFJ?oc=5",
       "source": "UFSM – Universidade Federal de Santa Maria",
@@ -46,15 +55,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-08-05T14:39:00.000Z"
-    },
-    {
-      "title": "Cavalos levados para uma ilha de areia há mais de 250 anos formaram uma população selvagem de 420 animais que vive sem ração, abrigo ou veterinário",
-      "url": "https://news.google.com/rss/articles/CBMinwJBVV95cUxQOG5FMGNpa2R0a2dEZ2h3YlZUWE1JTDkzb0g2dFI2cHhUeXNwek5ZYm1aOTcyUm9sQTVBbjZLS3YzR3NMWUY1dTJKb2RDeGY1V3d4RmFiVUVQbmtDOXktNXQwX2Y0TW4wMDlJc3l2ZExWMTlyc2duYlF0ZElQQlF1THUtY3VGZHZiaXM4dXNjVWt1cW9DczcwRXpiTUJGc0xKU0RqSnlOcE5yYXJDM2lwZGVDV0tPaHFHNVd2TGYwYWxKVFMxOWc3Z1NhdkVfR3MyS1pUekg4WkZ0LTV2Snl3RDhheWg1SzFxX05HUU9BODUzRzZxMGIwdi1vRW94S2hMZkZCN3diWWZhWVlRajJEOWRQaGM3UXZub0xGYkRBRQ?oc=5",
-      "source": "Revista Oeste",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-07-18T07:00:00.000Z"
     },
     {
       "title": "The effects of clomiphene citrate on reproductive parameters in the mare",
