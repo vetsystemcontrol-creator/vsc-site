@@ -1,20 +1,20 @@
 {
-  "updatedAt": "2026-08-29T14:24:34.225Z",
+  "updatedAt": "2026-08-30T14:23:19.084Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
       "title": "Botupharma leva experiência em saúde equina para a Expointer 2026 em parceria com criadores de Percheron",
-      "url": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxNVVUyTWpyNHNpNFN4SFdsY1ZlZ1Z2eV84SUNnN3M5QVlteW5nWUM5bEIwWkNSZGlEbWZlQ2E2LV9qX0xkUE8zMXczSGE5bWJCV0dpdHV5ajNFT1FxbjZxQ0hqbUdmbG5zSlVITWxxcFBjU0RWa2t3LTlkTmJiSlFuY2NVMlVzYk9OREcxMFB4UEVLMjBsdy1CdmFneUt6bXBjQVRYQ1JycVJrMk5hWGtFU01GUjcyOTJkc3VYSmE0RDQ5SkV4bjNDaGt1TFpUWjgyZGEyLTFlRHlNMWRTd3dvb19BMlFnSzJX?oc=5",
-      "source": "Gazeta da Semana",
+      "url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxPMmRCQjlnNzZJSk5HUUl3ZklGSEw1OC13MHZEQ0dKMXRIR0R2LVpRMERoaG5ma2YwR3BmTldtMjI5TmprRENyR3FKVE95NUZfMjJwWnVWWHdPRzZramNPbUdIRFlXWE5jYnBZQ1l6d2FXSXlQdlhUcmRLTGY3TklLZmlTMWI3XzRLZWh4U3UySnh1dGtHWEVYc1VodmpFOWFaX3lHSGZGMlNYNUw5dHo5bEthM3pXeTdJeWptVlhJcmpaQnhkcnpKODFEMjZBdkx0b0NLMWRIOWZMRWU3Z2FJMThMcU4tM3VRM1dJ?oc=5",
+      "source": "Gazeta de Pinheiros",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-08-27T15:50:07.000Z"
+      "publishedAt": "2026-08-27T14:19:23.000Z"
     },
     {
       "title": "Hospital Veterinário da UPF realiza cirurgia rara para retirada de tumor ósseo em potra",
       "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNWE5IM1A0eGlyMFpURjRyT19ueWxGVEV2Y3JkN0drMmFzSVYxTVRFRmF6Y00wbE9QNmJoWEZIdXduQmF0clZHbUFQZG5qQ0ExLUhKSnFJTHdyc3ZwVDJnbTcwaFdPYzlKdGtKNENGWEtISUFWRlZWem4tVmpkdnNwRnFyYVN2LU9YeVdfVzFBWGhGMnI0cVp1Wl9uY0lodzZhZnp0aEJ3Q1NkbDd5UEJUVw?oc=5",
-      "source": "Rádio Planalto",
+      "source": "Planalto News",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -84,6 +84,15 @@
       "publishedAt": null
     },
     {
+      "title": "Comparative genomics of Standardbred horses reveals candidate regions under selection for harness racing performance",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003680?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "Inter- and intra-rater reliability of linear scoring in warmblood breeding",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003424?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -95,15 +104,6 @@
     {
       "title": "Questionnaire-based investigation into stallion management practices in 28 countries",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003631?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Wound healing of experimental cutaneous wounds in horses: comparison between a topical formulation containing powdered coconut water and an antimicrobial ointment",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003618?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
