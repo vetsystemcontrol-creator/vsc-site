@@ -1,10 +1,19 @@
 {
-  "updatedAt": "2026-08-30T14:23:19.084Z",
+  "updatedAt": "2026-08-31T17:01:24.280Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
+      "title": "Médica veterinária sofre coice violento de cavalo",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOZUdaa19faUlZcl9jc05MX2Jsd0UyQVA4eFZrVlpFQXVwc1V6TXRLbU5MbjRiUUVCSVczUmFPRV9LcDBrYTBQcTd2NkpvWV9yRm10dW91eDZ0SV8xYzN3Rnh4REF4MmhLVThSX2lzbXk5QWEyRF82b0ZNME5IOTVWZ0dlaDNIZ0NNbWQ0UHZHYjFKTHQ5VzZFMtIBngFBVV95cUxPeVhIaFJFMHlBOS1RQnM3MHdlSHpWU09PSFpsSWh4THA4dnl6T2x6YXZFa2hheHBiWGdLcWRHX3liQS1sc3pLRmZza1FsZ3A1dV8wX2hJbXNEZlpqNGduRm9ZZ1VVUjIwLWxLWkJvNnFJZE9tQXFHbkFYNXhOSnVJZFQ5RTJGS0dTQjYxazVUaFozSXNjUjVyZ1lxV2hwQQ?oc=5",
+      "source": "ContilNet",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-31T02:38:58.000Z"
+    },
+    {
       "title": "Botupharma leva experiência em saúde equina para a Expointer 2026 em parceria com criadores de Percheron",
-      "url": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxPMmRCQjlnNzZJSk5HUUl3ZklGSEw1OC13MHZEQ0dKMXRIR0R2LVpRMERoaG5ma2YwR3BmTldtMjI5TmprRENyR3FKVE95NUZfMjJwWnVWWHdPRzZramNPbUdIRFlXWE5jYnBZQ1l6d2FXSXlQdlhUcmRLTGY3TklLZmlTMWI3XzRLZWh4U3UySnh1dGtHWEVYc1VodmpFOWFaX3lHSGZGMlNYNUw5dHo5bEthM3pXeTdJeWptVlhJcmpaQnhkcnpKODFEMjZBdkx0b0NLMWRIOWZMRWU3Z2FJMThMcU4tM3VRM1dJ?oc=5",
+      "url": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxNSnc1WTFXVFJ0ZVk0VjBLbU15ZTg5N3UtaTFnWmJNNTFyaG5HV01pZDBsV1U1WjZQQVhOb0NMSWNJT0s4cktCMmVlUjZ0ZTdubXhyUEFaaUt6bFp0YWREZGRMaW8wNExINm5POFV3SGg2QklZT2JMSndfOGlHS0R6cVVrQ1N2N1U2OC1xSEY3WnJqOUNST2tnMEo5QTVzZHkxdFU5REVHWnM1REx2R3VLNWtfMV9iMjVjQ1liZFNKZmp3QkdkWFhCXy1pd2V3T0J3ZDdrTEFER3V6RzQyV05xTHpyd29kUQ?oc=5",
       "source": "Gazeta de Pinheiros",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
@@ -46,15 +55,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-08-14T07:00:00.000Z"
-    },
-    {
-      "title": "Simpósio de Sanidade Equina – CCR",
-      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNREUyRnBZUnZTU3pLRzQ4clVuZi1fUlJzUFdQQmpHSnNCY3pLdjZoc3RZd3RYRFBCMDhucXY4QjFxOC1oNGEyRjBJeXMybjZRQkhNWURKQTNFTmtqbXgtb3d6NXBsZUhoTE5pYWtwYjA4bGhsVFRfclo4Q3dJY3JPNHdRM1NqOE9YMGFJ?oc=5",
-      "source": "UFSM – Universidade Federal de Santa Maria",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-08-05T14:39:00.000Z"
     },
     {
       "title": "The effects of clomiphene citrate on reproductive parameters in the mare",
