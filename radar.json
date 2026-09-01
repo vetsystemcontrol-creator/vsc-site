@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-08-31T17:01:24.280Z",
+  "updatedAt": "2026-09-01T14:06:31.268Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -57,6 +57,15 @@
       "publishedAt": "2026-08-14T07:00:00.000Z"
     },
     {
+      "title": "No evidence of H5N1 avian influenza virus infection in Japanese horses in 2025",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003667?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "The effects of clomiphene citrate on reproductive parameters in the mare",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003606?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -84,8 +93,8 @@
       "publishedAt": null
     },
     {
-      "title": "Comparative genomics of Standardbred horses reveals candidate regions under selection for harness racing performance",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003680?dgcid=rss_sd_all",
+      "title": "Intraoperative mechanical power and post-anesthetic respiratory outcomes in horses: A retrospective cohort study",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003709?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -93,17 +102,8 @@
       "publishedAt": null
     },
     {
-      "title": "Inter- and intra-rater reliability of linear scoring in warmblood breeding",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003424?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Questionnaire-based investigation into stallion management practices in 28 countries",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003631?dgcid=rss_sd_all",
+      "title": "Survey of rider and horse size proportions and associated rider perceptions",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003655?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
