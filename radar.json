@@ -1,7 +1,16 @@
 {
-  "updatedAt": "2026-09-04T13:25:26.917Z",
+  "updatedAt": "2026-09-05T12:36:47.421Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Filha de João Paulo perdeu o pai aos 5 anos, virou veterinária e hoje comanda fazendas em Brotas com gado, cavalos e melhoramento genético",
+      "url": "https://news.google.com/rss/articles/CBMiiAJBVV95cUxNdWtraF8tc3VKUlR5NndyUEh3MDh3TVJSUWs1OUtRODV0NnBreWhLMnlrYlMzOGs5aGU1SmNtNHU3ajJBalVYVzFhcE1iY2lwU0U5M3FINFR2NjJSbUV2ZFphaU8xRTl2OFo4c3l5YUZPcm5ZV2MzTDA4RTVJaHRBbGZwdVVjMUkxNC1aY01reS15b3VXcno3Tl8ydU9SbzAySE4wdjlYY1lQMXFqUmNOV1BJWmk1YUpvNlc1VWVkSWptNkU3eDlZR0V2N05wRUZyZDF6Qi1zRWVYb3FYamFqWFdJbWxOMXBhYVZrNGwyS0dGM0hPS0d0b0RHcDlMQUhwLUhzSVBfQXc?oc=5",
+      "source": "CPG Click Petróleo e Gás",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-09-04T18:42:00.000Z"
+    },
     {
       "title": "CNA debate bem-estar animal e sanidade de equídeos na Expointer",
       "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOLURLMm8zWXpLU2RSVm9aQmJsYndIcHhEN0lEUTdodXNjU1hTaVdnc0E3T29KQVF5R2gzOEFUZl9xaXl4LW0zYjg2bW93M0NoZU9FM1U1cmY2V185TWFrcWZ4cDJYZWZTRkR3N09sTkNZaEhjQzZHT245V2FubV9DU05DcWdCcjdmNHdDWnRSVnM3XzViTlhzMnBLQ09jSTRCSjN2WmtB?oc=5",
@@ -14,7 +23,7 @@
     {
       "title": "Médica veterinária sofre coice violento de cavalo",
       "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOZUdaa19faUlZcl9jc05MX2Jsd0UyQVA4eFZrVlpFQXVwc1V6TXRLbU5MbjRiUUVCSVczUmFPRV9LcDBrYTBQcTd2NkpvWV9yRm10dW91eDZ0SV8xYzN3Rnh4REF4MmhLVThSX2lzbXk5QWEyRF82b0ZNME5IOTVWZ0dlaDNIZ0NNbWQ0UHZHYjFKTHQ5VzZFMtIBngFBVV95cUxPeVhIaFJFMHlBOS1RQnM3MHdlSHpWU09PSFpsSWh4THA4dnl6T2x6YXZFa2hheHBiWGdLcWRHX3liQS1sc3pLRmZza1FsZ3A1dV8wX2hJbXNEZlpqNGduRm9ZZ1VVUjIwLWxLWkJvNnFJZE9tQXFHbkFYNXhOSnVJZFQ5RTJGS0dTQjYxazVUaFozSXNjUjVyZ1lxV2hwQQ?oc=5",
-      "source": "ContilNet",
+      "source": "contilnetnoticias.com.br",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -30,6 +39,15 @@
       "publishedAt": "2026-08-27T14:19:23.000Z"
     },
     {
+      "title": "Hospital Veterinário da UPF realiza cirurgia rara para retirada de tumor ósseo em potra",
+      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNWE5IM1A0eGlyMFpURjRyT19ueWxGVEV2Y3JkN0drMmFzSVYxTVRFRmF6Y00wbE9QNmJoWEZIdXduQmF0clZHbUFQZG5qQ0ExLUhKSnFJTHdyc3ZwVDJnbTcwaFdPYzlKdGtKNENGWEtISUFWRlZWem4tVmpkdnNwRnFyYVN2LU9YeVdfVzFBWGhGMnI0cVp1Wl9uY0lodzZhZnp0aEJ3Q1NkbDd5UEJUVw?oc=5",
+      "source": "Rádio Planalto",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-21T07:00:00.000Z"
+    },
+    {
       "title": "Conheça as pesquisas da UFU sobre a saúde de equinos",
       "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPNExhbVR6M3dDOVoxMlNpZlJqckpKZTRCSG43Q0lGejZhUjdWY1pFVlNTNzFwTlJTMGQzYmdTNndOeVZUZkdJa2Rlck1ZOTdKU1J1dmtqZjBBU01xWjI5Z0JzZkxSZGlLTm01ZEIxeVFnZXpQcFpUM19iZk9jbllaZGE3eE9tVUQtT2dUVlI0LVNaZw?oc=5",
       "source": "Comunica UFU",
@@ -37,24 +55,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-08-18T07:00:00.000Z"
-    },
-    {
-      "title": "Acadêmicos e residentes de Medicina Veterinária da Unimar apresentam trabalhos científicos em Conferência Nacional de Equinos",
-      "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5OUGhjZWF2SV85aGpaN2lrSktGZjhrbDRTNkVzaGdMd2swbnZJSlVwM2NoNzREaDEtMjlNeVpMcGszazFJcnJwaHlzM0h0ZWFKVFA2V0w1bVpXdGdVUnNuYklIdklMZmpwclJNZjVhRTJlV3o4?oc=5",
-      "source": "Unimar Blog",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-08-17T07:00:00.000Z"
-    },
-    {
-      "title": "Simpósio de Sanidade Equina – CCR",
-      "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNREUyRnBZUnZTU3pLRzQ4clVuZi1fUlJzUFdQQmpHSnNCY3pLdjZoc3RZd3RYRFBCMDhucXY4QjFxOC1oNGEyRjBJeXMybjZRQkhNWURKQTNFTmtqbXgtb3d6NXBsZUhoTE5pYWtwYjA4bGhsVFRfclo4Q3dJY3JPNHdRM1NqOE9YMGFJ?oc=5",
-      "source": "UFSM – Universidade Federal de Santa Maria",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-08-05T14:39:00.000Z"
     },
     {
       "title": "No evidence of H5N1 avian influenza virus infection in Japanese horses in 2025",
@@ -102,8 +102,8 @@
       "publishedAt": null
     },
     {
-      "title": "Intrafollicular hormonal environment of equine follicles aspirated for In Vitro Embryo production",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003692?dgcid=rss_sd_all",
+      "title": "Walking prior to contrast tenogram radiograph acquisition improves radiological identification of equine digital flexor tendon sheath pathology",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003679?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
