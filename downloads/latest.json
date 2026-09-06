@@ -1,9 +1,9 @@
 {
-  "versionCode": 3491628,
-  "versionName": "26.1.1019 (23abe834)",
+  "versionCode": 3514124,
+  "versionName": "26.1.1028 (78fefd0d)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4995610,
-  "sha256": "70c68e416f5a9d9d3d829f50c68dd2134ed5580dc242f211b6f1bc4945f859e1",
-  "publishedAt": "2026-08-21T20:51:07.357Z",
-  "notes": "Rodada ampla de melhorias do sistema:\n• O app abre mais rapido: a tela aparece assim que os dados do proprio aparelho carregam; a sincronizacao com o servidor passou para segundo plano e nao trava mais a abertura.\n• Cadastros agora conferem CPF/CNPJ (cliente, fornecedor e empresa) e a data de nascimento do animal.\n• Painel corrigido: dias em atraso, rotulos e percentuais.\n• Receituario ajustado a norma: vias do medicamento controlado, idade no documento e prazo da receita simples.\n• Sincronizacao mais confiavel entre aparelhos (reproducao e notas de compra nao se perdem mais)."
+  "sizeBytes": 4995754,
+  "sha256": "11d36019655f4774f084f981af2c9aed2908482cfddbbf1ad50eb5db239aaa29",
+  "publishedAt": "2026-09-06T11:44:36.970Z",
+  "notes": "Correcao no valor do deslocamento (km):\n• O km passa a ser cobrado sempre pelo valor configurado no modulo Empresa. Atendimento ainda ABERTO que estava com a taxa antiga passa a usar a atual.\n• Atendimento ja finalizado nao muda de valor: mantem a taxa do fechamento, e a tela avisa qual e a taxa de hoje.\n• A linha do deslocamento passou a mostrar a MESMA taxa que entra na conta — antes podia exibir \"10 km x R$ 2,35\" e somar R$ 20,00.\n• Baixa de estoque por validade (FEFO) passou a usar a data da propria baixa, e nao a data do aparelho."
 }
