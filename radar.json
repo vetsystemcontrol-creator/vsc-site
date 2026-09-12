@@ -1,7 +1,25 @@
 {
-  "updatedAt": "2026-09-11T13:28:47.312Z",
+  "updatedAt": "2026-09-12T12:48:35.334Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Governança da Fiscalização no Sistema CFMV/CRMVs",
+      "url": "https://www.cfmv.gov.br/governanca-da-fiscalizacao-no-sistema-cfmv-crmvs/comunicacao/publicacoes/2026/09/11/",
+      "source": "CFMV",
+      "sourceKind": "profissao",
+      "sourceLabel": "Conselho Federal de Medicina Veterinária",
+      "lang": "pt",
+      "publishedAt": "2026-09-11T19:12:22.000Z"
+    },
+    {
+      "title": "Saúde do cavalo: como prevenir doenças e cuidar bem dos mais de 5,7 milhões de animais no Brasil",
+      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNY1VKeGZncEx1VVVwMV90UEhKU3dzZ2NXRTdhc0ZrUHdoYTcteHRkdFJwU1o2cU9uM1kyNF9vM3N4aXBvQnVDV3dVWUlOemY4QUFTSGVINE5Sa0tib28yclppb3BDQWJCa25XWGdaWEJHNlBYd1pvdVNMNXBUbW1lb1Z0Zkg3bWtQdzZLVDQ3WjNuVmFIeHg2SGFFenhxSGlXd1JjbjdhUWJ5d2tQY0IxZmpVSlFqeVY5S05PTDVOblU0YVU2TXpZbUVpV1ZNSmtXYkdMMExBYmQ0Zw?oc=5",
+      "source": "bra1.com.br",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-09-11T14:54:00.000Z"
+    },
     {
       "title": "Dia do Médico Veterinário celebra profissionais essenciais para a saúde e o bem-estar dos cavalos",
       "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1fNUNCTDdiY2RLVTFZb2oxMjFyWnNCclg5NnNCOC0wdW1aVGVXV3hNMnpLbUFQeHVOZWNsX1VTS1pBbWNjOXJzVksxODhoZFVwbEJmbGoyVmVtMGVSMUsxejdQYURWQl9aaDJJYnF0eVBJV0dNR1FpTnRDdlhzWFk?oc=5",
@@ -14,7 +32,7 @@
     {
       "title": "Veterinária diz que já está acostumada com coices após ser derrubada por cavalo enquanto gravava vídeos",
       "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxORHNhaXd0MXR0bFFWNEkzTXdsR2tCMlU1WE1uR1ZpVVhKMlN5LVpEUThmVmJOUTlSMkxVckpaeGJlemJ4QXhqQlJfbmd4V2ctRGh2SFEtZ1RqRDI5N2FXWU41Si1JNWlGT1l4RU9FZzFWT184cWFyMWpLODFEbDgzQjB2RF9DcmRHUmsxcUJ3dURNN3BxUGxPRUh2aE53bzZ3Wm53TVVFdmEyZnJoSGlhcmdWeGhZZlMzQ1BFN0lRMERzcVF1N2E3QXFYVkltNDNGaHB1QVowUC1OWFhXMEM3RUFJbVdfVmNmbGE4SWlza9IB_gFBVV95cUxNTDJaUzluYm95QUNRX3YxYTNmVFB6bTVLUkE5bnIzcmg0OEdHR1ltdVBJOElVRUx0eXh2N2JHUUxPTl9tOVpXdlNIZzhKRXJHWnZoTHlPY3ZSTTBqd3MzOTBOTUMwLThSRURlTjZyU05rNVA0Y2Nwem40NnlaVFRreGdFd25rOXk5N2hUenRFcUJtaWp6UzZFdzlicXFjMnF6aDBsUG9GTDRUVzlEcXVvV1hUblNjUVpzRDA5WlFuR09FWnRDdjZRUFBUZDRrRFdBR2VIampRQTVyRVZmQTBwSEM0cmZRRmdXNXRWZmROc3dTVExaTjlhSnp0b1pOUQ?oc=5",
-      "source": "G1",
+      "source": "g1.globo.com",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -23,20 +41,11 @@
     {
       "title": "Cavalo dá coice e derruba veterinária enquanto ela gravava vídeo",
       "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbzMtR0VqWkoySlhJMjN6NGFvaFJzdXo0M3g4WmNnR0NyWjR0UDZ6cE0wcGpSSUZ6dTlOTUJCWnljZHJCME4xMm1lUWpIeW9pNU83X2xPeTBTNHp4U01fa243MkM4N0FmeWVPWWRoOTVXREFKUG4xOHBHSFpQTW02TnJMbEtxQmlXcURkbjlIRDY3SExadHJxVnNvMDhQb2RXUURwVElXWjRVUEpQRVBNY01oWEw4N2dLNFhV0gHKAUFVX3lxTE1SQzhRdkhIMlVfRUJwb0F4MG5IcmstTEZyaXpSREllZE9zOElDdDR4bFJnSWxUSlZ5bTZLdzNZZVVFVm1TRUZZTnBOLUtxZU8xT3pCdUFFSFBlWkxDYUtRRE5MY3FfZExldE5OSW80eFJZYjZNaXVzSVhSQ01JVGhTdV9pb2l0SEtuU1R5MVhjcThQa1o2NkZTb0oweDJYMV9JM2FVVlJrZmJ6cHliMUVhR0tLa0VRTzBtdWZEMHhtYjRoWGZBSTR4RGc?oc=5",
-      "source": "G1",
+      "source": "g1.globo.com",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-09-04T20:22:45.000Z"
-    },
-    {
-      "title": "Filha de João Paulo perdeu o pai aos 5 anos, virou veterinária e hoje comanda fazendas em Brotas com gado, cavalos e melhoramento genético",
-      "url": "https://news.google.com/rss/articles/CBMiiAJBVV95cUxNdWtraF8tc3VKUlR5NndyUEh3MDh3TVJSUWs1OUtRODV0NnBreWhLMnlrYlMzOGs5aGU1SmNtNHU3ajJBalVYVzFhcE1iY2lwU0U5M3FINFR2NjJSbUV2ZFphaU8xRTl2OFo4c3l5YUZPcm5ZV2MzTDA4RTVJaHRBbGZwdVVjMUkxNC1aY01reS15b3VXcno3Tl8ydU9SbzAySE4wdjlYY1lQMXFqUmNOV1BJWmk1YUpvNlc1VWVkSWptNkU3eDlZR0V2N05wRUZyZDF6Qi1zRWVYb3FYamFqWFdJbWxOMXBhYVZrNGwyS0dGM0hPS0d0b0RHcDlMQUhwLUhzSVBfQXc?oc=5",
-      "source": "CPG Click Petróleo e Gás",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-04T18:42:00.000Z"
+      "publishedAt": "2026-09-04T07:00:00.000Z"
     },
     {
       "title": "CNA debate bem-estar animal e sanidade de equídeos na Expointer",
