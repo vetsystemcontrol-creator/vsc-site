@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-12T12:48:35.334Z",
+  "updatedAt": "2026-09-13T13:46:20.334Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -12,18 +12,9 @@
       "publishedAt": "2026-09-11T19:12:22.000Z"
     },
     {
-      "title": "Saúde do cavalo: como prevenir doenças e cuidar bem dos mais de 5,7 milhões de animais no Brasil",
-      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNY1VKeGZncEx1VVVwMV90UEhKU3dzZ2NXRTdhc0ZrUHdoYTcteHRkdFJwU1o2cU9uM1kyNF9vM3N4aXBvQnVDV3dVWUlOemY4QUFTSGVINE5Sa0tib28yclppb3BDQWJCa25XWGdaWEJHNlBYd1pvdVNMNXBUbW1lb1Z0Zkg3bWtQdzZLVDQ3WjNuVmFIeHg2SGFFenhxSGlXd1JjbjdhUWJ5d2tQY0IxZmpVSlFqeVY5S05PTDVOblU0YVU2TXpZbUVpV1ZNSmtXYkdMMExBYmQ0Zw?oc=5",
-      "source": "bra1.com.br",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-11T14:54:00.000Z"
-    },
-    {
       "title": "Dia do Médico Veterinário celebra profissionais essenciais para a saúde e o bem-estar dos cavalos",
       "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1fNUNCTDdiY2RLVTFZb2oxMjFyWnNCclg5NnNCOC0wdW1aVGVXV3hNMnpLbUFQeHVOZWNsX1VTS1pBbWNjOXJzVksxODhoZFVwbEJmbGoyVmVtMGVSMUsxejdQYURWQl9aaDJJYnF0eVBJV0dNR1FpTnRDdlhzWFk?oc=5",
-      "source": "Portal Cavalus",
+      "source": "cavalus.com.br",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -32,7 +23,7 @@
     {
       "title": "Veterinária diz que já está acostumada com coices após ser derrubada por cavalo enquanto gravava vídeos",
       "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxORHNhaXd0MXR0bFFWNEkzTXdsR2tCMlU1WE1uR1ZpVVhKMlN5LVpEUThmVmJOUTlSMkxVckpaeGJlemJ4QXhqQlJfbmd4V2ctRGh2SFEtZ1RqRDI5N2FXWU41Si1JNWlGT1l4RU9FZzFWT184cWFyMWpLODFEbDgzQjB2RF9DcmRHUmsxcUJ3dURNN3BxUGxPRUh2aE53bzZ3Wm53TVVFdmEyZnJoSGlhcmdWeGhZZlMzQ1BFN0lRMERzcVF1N2E3QXFYVkltNDNGaHB1QVowUC1OWFhXMEM3RUFJbVdfVmNmbGE4SWlza9IB_gFBVV95cUxNTDJaUzluYm95QUNRX3YxYTNmVFB6bTVLUkE5bnIzcmg0OEdHR1ltdVBJOElVRUx0eXh2N2JHUUxPTl9tOVpXdlNIZzhKRXJHWnZoTHlPY3ZSTTBqd3MzOTBOTUMwLThSRURlTjZyU05rNVA0Y2Nwem40NnlaVFRreGdFd25rOXk5N2hUenRFcUJtaWp6UzZFdzlicXFjMnF6aDBsUG9GTDRUVzlEcXVvV1hUblNjUVpzRDA5WlFuR09FWnRDdjZRUFBUZDRrRFdBR2VIampRQTVyRVZmQTBwSEM0cmZRRmdXNXRWZmROc3dTVExaTjlhSnp0b1pOUQ?oc=5",
-      "source": "g1.globo.com",
+      "source": "G1",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -41,7 +32,7 @@
     {
       "title": "Cavalo dá coice e derruba veterinária enquanto ela gravava vídeo",
       "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbzMtR0VqWkoySlhJMjN6NGFvaFJzdXo0M3g4WmNnR0NyWjR0UDZ6cE0wcGpSSUZ6dTlOTUJCWnljZHJCME4xMm1lUWpIeW9pNU83X2xPeTBTNHp4U01fa243MkM4N0FmeWVPWWRoOTVXREFKUG4xOHBHSFpQTW02TnJMbEtxQmlXcURkbjlIRDY3SExadHJxVnNvMDhQb2RXUURwVElXWjRVUEpQRVBNY01oWEw4N2dLNFhV0gHKAUFVX3lxTE1SQzhRdkhIMlVfRUJwb0F4MG5IcmstTEZyaXpSREllZE9zOElDdDR4bFJnSWxUSlZ5bTZLdzNZZVVFVm1TRUZZTnBOLUtxZU8xT3pCdUFFSFBlWkxDYUtRRE5MY3FfZExldE5OSW80eFJZYjZNaXVzSVhSQ01JVGhTdV9pb2l0SEtuU1R5MVhjcThQa1o2NkZTb0oweDJYMV9JM2FVVlJrZmJ6cHliMUVhR0tLa0VRTzBtdWZEMHhtYjRoWGZBSTR4RGc?oc=5",
-      "source": "g1.globo.com",
+      "source": "G1",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -64,6 +55,15 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-08-31T02:38:58.000Z"
+    },
+    {
+      "title": "Hospital Veterinário da UPF realiza cirurgia rara para retirada de tumor ósseo em potra",
+      "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNWE5IM1A0eGlyMFpURjRyT19ueWxGVEV2Y3JkN0drMmFzSVYxTVRFRmF6Y00wbE9QNmJoWEZIdXduQmF0clZHbUFQZG5qQ0ExLUhKSnFJTHdyc3ZwVDJnbTcwaFdPYzlKdGtKNENGWEtISUFWRlZWem4tVmpkdnNwRnFyYVN2LU9YeVdfVzFBWGhGMnI0cVp1Wl9uY0lodzZhZnp0aEJ3Q1NkbDd5UEJUVw?oc=5",
+      "source": "Planalto News",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-21T07:00:00.000Z"
     },
     {
       "title": "No evidence of H5N1 avian influenza virus infection in Japanese horses in 2025",
@@ -111,8 +111,8 @@
       "publishedAt": null
     },
     {
-      "title": "Short-term effects of grazing muzzles on insulin in horses with insulin dysregulation out at pasture",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003308?dgcid=rss_sd_all",
+      "title": "Retrospective studbook analysis of morphometric structure, body indices, and coat color distribution in Pêga donkeys",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003758?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
