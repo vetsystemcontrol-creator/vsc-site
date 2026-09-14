@@ -1,9 +1,9 @@
 {
-  "versionCode": 3525589,
-  "versionName": "26.1.1076 (aedda429)",
+  "versionCode": 3525645,
+  "versionName": "26.1.1079 (66ee9891)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4999238,
-  "sha256": "a50478a34b6a2c2f8ce44a873fbacf749a12751ffde9ae1d1cdbb5a5fa5ccfae",
-  "publishedAt": "2026-09-14T10:50:16.144Z",
-  "notes": "Cadastro de animais e sincronizacao:\n• No tablet, os campos de especie, raca e pelagem voltam a abrir a lista ao toque. Antes nao abriam nada e nao dava para escolher \"Bovino\" — o componente antigo nao funciona dentro do aplicativo Android.\n• Ao escolher a especie, as racas e pelagens sugeridas passam a ser so daquela especie, sem misturar.\n• O nome do sexo segue a especie do animal: Bovino mostra Touro e Boi, Equino continua Garanhao.\n• A barra de sincronizacao deixa de dizer \"Operacao estavel\" quando o ultimo ciclo falhou, e so afirma que esta em dia com confirmacao do servidor.\n• Nova varredura automatica devolve para a fila o que foi gravado no aparelho e nao chegou ao servidor.\n• Cadastro feito dentro do atendimento passou a gravar e enfileirar na mesma operacao: nao ha mais como salvar o dado e perder o envio.\n• Atendimento sem numero nao sobe mais para o servidor. Era o que criava \"atendimento fantasma\": um registro sem numero e sem cliente que aparecia na fila clinica de todos os aparelhos e nao dava para resolver."
+  "sizeBytes": 4999670,
+  "sha256": "21973ba59308ae5604410007ab1d0e3bd451540e53a2f95c589c33e6498b1841",
+  "publishedAt": "2026-09-14T11:46:31.722Z",
+  "notes": "Cadastro de animais e sincronizacao:\n• No tablet, os campos de especie, raca e pelagem voltam a abrir a lista ao toque. Antes nao abriam nada e nao dava para escolher \"Bovino\" — o componente antigo nao funciona dentro do aplicativo Android.\n• Ao escolher a especie, as racas e pelagens sugeridas passam a ser so daquela especie, sem misturar.\n• O nome do sexo segue a especie do animal: Bovino mostra Touro e Boi, Equino continua Garanhao.\n• A barra de sincronizacao deixa de dizer \"Operacao estavel\" quando o ultimo ciclo falhou, e so afirma que esta em dia com confirmacao do servidor.\n• Cadastro feito dentro do atendimento passou a gravar e enfileirar na mesma operacao: nao ha mais como salvar o dado e perder o envio. A mesma protecao passou a valer para a fusao automatica de clientes duplicados, para a Agenda e para a Internacao (admissao e mutacao clinica).\n• Atendimento sem numero nao sobe mais para o servidor. Era o que criava \"atendimento fantasma\": um registro sem numero e sem cliente que aparecia na fila clinica de todos os aparelhos e nao dava para resolver.\n• A varredura automatica de sincronizacao agora tambem detecta um cadastro que foi editado DEPOIS do ultimo envio confirmado e devolve para a fila — antes so pegava o que nunca tinha sido enviado."
 }
