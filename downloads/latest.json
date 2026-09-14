@@ -1,9 +1,9 @@
 {
-  "versionCode": 3525732,
-  "versionName": "26.1.1081 (8d166a40)",
+  "versionCode": 3525978,
+  "versionName": "26.1.1082 (39118a5d)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4999822,
-  "sha256": "0701a15535e975aeee6b7cf6a70d1395e58253e034b1ca1701930cc4650ab496",
-  "publishedAt": "2026-09-14T13:13:13.242Z",
-  "notes": "Cadastro de animais e sincronizacao:\n• No tablet, os campos de especie, raca e pelagem voltam a abrir a lista ao toque. Antes nao abriam nada e nao dava para escolher \"Bovino\" — o componente antigo nao funciona dentro do aplicativo Android.\n• Ao escolher a especie, as racas e pelagens sugeridas passam a ser so daquela especie, sem misturar.\n• O nome do sexo segue a especie do animal: Bovino mostra Touro e Boi, Equino continua Garanhao.\n• A barra de sincronizacao deixa de dizer \"Operacao estavel\" quando o ultimo ciclo falhou, e so afirma que esta em dia com confirmacao do servidor.\n• Cadastro feito dentro do atendimento passou a gravar e enfileirar na mesma operacao: nao ha mais como salvar o dado e perder o envio. A mesma protecao passou a valer para a fusao automatica de clientes duplicados, para a Agenda e para a Internacao (admissao e mutacao clinica).\n• Atendimento sem numero nao sobe mais para o servidor. Era o que criava \"atendimento fantasma\": um registro sem numero e sem cliente que aparecia na fila clinica de todos os aparelhos e nao dava para resolver.\n• A varredura automatica de sincronizacao agora tambem detecta um cadastro que foi editado DEPOIS do ultimo envio confirmado e devolve para a fila — antes so pegava o que nunca tinha sido enviado."
+  "sizeBytes": 5003410,
+  "sha256": "db0884e393fd34c0fffdefe0ab13b033fbecde91fabd5b4036dfc946e741f783",
+  "publishedAt": "2026-09-14T17:19:26.951Z",
+  "notes": "Cadastro de animais no tablet:\n• Corrigido de vez o campo Especie (e Raca/Pelagem): quando o teclado esta aberto e a lista precisa abrir para cima, ela agora aparece de verdade e o toque numa opcao (ex.: \"Bovino\") seleciona corretamente. As tentativas anteriores deixavam a lista visivel mas intocavel nesse caso especifico.\n• Ao escolher a especie, as racas e pelagens sugeridas continuam so daquela especie, sem misturar, e o nome do sexo segue a especie (Bovino mostra Touro e Boi, Equino mostra Garanhao).\n\nJuntamente com os fixes ja publicados de sincronizacao (protecao contra atendimento fantasma, gravacao atomica, deteccao de cadastro desatualizado e barra de status honesta)."
 }
