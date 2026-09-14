@@ -1,9 +1,9 @@
 {
-  "versionCode": 3514124,
-  "versionName": "26.1.1028 (78fefd0d)",
+  "versionCode": 3525565,
+  "versionName": "26.1.1073 (e73d9c38)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 4995754,
-  "sha256": "11d36019655f4774f084f981af2c9aed2908482cfddbbf1ad50eb5db239aaa29",
-  "publishedAt": "2026-09-06T11:44:36.970Z",
-  "notes": "Correcao no valor do deslocamento (km):\n• O km passa a ser cobrado sempre pelo valor configurado no modulo Empresa. Atendimento ainda ABERTO que estava com a taxa antiga passa a usar a atual.\n• Atendimento ja finalizado nao muda de valor: mantem a taxa do fechamento, e a tela avisa qual e a taxa de hoje.\n• A linha do deslocamento passou a mostrar a MESMA taxa que entra na conta — antes podia exibir \"10 km x R$ 2,35\" e somar R$ 20,00.\n• Baixa de estoque por validade (FEFO) passou a usar a data da propria baixa, e nao a data do aparelho."
+  "sizeBytes": 4998838,
+  "sha256": "097b0e9e16b96038167f51cf74eae9c46d739b0e9a4cd298e6397239b0fb40e5",
+  "publishedAt": "2026-09-14T10:25:49.293Z",
+  "notes": "Cadastro de animais e sincronizacao:\n• No tablet, os campos de especie, raca e pelagem voltam a abrir a lista ao toque. Antes nao abriam nada e nao dava para escolher \"Bovino\" — o componente antigo nao funciona dentro do aplicativo Android.\n• Ao escolher a especie, as racas e pelagens sugeridas passam a ser so daquela especie, sem misturar.\n• O nome do sexo segue a especie do animal: Bovino mostra Touro e Boi, Equino continua Garanhao.\n• A barra de sincronizacao deixa de dizer \"Operacao estavel\" quando o ultimo ciclo falhou, e so afirma que esta em dia com confirmacao do servidor.\n• Nova varredura automatica devolve para a fila o que foi gravado no aparelho e nao chegou ao servidor.\n• Cadastro feito dentro do atendimento passou a gravar e enfileirar na mesma operacao: nao ha mais como salvar o dado e perder o envio."
 }
