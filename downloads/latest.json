@@ -1,9 +1,9 @@
 {
-  "versionCode": 3528449,
-  "versionName": "26.1.1112 (ba2cb579)",
+  "versionCode": 3529396,
+  "versionName": "26.1.1119 (2196ede1)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5004506,
-  "sha256": "47d9660b6bcff001a47834966e66506e2d5bf2f5959be513d54556143d78c948",
-  "publishedAt": "2026-09-16T10:30:18.001Z",
-  "notes": "Sincronizacao — atendimento finalizado nao volta mais para \"em andamento\":\n• Corrigido um caso raro em que, logo apos finalizar um atendimento (financeiro ja pago), uma sincronizacao concorrente podia reverter o status de volta para \"em andamento\" sozinha, sem nenhuma acao do usuario.\n\nJuntamente com os fixes ja publicados: campo Especie/Raca/Pelagem do cadastro de animais, protecao contra atendimento fantasma, gravacao atomica, deteccao de cadastro desatualizado e barra de status honesta."
+  "sizeBytes": 5004490,
+  "sha256": "00fce74ce6e054545ef5aa673ba0797b32a07338f102ba4320c05ae1473be5bf",
+  "publishedAt": "2026-09-17T02:17:25.788Z",
+  "notes": "Correcoes de sincronizacao: cota do D1 (500 vs 503), atendimento finalizado nao regride mais por sync desatualizado, item de atendimento pausa para revisao em conflito raro"
 }
