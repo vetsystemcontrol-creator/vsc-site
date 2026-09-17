@@ -1,9 +1,9 @@
 {
-  "versionCode": 3529396,
-  "versionName": "26.1.1119 (2196ede1)",
+  "versionCode": 3529930,
+  "versionName": "26.1.1121 (36e731d5)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5004490,
-  "sha256": "00fce74ce6e054545ef5aa673ba0797b32a07338f102ba4320c05ae1473be5bf",
-  "publishedAt": "2026-09-17T02:17:25.788Z",
-  "notes": "Correcoes de sincronizacao: cota do D1 (500 vs 503), atendimento finalizado nao regride mais por sync desatualizado, item de atendimento pausa para revisao em conflito raro"
+  "sizeBytes": 5004582,
+  "sha256": "52a719bdb110cb9dd12ae5ee24b4a114d3520839329c5ac1f18e0dca1fca1a20",
+  "publishedAt": "2026-09-17T11:11:33.877Z",
+  "notes": "Corrige loop de reenvio infinito ao reabrir atendimento ja finalizado - agora aparece como conflito para confirmacao, em vez de tentar para sempre"
 }
