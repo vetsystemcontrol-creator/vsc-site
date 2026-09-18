@@ -1,9 +1,9 @@
 {
-  "versionCode": 3530741,
-  "versionName": "26.1.1124 (175ec73b)",
+  "versionCode": 3530789,
+  "versionName": "26.1.1126 (d0a444a5)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5004662,
-  "sha256": "2ea2bb13f2972b9610ef3668be2fdbee326664c313ecaec34816234d14406347",
-  "publishedAt": "2026-09-18T00:42:08.793Z",
-  "notes": "Correcao de sync: cobranca/parcela paga nao pode mais ser cancelada silenciosamente quando um atendimento finalizado eh reaberto - agora fica em revisao, igual ao status do atendimento."
+  "sizeBytes": 5004710,
+  "sha256": "b03cdc8f6253b2e85707c895cd5f7f8ed9c73dc1287e797b5411fba32f634f82",
+  "publishedAt": "2026-09-18T01:30:31.386Z",
+  "notes": "Correcao de sync: reabrir um atendimento finalizado e confirmar 'salvar por cima' na Central de Sincronizacao agora realmente aplica a mudanca no servidor, em vez de ficar preso pedindo confirmacao para sempre."
 }
