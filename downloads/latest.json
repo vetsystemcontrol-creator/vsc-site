@@ -1,9 +1,9 @@
 {
-  "versionCode": 3531345,
-  "versionName": "26.1.1130 (9a15210a)",
+  "versionCode": 3531401,
+  "versionName": "26.1.1132 (4e2d53f0)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5005590,
-  "sha256": "abb92a3db9c39dbc1fd5bbdbde7848cd38fc654d9b07305ecc3291c4a2820f21",
-  "publishedAt": "2026-09-18T10:45:41.818Z",
-  "notes": "Correcao financeira: reconcilia automaticamente pagamento duplicado criado quando um atendimento e reaberto mais de uma vez em cima de uma cobranca ja cancelada por bug anterior. Roda sozinho ao abrir o app, preservando todo o historico via estorno auditavel."
+  "sizeBytes": 5005602,
+  "sha256": "bbb022e81b59c125cbd22169db0a10dfa69ac1544806316d7aa11c0ec28632e7",
+  "publishedAt": "2026-09-18T11:42:29.327Z",
+  "notes": "Correcao de UI: no tablet, tocar em um item do menu lateral recolhido (ex: Atendimentos) as vezes abria o item errado (ex: Agenda) - o menu mudava de tamanho no mesmo instante do toque. Corrigido para o menu nunca mudar de posicao vertical ao expandir."
 }
