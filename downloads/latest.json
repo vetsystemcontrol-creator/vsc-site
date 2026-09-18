@@ -1,9 +1,9 @@
 {
-  "versionCode": 3529976,
-  "versionName": "26.1.1122 (97ba17dd)",
+  "versionCode": 3530741,
+  "versionName": "26.1.1124 (175ec73b)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5004594,
-  "sha256": "51515eac1a27e744676cc8e4fe24b3ad18d2a6c64ccf960ad8195b9d890b9a5b",
-  "publishedAt": "2026-09-17T11:57:13.692Z",
-  "notes": "Correcao critica de sync: para loop infinito de reenvio em conflito bloqueado por regra de dominio (downgrade de status), e corrige estouro acelerado da cota diaria do D1 (invalidacao eager do cache de status removida, calculo morto de contagem de eventos removido)."
+  "sizeBytes": 5004662,
+  "sha256": "2ea2bb13f2972b9610ef3668be2fdbee326664c313ecaec34816234d14406347",
+  "publishedAt": "2026-09-18T00:42:08.793Z",
+  "notes": "Correcao de sync: cobranca/parcela paga nao pode mais ser cancelada silenciosamente quando um atendimento finalizado eh reaberto - agora fica em revisao, igual ao status do atendimento."
 }
