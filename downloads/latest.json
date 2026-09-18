@@ -1,9 +1,9 @@
 {
-  "versionCode": 3530789,
-  "versionName": "26.1.1126 (d0a444a5)",
+  "versionCode": 3531299,
+  "versionName": "26.1.1128 (b5460945)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5004710,
-  "sha256": "b03cdc8f6253b2e85707c895cd5f7f8ed9c73dc1287e797b5411fba32f634f82",
-  "publishedAt": "2026-09-18T01:30:31.386Z",
-  "notes": "Correcao de sync: reabrir um atendimento finalizado e confirmar 'salvar por cima' na Central de Sincronizacao agora realmente aplica a mudanca no servidor, em vez de ficar preso pedindo confirmacao para sempre."
+  "sizeBytes": 5005654,
+  "sha256": "a4ca6a987248dd529c0f7125f5228d7402d762b87024a4cc536a1929d0eeb5d4",
+  "publishedAt": "2026-09-18T10:00:44.563Z",
+  "notes": "Correcao de UX no sync: conflito de reabertura/cancelamento agora explica o motivo real (nao 'outro dispositivo') e aparece como alerta na hora, com o botao certo em destaque."
 }
