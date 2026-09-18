@@ -1,7 +1,16 @@
 {
-  "updatedAt": "2026-09-17T14:15:00.715Z",
+  "updatedAt": "2026-09-18T13:33:20.083Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Simpósio de Sanidade Equina inicia nesta quinta-feira na UFSM",
+      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQbVRJd3pxay1zTE54VDhKLXRTdjY2bUJ6SXNlbXdXeW5aaURKWkZGci1OSVJERk14XzZadjdoRF9ENVZCTVJYOVVhYVZPVTFzd2tsQWFOQ0ZlTVBlOVYxSDNOeTh0MHd3YWw1aFA5azNfZm0tZzY2Rmx5ZWlGY0xweXJfMWZGeGJzZWptcE8wNDAteEZpeFNtamlQNHpPV2U2blY5Vm1qd0hzX2UySFhMQl9Hb2gtZ3JDYW9yVzFvS3hMQdIBwgFBVV95cUxQbVRJd3pxay1zTE54VDhKLXRTdjY2bUJ6SXNlbXdXeW5aaURKWkZGci1OSVJERk14XzZadjdoRF9ENVZCTVJYOVVhYVZPVTFzd2tsQWFOQ0ZlTVBlOVYxSDNOeTh0MHd3YWw1aFA5azNfZm0tZzY2Rmx5ZWlGY0xweXJfMWZGeGJzZWptcE8wNDAteEZpeFNtamlQNHpPV2U2blY5Vm1qd0hzX2UySFhMQl9Hb2gtZ3JDYW9yVzFvS3hMQQ?oc=5",
+      "source": "UFSM",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-09-17T13:06:57.000Z"
+    },
     {
       "title": "CRMV-TO reúne profissionais e acadêmicos durante curso de responsabilidade técnica, em Araguaína",
       "url": "https://www.cfmv.gov.br/crmv-to-reune-profissionais-e-academicos-durante-curso-de-responsabilidade-tecnica-em-araguaina/crmvs-em-pauta/2026/09/17/",
@@ -12,18 +21,9 @@
       "publishedAt": "2026-09-17T11:19:04.000Z"
     },
     {
-      "title": "Desfile farroupilha proíbe duas pessoas no mesmo cavalo e exige guia veterinária",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQc3pDa1h0aWFnLVY1dkN3QllFMW9MdkVGZHpZWkJPYlhWcEZSbDZUUlhhNFU4THc5YkJXakxwLXlmWENLTVZPa1N0cUNjOUo5YmdMdjBEOVlBNVdFMk1lMXdwekZZWW9YSnJVaGM2b3BTUnFkT2pMbzNabVBWTThQU2FEcVIteHRGOUFJN2c2cE45NThfZ2R1ajZVUE1DRUpSVmVkdzFjRVM3Q2NzODhRUUpGOVlzMElYY1lzSQ?oc=5",
-      "source": "radiocom.org.br",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-16T12:52:13.000Z"
-    },
-    {
       "title": "'Hora Extra': veterinária explica significado do nome da 'namorada' do cavalo Caramelo",
       "url": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxNWURHcG96QVkxX2RBYm4zdUV6VmcyZTdjZkN0UGFGWjRERFBJZUZCTmdPY1JhNG1zQ2NqN3l5LXAzdFlURnIwb2RGVi1CSkxRdnhhNDdBVVVkZV9TN1hzZy1ZMkNMUHY5STJ1SGk0cXptZFVMNUxhcTQ0WDRHV1lSOHd3Q0R4QmxpVWVrZWdqbE9CX1FOYTJSSFNLTHV5Tk4zNUpCd3lvLUp5OWpIdDhhVGNHRlhMZ2V0dmlHZVVBS04zY0NOTGlPYmVDNUxLc0c2d0ozVXdIdkJ2dEtoN2pXVDln0gHwAUFVX3lxTFBaMm13andtb0JLeVhzUXJ5TjFseDZtYVV0YUExYUY0ZkQ5T0lrWFd1cC1IMC1mWFhBeDFtVDJyX0VRQm5xNzlMT3U4Yi1MX2Y1YmFTYW1nRnd0T3FkdnZyZVFzYVlyZ3B2V3cwVmQwMzRNRDNFR3FxX2h1b1ZwZm5qM0I3cmx3MjdleHRBTVdDMU9XenZYdzJZWkhaWGJYcTBoTHJiNTFhZ0pQTGl4dlVYa050bG5ORE9sbVpVcjJIcXJLbXd4TWp2UFUxSFgyOEYwY2laWG1rSXdJTjQ3QWw1S2dCaW1iOXNvNW5FOVNmQQ?oc=5",
-      "source": "g1.globo.com",
+      "source": "G1",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -59,7 +59,7 @@
     {
       "title": "Veterinária diz que já está acostumada com coices após ser derrubada por cavalo enquanto gravava vídeos",
       "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxORHNhaXd0MXR0bFFWNEkzTXdsR2tCMlU1WE1uR1ZpVVhKMlN5LVpEUThmVmJOUTlSMkxVckpaeGJlemJ4QXhqQlJfbmd4V2ctRGh2SFEtZ1RqRDI5N2FXWU41Si1JNWlGT1l4RU9FZzFWT184cWFyMWpLODFEbDgzQjB2RF9DcmRHUmsxcUJ3dURNN3BxUGxPRUh2aE53bzZ3Wm53TVVFdmEyZnJoSGlhcmdWeGhZZlMzQ1BFN0lRMERzcVF1N2E3QXFYVkltNDNGaHB1QVowUC1OWFhXMEM3RUFJbVdfVmNmbGE4SWlza9IB_gFBVV95cUxNTDJaUzluYm95QUNRX3YxYTNmVFB6bTVLUkE5bnIzcmg0OEdHR1ltdVBJOElVRUx0eXh2N2JHUUxPTl9tOVpXdlNIZzhKRXJHWnZoTHlPY3ZSTTBqd3MzOTBOTUMwLThSRURlTjZyU05rNVA0Y2Nwem40NnlaVFRreGdFd25rOXk5N2hUenRFcUJtaWp6UzZFdzlicXFjMnF6aDBsUG9GTDRUVzlEcXVvV1hUblNjUVpzRDA5WlFuR09FWnRDdjZRUFBUZDRrRFdBR2VIampRQTVyRVZmQTBwSEM0cmZRRmdXNXRWZmROc3dTVExaTjlhSnp0b1pOUQ?oc=5",
-      "source": "g1.globo.com",
+      "source": "G1",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -68,7 +68,7 @@
     {
       "title": "Cavalo dá coice e derruba veterinária enquanto ela gravava vídeo",
       "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbzMtR0VqWkoySlhJMjN6NGFvaFJzdXo0M3g4WmNnR0NyWjR0UDZ6cE0wcGpSSUZ6dTlOTUJCWnljZHJCME4xMm1lUWpIeW9pNU83X2xPeTBTNHp4U01fa243MkM4N0FmeWVPWWRoOTVXREFKUG4xOHBHSFpQTW02TnJMbEtxQmlXcURkbjlIRDY3SExadHJxVnNvMDhQb2RXUURwVElXWjRVUEpQRVBNY01oWEw4N2dLNFhV0gHKAUFVX3lxTE1SQzhRdkhIMlVfRUJwb0F4MG5IcmstTEZyaXpSREllZE9zOElDdDR4bFJnSWxUSlZ5bTZLdzNZZVVFVm1TRUZZTnBOLUtxZU8xT3pCdUFFSFBlWkxDYUtRRE5MY3FfZExldE5OSW80eFJZYjZNaXVzSVhSQ01JVGhTdV9pb2l0SEtuU1R5MVhjcThQa1o2NkZTb0oweDJYMV9JM2FVVlJrZmJ6cHliMUVhR0tLa0VRTzBtdWZEMHhtYjRoWGZBSTR4RGc?oc=5",
-      "source": "g1.globo.com",
+      "source": "G1",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
