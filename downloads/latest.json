@@ -1,9 +1,9 @@
 {
-  "versionCode": 3531299,
-  "versionName": "26.1.1128 (b5460945)",
+  "versionCode": 3531345,
+  "versionName": "26.1.1130 (9a15210a)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5005654,
-  "sha256": "a4ca6a987248dd529c0f7125f5228d7402d762b87024a4cc536a1929d0eeb5d4",
-  "publishedAt": "2026-09-18T10:00:44.563Z",
-  "notes": "Correcao de UX no sync: conflito de reabertura/cancelamento agora explica o motivo real (nao 'outro dispositivo') e aparece como alerta na hora, com o botao certo em destaque."
+  "sizeBytes": 5005590,
+  "sha256": "abb92a3db9c39dbc1fd5bbdbde7848cd38fc654d9b07305ecc3291c4a2820f21",
+  "publishedAt": "2026-09-18T10:45:41.818Z",
+  "notes": "Correcao financeira: reconcilia automaticamente pagamento duplicado criado quando um atendimento e reaberto mais de uma vez em cima de uma cobranca ja cancelada por bug anterior. Roda sozinho ao abrir o app, preservando todo o historico via estorno auditavel."
 }
