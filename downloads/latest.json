@@ -1,9 +1,9 @@
 {
-  "versionCode": 3532828,
-  "versionName": "26.1.1136 (db10e6dc)",
+  "versionCode": 3537968,
+  "versionName": "26.1.1140 (7a772fac)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5005730,
-  "sha256": "fca4fc89e1bcf3f2fe1aa35e6e77c03f83a2a139eefcf46e8eb8c009215916ff",
-  "publishedAt": "2026-09-19T11:29:43.227Z",
-  "notes": "Correcao de UI: no tablet, tocar em um item do menu lateral recolhido (ex: Atendimentos) as vezes abria o item errado (ex: Agenda) - o menu mudava de tamanho no mesmo instante do toque. Corrigido para o menu nunca mudar de posicao vertical ao expandir."
+  "sizeBytes": 5005854,
+  "sha256": "1141ec166351ea3cc1b41b5bc6ba864bb39be0e40f02d45b43320930bfc032d2",
+  "publishedAt": "2026-09-23T01:09:00.568Z",
+  "notes": "Correcao na Central de Sincronizacao: conflitos de parcelas, titulos financeiros e itens de atendimento ficavam presos com o erro 'Tipo nao suportado para aceitar versao remota' e nao podiam ser resolvidos pela tela. Corrigido para os 3 tipos que faltavam."
 }
