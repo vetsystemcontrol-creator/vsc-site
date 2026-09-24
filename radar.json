@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-23T14:11:40.662Z",
+  "updatedAt": "2026-09-24T14:09:54.099Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -39,18 +39,9 @@
       "publishedAt": "2026-09-11T19:12:22.000Z"
     },
     {
-      "title": "Saúde do cavalo: como prevenir doenças e cuidar bem dos mais de 5,7 milhões de animais no Brasil",
-      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNY1VKeGZncEx1VVVwMV90UEhKU3dzZ2NXRTdhc0ZrUHdoYTcteHRkdFJwU1o2cU9uM1kyNF9vM3N4aXBvQnVDV3dVWUlOemY4QUFTSGVINE5Sa0tib28yclppb3BDQWJCa25XWGdaWEJHNlBYd1pvdVNMNXBUbW1lb1Z0Zkg3bWtQdzZLVDQ3WjNuVmFIeHg2SGFFenhxSGlXd1JjbjdhUWJ5d2tQY0IxZmpVSlFqeVY5S05PTDVOblU0YVU2TXpZbUVpV1ZNSmtXYkdMMExBYmQ0Zw?oc=5",
-      "source": "bra1.com.br",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-11T14:54:00.000Z"
-    },
-    {
       "title": "Dia do Médico Veterinário celebra profissionais essenciais para a saúde e o bem-estar dos cavalos",
       "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1fNUNCTDdiY2RLVTFZb2oxMjFyWnNCclg5NnNCOC0wdW1aVGVXV3hNMnpLbUFQeHVOZWNsX1VTS1pBbWNjOXJzVksxODhoZFVwbEJmbGoyVmVtMGVSMUsxejdQYURWQl9aaDJJYnF0eVBJV0dNR1FpTnRDdlhzWFk?oc=5",
-      "source": "cavalus.com.br",
+      "source": "Portal Cavalus",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -73,6 +64,15 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-09-04T07:00:00.000Z"
+    },
+    {
+      "title": "CNA debate bem-estar animal e sanidade de equídeos durante a Expointer",
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQZHRoczFyai1tXzc5TFBackd3SmhpeWZaSEZLNTBwR0szekZ3TUpqS1U0YkZjLW9pUUJIY1dJMWswNVdpdmE4Y1h5MHdyamlncXRQY1gwcXpvOGNOOUdjRXFVRk1pUHBkYkxFSDZyTHJqUTdjbmVEdDF4VVBOUUgwQlZhb3lDYkpsZzhSS2pUTTBEZVc3UXZSbk4wWnJZUHJHWVMxUm1BYw?oc=5",
+      "source": "Portal CNA Brasil",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-09-03T07:00:00.000Z"
     },
     {
       "title": "No evidence of H5N1 avian influenza virus infection in Japanese horses in 2025",
