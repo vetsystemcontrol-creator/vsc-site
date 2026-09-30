@@ -1,7 +1,16 @@
 {
-  "updatedAt": "2026-09-29T15:41:20.384Z",
+  "updatedAt": "2026-09-30T15:51:22.604Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Nova resolução atualiza procedimentos de fiscalização do Sistema CFMV/CRMVs",
+      "url": "https://www.cfmv.gov.br/nova-resolucao-atualiza-procedimentos-de-fiscalizacao-do-sistema-cfmv-crmvs/comunicacao/noticias/2026/09/30/",
+      "source": "CFMV",
+      "sourceKind": "profissao",
+      "sourceLabel": "Conselho Federal de Medicina Veterinária",
+      "lang": "pt",
+      "publishedAt": "2026-09-30T13:59:21.000Z"
+    },
     {
       "title": "Simpósio de Sanidade Equina inicia nesta quinta-feira na UFSM",
       "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQLXBDMW5CZDNiYnlaR2p0UUc4Ul9NODYyeUpFWGZvZ2E1TnYweDhxNnY2T3hfamN0My16RHppc0F0MnBoTUJVRlVmUmQxdXExXzQ1TE1iUjAyVDBhbU1HZml6U3VDdEZDd3p1bWd6ZXg5MFgxZDE4TFJTc0lRMGc0SmEzSlJqU0Y2TS1ZZEF6WXh0eXRtYzl6ZFFiVDlvNWtVUmZNSlFmem9YQXZUTlNsdWxUT0RGbW4tTUF6UNIBwgFBVV95cUxQbVRJd3pxay1zTE54VDhKLXRTdjY2bUJ6SXNlbXdXeW5aaURKWkZGci1OSVJERk14XzZadjdoRF9ENVZCTVJYOVVhYVZPVTFzd2tsQWFOQ0ZlTVBlOVYxSDNOeTh0MHd3YWw1aFA5azNfZm0tZzY2Rmx5ZWlGY0xweXJfMWZGeGJzZWptcE8wNDAteEZpeFNtamlQNHpPV2U2blY5Vm1qd0hzX2UySFhMQl9Hb2gtZ3JDYW9yVzFvS3hMQQ?oc=5",
@@ -48,15 +57,6 @@
       "publishedAt": "2026-09-09T07:00:00.000Z"
     },
     {
-      "title": "Veterinária diz que já está acostumada com coices após ser derrubada por cavalo enquanto gravava vídeos",
-      "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxORHNhaXd0MXR0bFFWNEkzTXdsR2tCMlU1WE1uR1ZpVVhKMlN5LVpEUThmVmJOUTlSMkxVckpaeGJlemJ4QXhqQlJfbmd4V2ctRGh2SFEtZ1RqRDI5N2FXWU41Si1JNWlGT1l4RU9FZzFWT184cWFyMWpLODFEbDgzQjB2RF9DcmRHUmsxcUJ3dURNN3BxUGxPRUh2aE53bzZ3Wm53TVVFdmEyZnJoSGlhcmdWeGhZZlMzQ1BFN0lRMERzcVF1N2E3QXFYVkltNDNGaHB1QVowUC1OWFhXMEM3RUFJbVdfVmNmbGE4SWlza9IB_gFBVV95cUxNTDJaUzluYm95QUNRX3YxYTNmVFB6bTVLUkE5bnIzcmg0OEdHR1ltdVBJOElVRUx0eXh2N2JHUUxPTl9tOVpXdlNIZzhKRXJHWnZoTHlPY3ZSTTBqd3MzOTBOTUMwLThSRURlTjZyU05rNVA0Y2Nwem40NnlaVFRreGdFd25rOXk5N2hUenRFcUJtaWp6UzZFdzlicXFjMnF6aDBsUG9GTDRUVzlEcXVvV1hUblNjUVpzRDA5WlFuR09FWnRDdjZRUFBUZDRrRFdBR2VIampRQTVyRVZmQTBwSEM0cmZRRmdXNXRWZmROc3dTVExaTjlhSnp0b1pOUQ?oc=5",
-      "source": "G1",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-06T07:00:00.000Z"
-    },
-    {
       "title": "Cavalo dá coice e derruba veterinária enquanto ela gravava vídeo",
       "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbzMtR0VqWkoySlhJMjN6NGFvaFJzdXo0M3g4WmNnR0NyWjR0UDZ6cE0wcGpSSUZ6dTlOTUJCWnljZHJCME4xMm1lUWpIeW9pNU83X2xPeTBTNHp4U01fa243MkM4N0FmeWVPWWRoOTVXREFKUG4xOHBHSFpQTW02TnJMbEtxQmlXcURkbjlIRDY3SExadHJxVnNvMDhQb2RXUURwVElXWjRVUEpQRVBNY01oWEw4N2dLNFhV0gHKAUFVX3lxTE1SQzhRdkhIMlVfRUJwb0F4MG5IcmstTEZyaXpSREllZE9zOElDdDR4bFJnSWxUSlZ5bTZLdzNZZVVFVm1TRUZZTnBOLUtxZU8xT3pCdUFFSFBlWkxDYUtRRE5MY3FfZExldE5OSW80eFJZYjZNaXVzSVhSQ01JVGhTdV9pb2l0SEtuU1R5MVhjcThQa1o2NkZTb0oweDJYMV9JM2FVVlJrZmJ6cHliMUVhR0tLa0VRTzBtdWZEMHhtYjRoWGZBSTR4RGc?oc=5",
       "source": "G1",
@@ -64,6 +64,15 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-09-04T07:00:00.000Z"
+    },
+    {
+      "title": "CNA debate bem-estar animal e sanidade de equídeos durante a Expointer",
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQZHRoczFyai1tXzc5TFBackd3SmhpeWZaSEZLNTBwR0szekZ3TUpqS1U0YkZjLW9pUUJIY1dJMWswNVdpdmE4Y1h5MHdyamlncXRQY1gwcXpvOGNOOUdjRXFVRk1pUHBkYkxFSDZyTHJqUTdjbmVEdDF4VVBOUUgwQlZhb3lDYkpsZzhSS2pUTTBEZVc3UXZSbk4wWnJZUHJHWVMxUm1BYw?oc=5",
+      "source": "Portal CNA Brasil",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-09-03T07:00:00.000Z"
     },
     {
       "title": "No evidence of H5N1 avian influenza virus infection in Japanese horses in 2025",
