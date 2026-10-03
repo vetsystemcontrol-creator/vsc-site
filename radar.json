@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-01T16:19:18.332Z",
+  "updatedAt": "2026-10-03T14:17:13.146Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -19,15 +19,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-09-19T07:00:00.000Z"
-    },
-    {
-      "title": "Simpósio de Sanidade Equina inicia nesta quinta-feira na UFSM",
-      "url": "https://news.google.com/rss/articles/CBMivAFBVV95cUxQLXBDMW5CZDNiYnlaR2p0UUc4Ul9NODYyeUpFWGZvZ2E1TnYweDhxNnY2T3hfamN0My16RHppc0F0MnBoTUJVRlVmUmQxdXExXzQ1TE1iUjAyVDBhbU1HZml6U3VDdEZDd3p1bWd6ZXg5MFgxZDE4TFJTc0lRMGc0SmEzSlJqU0Y2TS1ZZEF6WXh0eXRtYzl6ZFFiVDlvNWtVUmZNSlFmem9YQXZUTlNsdWxUT0RGbW4tTUF6UNIBwgFBVV95cUxQbVRJd3pxay1zTE54VDhKLXRTdjY2bUJ6SXNlbXdXeW5aaURKWkZGci1OSVJERk14XzZadjdoRF9ENVZCTVJYOVVhYVZPVTFzd2tsQWFOQ0ZlTVBlOVYxSDNOeTh0MHd3YWw1aFA5azNfZm0tZzY2Rmx5ZWlGY0xweXJfMWZGeGJzZWptcE8wNDAteEZpeFNtamlQNHpPV2U2blY5Vm1qd0hzX2UySFhMQl9Hb2gtZ3JDYW9yVzFvS3hMQQ?oc=5",
-      "source": "UFSM – Universidade Federal de Santa Maria",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-17T13:06:57.000Z"
     },
     {
       "title": "CRMV-TO reúne profissionais e acadêmicos durante curso de responsabilidade técnica, em Araguaína",
@@ -59,11 +50,20 @@
     {
       "title": "Dia do Médico Veterinário celebra profissionais essenciais para a saúde e o bem-estar dos cavalos",
       "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1fNUNCTDdiY2RLVTFZb2oxMjFyWnNCclg5NnNCOC0wdW1aVGVXV3hNMnpLbUFQeHVOZWNsX1VTS1pBbWNjOXJzVksxODhoZFVwbEJmbGoyVmVtMGVSMUsxejdQYURWQl9aaDJJYnF0eVBJV0dNR1FpTnRDdlhzWFk?oc=5",
-      "source": "Portal Cavalus",
+      "source": "cavalus.com.br",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-09-09T07:00:00.000Z"
+    },
+    {
+      "title": "Veterinária diz que já está acostumada com coices após ser derrubada por cavalo enquanto gravava vídeos",
+      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxQallzSURUNmlwVFloaWpUMVhVZlpza1FvNzdsYTQ1Qm9JblJGSzF3cUY5ckk5S0JHMGdGdnppYUlLc3VjZzVjNng0dmlBbnowQmpuNDhQM01xYnFNcWc1ZmowVFRDMGVfSThLWTF3c25JRU5EaWN0SFozdE0zQVVHWW9nVjNhelBOMk1uTDlmSEpjemdFZ2o3MGRlM1BTVWZaVUwza1FoY2M5S0J3Y04wenV2ZXF1bE1UZkIxMFJDQWRtRC1WOHJrTDNIQ1Q4MjZtZFpqQXRvM2gwQQ?oc=5",
+      "source": "educativaipora.com.br",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-09-07T00:21:50.000Z"
     },
     {
       "title": "Cavalo dá coice e derruba veterinária enquanto ela gravava vídeo",
