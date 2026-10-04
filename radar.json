@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-03T14:17:13.146Z",
+  "updatedAt": "2026-10-04T14:44:52.309Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -10,15 +10,6 @@
       "sourceLabel": "Conselho Federal de Medicina Veterinária",
       "lang": "pt",
       "publishedAt": "2026-09-30T13:59:21.000Z"
-    },
-    {
-      "title": "'Hora Extra': 10 dias após a chegada, companheira do cavalo Caramelo se adapta à vida em hospital veterinário no RS",
-      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNV2RYSXlsdlVZX1FaUzg2VEI5TWstTjdEVjFfVjhseDVldTlIM2JkSXl4dmgzWUFNVEZvZzRsOUUxUGNzc0ZOWXVRc0VBcTQzYUhTNDhCbUdvbUlQZ3IzVHhYSlI1TV81aVNMaFhmeVF1NFJsQkxKSmxqTUFMYUNyNE0zQVFDeUc3ZzhGUzRRZE1YMlU1ekJIQVA5Y0pOdkNjQktJay1mY2RnbGF3N0wzU2FZQ0piWDjSAcYBQVVfeXFMTXczZ2pKRUpNVFdrbG1mLVpacnV4MmJ2d0laNGQteDk3UUM0eVFkVnktcWJ6cURXekt6RmhoNTQyU29QcW5ocG1yNElpWkFVWUJiaGtDM0x0LXAzYUR2WEJ4QVJYYnNZT05BVlBjMXdXSE1MM1ZicWpXRUQzMnhEeGtuVDVrQ20yN0ljUmowS1o3UmU1N3FpQWNqUXI0RnVoVGhEaEI5X0IwdURGam9YcWpMYW9TQXItT3FCY0ZZbmlzY1V2UXdn?oc=5",
-      "source": "G1",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-19T07:00:00.000Z"
     },
     {
       "title": "CRMV-TO reúne profissionais e acadêmicos durante curso de responsabilidade técnica, em Araguaína",
@@ -50,7 +41,7 @@
     {
       "title": "Dia do Médico Veterinário celebra profissionais essenciais para a saúde e o bem-estar dos cavalos",
       "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1fNUNCTDdiY2RLVTFZb2oxMjFyWnNCclg5NnNCOC0wdW1aVGVXV3hNMnpLbUFQeHVOZWNsX1VTS1pBbWNjOXJzVksxODhoZFVwbEJmbGoyVmVtMGVSMUsxejdQYURWQl9aaDJJYnF0eVBJV0dNR1FpTnRDdlhzWFk?oc=5",
-      "source": "cavalus.com.br",
+      "source": "Portal Cavalus",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -73,6 +64,15 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-09-04T07:00:00.000Z"
+    },
+    {
+      "title": "CNA debate bem-estar animal e sanidade de equídeos durante a Expointer",
+      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQZHRoczFyai1tXzc5TFBackd3SmhpeWZaSEZLNTBwR0szekZ3TUpqS1U0YkZjLW9pUUJIY1dJMWswNVdpdmE4Y1h5MHdyamlncXRQY1gwcXpvOGNOOUdjRXFVRk1pUHBkYkxFSDZyTHJqUTdjbmVEdDF4VVBOUUgwQlZhb3lDYkpsZzhSS2pUTTBEZVc3UXZSbk4wWnJZUHJHWVMxUm1BYw?oc=5",
+      "source": "Portal CNA Brasil",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-09-03T07:00:00.000Z"
     },
     {
       "title": "No evidence of H5N1 avian influenza virus infection in Japanese horses in 2025",
