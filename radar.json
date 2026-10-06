@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-05T18:19:11.326Z",
+  "updatedAt": "2026-10-06T15:51:16.784Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -32,20 +32,11 @@
     {
       "title": "Dia do Médico Veterinário celebra profissionais essenciais para a saúde e o bem-estar dos cavalos",
       "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1fNUNCTDdiY2RLVTFZb2oxMjFyWnNCclg5NnNCOC0wdW1aVGVXV3hNMnpLbUFQeHVOZWNsX1VTS1pBbWNjOXJzVksxODhoZFVwbEJmbGoyVmVtMGVSMUsxejdQYURWQl9aaDJJYnF0eVBJV0dNR1FpTnRDdlhzWFk?oc=5",
-      "source": "cavalus.com.br",
+      "source": "Portal Cavalus",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-09-09T07:00:00.000Z"
-    },
-    {
-      "title": "Veterinária diz que já está acostumada com coices após ser derrubada por cavalo enquanto gravava vídeos",
-      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxQallzSURUNmlwVFloaWpUMVhVZlpza1FvNzdsYTQ1Qm9JblJGSzF3cUY5ckk5S0JHMGdGdnppYUlLc3VjZzVjNng0dmlBbnowQmpuNDhQM01xYnFNcWc1ZmowVFRDMGVfSThLWTF3c25JRU5EaWN0SFozdE0zQVVHWW9nVjNhelBOMk1uTDlmSEpjemdFZ2o3MGRlM1BTVWZaVUwza1FoY2M5S0J3Y04wenV2ZXF1bE1UZkIxMFJDQWRtRC1WOHJrTDNIQ1Q4MjZtZFpqQXRvM2gwQQ?oc=5",
-      "source": "educativaipora.com.br",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-07T00:21:50.000Z"
     },
     {
       "title": "Cavalo dá coice e derruba veterinária enquanto ela gravava vídeo",
@@ -73,6 +64,15 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-08-30T07:00:00.000Z"
+    },
+    {
+      "title": "Hospital Veterinário da UPF realiza cirurgia rara para retirada de tumor ósseo em potra - Portal",
+      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQWFZUaHNVWlJ0X3FXRjdobGlONnJpRXZwWUltNGdWV1VwOEFPTnl6Ty0teUdfaU1xeEZfLVFmUGo5NjlsYjlsYUdlN3g3bUxCZTJOM28tTmI0M2NNQkZDRWNRbGNxSDBtNG4td2EyQnM0cnZ3ZUlDZDZuSDl1elhSQnU5ZmF3LV9kMU1NbUVHbjdqX1B0cnQtLTlZcXVROFVuNlRtUHhDc2l4UVRwQjZxQTdsNnB6RXQwM0MybFk4MV9rLUYwbkJxYkFGSjJuOFk?oc=5",
+      "source": "UPF",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-20T07:00:00.000Z"
     },
     {
       "title": "No evidence of H5N1 avian influenza virus infection in Japanese horses in 2025",
