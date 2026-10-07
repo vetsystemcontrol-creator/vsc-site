@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-06T15:51:16.784Z",
+  "updatedAt": "2026-10-07T16:20:53.181Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -19,15 +19,6 @@
       "sourceLabel": "Conselho Federal de Medicina Veterinária",
       "lang": "pt",
       "publishedAt": "2026-09-17T11:19:04.000Z"
-    },
-    {
-      "title": "Saúde do cavalo: como prevenir doenças e cuidar bem dos mais de 5,7 milhões de animais no Brasil",
-      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxNY1VKeGZncEx1VVVwMV90UEhKU3dzZ2NXRTdhc0ZrUHdoYTcteHRkdFJwU1o2cU9uM1kyNF9vM3N4aXBvQnVDV3dVWUlOemY4QUFTSGVINE5Sa0tib28yclppb3BDQWJCa25XWGdaWEJHNlBYd1pvdVNMNXBUbW1lb1Z0Zkg3bWtQdzZLVDQ3WjNuVmFIeHg2SGFFenhxSGlXd1JjbjdhUWJ5d2tQY0IxZmpVSlFqeVY5S05PTDVOblU0YVU2TXpZbUVpV1ZNSmtXYkdMMExBYmQ0Zw?oc=5",
-      "source": "bra1.com.br",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-11T14:54:00.000Z"
     },
     {
       "title": "Dia do Médico Veterinário celebra profissionais essenciais para a saúde e o bem-estar dos cavalos",
@@ -57,15 +48,6 @@
       "publishedAt": "2026-09-03T07:00:00.000Z"
     },
     {
-      "title": "Médica veterinária sofre coice violento de cavalo",
-      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxOZUdaa19faUlZcl9jc05MX2Jsd0UyQVA4eFZrVlpFQXVwc1V6TXRLbU5MbjRiUUVCSVczUmFPRV9LcDBrYTBQcTd2NkpvWV9yRm10dW91eDZ0SV8xYzN3Rnh4REF4MmhLVThSX2lzbXk5QWEyRF82b0ZNME5IOTVWZ0dlaDNIZ0NNbWQ0UHZHYjFKTHQ5VzZFMtIBngFBVV95cUxPeVhIaFJFMHlBOS1RQnM3MHdlSHpWU09PSFpsSWh4THA4dnl6T2x6YXZFa2hheHBiWGdLcWRHX3liQS1sc3pLRmZza1FsZ3A1dV8wX2hJbXNEZlpqNGduRm9ZZ1VVUjIwLWxLWkJvNnFJZE9tQXFHbkFYNXhOSnVJZFQ5RTJGS0dTQjYxazVUaFozSXNjUjVyZ1lxV2hwQQ?oc=5",
-      "source": "ContilNet",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-08-30T07:00:00.000Z"
-    },
-    {
       "title": "Hospital Veterinário da UPF realiza cirurgia rara para retirada de tumor ósseo em potra - Portal",
       "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQWFZUaHNVWlJ0X3FXRjdobGlONnJpRXZwWUltNGdWV1VwOEFPTnl6Ty0teUdfaU1xeEZfLVFmUGo5NjlsYjlsYUdlN3g3bUxCZTJOM28tTmI0M2NNQkZDRWNRbGNxSDBtNG4td2EyQnM0cnZ3ZUlDZDZuSDl1elhSQnU5ZmF3LV9kMU1NbUVHbjdqX1B0cnQtLTlZcXVROFVuNlRtUHhDc2l4UVRwQjZxQTdsNnB6RXQwM0MybFk4MV9rLUYwbkJxYkFGSjJuOFk?oc=5",
       "source": "UPF",
@@ -73,6 +55,24 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-08-20T07:00:00.000Z"
+    },
+    {
+      "title": "Conheça as pesquisas da UFU sobre a saúde de equinos",
+      "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPNExhbVR6M3dDOVoxMlNpZlJqckpKZTRCSG43Q0lGejZhUjdWY1pFVlNTNzFwTlJTMGQzYmdTNndOeVZUZkdJa2Rlck1ZOTdKU1J1dmtqZjBBU01xWjI5Z0JzZkxSZGlLTm01ZEIxeVFnZXpQcFpUM19iZk9jbllaZGE3eE9tVUQtT2dUVlI0LVNaZw?oc=5",
+      "source": "Comunica UFU",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-18T07:00:00.000Z"
+    },
+    {
+      "title": "“A paixão que tenho pelos cavalos me fez escolher cursar Medicina Veterinária”",
+      "url": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxQM3NnUGMtX2t4VEpKN0NyUkNiYjlBNmRBZW9uZ1ZhMnVfMzVmNnBqVmZXZ1k4UHFGbjA5SXF0QXl4al84ODAwcDB4bGZaWm5ENnJfT2RvaVNkOHNhQnE3eFBUanZiVTFrWWp1MXBvU0RqbVdyR0FTV3FvNnBMVWNTMVhFMzdnUURtT0hMaDJKUVJJQ0VtMTZETjJtektFTmFXYmgyc2VZZEw5YnBWQnRRUnNkN3RBVEZaUlhzZHFCc0FhUQ?oc=5",
+      "source": "Grupo A Hora",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-14T07:00:00.000Z"
     },
     {
       "title": "No evidence of H5N1 avian influenza virus infection in Japanese horses in 2025",
