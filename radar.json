@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-09T16:06:05.570Z",
+  "updatedAt": "2026-10-10T15:14:46.032Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -39,6 +39,15 @@
       "publishedAt": "2026-09-09T07:00:00.000Z"
     },
     {
+      "title": "Veterinária diz que já está acostumada com coices após ser derrubada por cavalo enquanto gravava vídeos",
+      "url": "https://news.google.com/rss/articles/CBMi7wFBVV95cUxORHNhaXd0MXR0bFFWNEkzTXdsR2tCMlU1WE1uR1ZpVVhKMlN5LVpEUThmVmJOUTlSMkxVckpaeGJlemJ4QXhqQlJfbmd4V2ctRGh2SFEtZ1RqRDI5N2FXWU41Si1JNWlGT1l4RU9FZzFWT184cWFyMWpLODFEbDgzQjB2RF9DcmRHUmsxcUJ3dURNN3BxUGxPRUh2aE53bzZ3Wm53TVVFdmEyZnJoSGlhcmdWeGhZZlMzQ1BFN0lRMERzcVF1N2E3QXFYVkltNDNGaHB1QVowUC1OWFhXMEM3RUFJbVdfVmNmbGE4SWlza9IB_gFBVV95cUxNTDJaUzluYm95QUNRX3YxYTNmVFB6bTVLUkE5bnIzcmg0OEdHR1ltdVBJOElVRUx0eXh2N2JHUUxPTl9tOVpXdlNIZzhKRXJHWnZoTHlPY3ZSTTBqd3MzOTBOTUMwLThSRURlTjZyU05rNVA0Y2Nwem40NnlaVFRreGdFd25rOXk5N2hUenRFcUJtaWp6UzZFdzlicXFjMnF6aDBsUG9GTDRUVzlEcXVvV1hUblNjUVpzRDA5WlFuR09FWnRDdjZRUFBUZDRrRFdBR2VIampRQTVyRVZmQTBwSEM0cmZRRmdXNXRWZmROc3dTVExaTjlhSnp0b1pOUQ?oc=5",
+      "source": "G1",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-09-06T07:00:00.000Z"
+    },
+    {
       "title": "Cavalo dá coice e derruba veterinária enquanto ela gravava vídeo",
       "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbzMtR0VqWkoySlhJMjN6NGFvaFJzdXo0M3g4WmNnR0NyWjR0UDZ6cE0wcGpSSUZ6dTlOTUJCWnljZHJCME4xMm1lUWpIeW9pNU83X2xPeTBTNHp4U01fa243MkM4N0FmeWVPWWRoOTVXREFKUG4xOHBHSFpQTW02TnJMbEtxQmlXcURkbjlIRDY3SExadHJxVnNvMDhQb2RXUURwVElXWjRVUEpQRVBNY01oWEw4N2dLNFhV0gHKAUFVX3lxTE1SQzhRdkhIMlVfRUJwb0F4MG5IcmstTEZyaXpSREllZE9zOElDdDR4bFJnSWxUSlZ5bTZLdzNZZVVFVm1TRUZZTnBOLUtxZU8xT3pCdUFFSFBlWkxDYUtRRE5MY3FfZExldE5OSW80eFJZYjZNaXVzSVhSQ01JVGhTdV9pb2l0SEtuU1R5MVhjcThQa1o2NkZTb0oweDJYMV9JM2FVVlJrZmJ6cHliMUVhR0tLa0VRTzBtdWZEMHhtYjRoWGZBSTR4RGc?oc=5",
       "source": "G1",
@@ -64,15 +73,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-09-03T07:00:00.000Z"
-    },
-    {
-      "title": "Hospital Veterinário da UPF realiza cirurgia rara para retirada de tumor ósseo em potra - Portal",
-      "url": "https://news.google.com/rss/articles/CBMizwFBVV95cUxQWFZUaHNVWlJ0X3FXRjdobGlONnJpRXZwWUltNGdWV1VwOEFPTnl6Ty0teUdfaU1xeEZfLVFmUGo5NjlsYjlsYUdlN3g3bUxCZTJOM28tTmI0M2NNQkZDRWNRbGNxSDBtNG4td2EyQnM0cnZ3ZUlDZDZuSDl1elhSQnU5ZmF3LV9kMU1NbUVHbjdqX1B0cnQtLTlZcXVROFVuNlRtUHhDc2l4UVRwQjZxQTdsNnB6RXQwM0MybFk4MV9rLUYwbkJxYkFGSjJuOFk?oc=5",
-      "source": "UPF",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-08-20T07:00:00.000Z"
     },
     {
       "title": "No evidence of H5N1 avian influenza virus infection in Japanese horses in 2025",
