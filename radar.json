@@ -1,7 +1,16 @@
 {
-  "updatedAt": "2026-10-15T14:07:25.705Z",
+  "updatedAt": "2026-10-16T13:54:04.708Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Anuidades e débitos com os CRMVs poderão ser pagos com cartão de crédito em até 12 vezes",
+      "url": "https://www.cfmv.gov.br/anuidades-e-debitos-com-os-crmvs-poderao-ser-pagos-com-cartao-de-credito-em-ate-12-vezes/comunicacao/noticias/2026/10/15/",
+      "source": "CFMV",
+      "sourceKind": "profissao",
+      "sourceLabel": "Conselho Federal de Medicina Veterinária",
+      "lang": "pt",
+      "publishedAt": "2026-10-15T20:00:00.000Z"
+    },
     {
       "title": "Cavalo passa mal e morre durante cavalgada de Nossa Senhora em Friburgo: 'não tinha veterinário', diz tutor",
       "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxNT29YbHlYRHJyTUI0VW5kd2hsVER4SDRaZGgtQVZ2SWhLZ1BsZWo2czJWSGdQZ2puYzdGZXhvUmdIeWNwYi01Wkt3NnZjdnVvNmRMcjRIYzlsN0tyWVVOTVhDczFMVEJ0OUxVc3VSYnFwVVVkRjgtZXJLYUNrQ2JnNnk2eU1RNEFYT3AtYW9jd3BJdmU5c05kYjJ4dGIyX1Naa1BCZi1fMG9ycjU3cXFoU0ZrcndFSHdYdzFKanFyNkVkMDB1OEJ4TzlkcFNQUUx1cDA5dk1UOERvaWVvMmtwcEd6UUJEbnJKY01kQktTcWdRVHBfZzZJZ3JkZ9IBigJBVV95cUxQcVFtdjFXWl9FZ0xjRlRDUEhmRmYxNWhORFJjOGpzQ2ozS1g0YWxndmw5VWJ1b1locGUzalVDcUxxT2IzZ0dYajJ5RjNCa2dKLVU1b0prWnhVd3lCaExlWVhDMDNXd3FOUFl6UnFBTUpEWjc0TENDdkJjOWJrakhTY2lDQmxGVS1lWkFTa1FuODU4RG9KbXNqYzkzc0lPTnljWlJlMUNqams4VHNFdGtWdno2Sm5Fa1U0M3lHeHJPMFFPVG5fakJxc0x1bEJzN3NpTTQ3R21fT1o4bVRNS1Zjcl9WT2Jlc0M3SDZmczVRT1NxN0Z0REhleWhuSWNJdmVVUGUtRXJ3eHNIZw?oc=5",
@@ -28,15 +37,6 @@
       "sourceLabel": "Conselho Federal de Medicina Veterinária",
       "lang": "pt",
       "publishedAt": "2026-10-08T00:11:14.000Z"
-    },
-    {
-      "title": "Nova resolução atualiza procedimentos de fiscalização do Sistema CFMV/CRMVs",
-      "url": "https://www.cfmv.gov.br/nova-resolucao-atualiza-procedimentos-de-fiscalizacao-do-sistema-cfmv-crmvs/comunicacao/noticias/2026/09/30/",
-      "source": "CFMV",
-      "sourceKind": "profissao",
-      "sourceLabel": "Conselho Federal de Medicina Veterinária",
-      "lang": "pt",
-      "publishedAt": "2026-09-30T13:59:21.000Z"
     },
     {
       "title": "Dia do Médico Veterinário celebra profissionais essenciais para a saúde e o bem-estar dos cavalos",
@@ -120,8 +120,8 @@
       "publishedAt": null
     },
     {
-      "title": "In vitro biofilm-forming ability and antiseptic and antimicrobial susceptibility of bacterial strains derived from surgical-site infections in equine orthopedic surgery",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003850?dgcid=rss_sd_all",
+      "title": "Ultrasonography of the spleen, kidneys and bladder in healthy mangalarga marchador horses across different life stages",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004053?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
