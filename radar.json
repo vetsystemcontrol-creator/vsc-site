@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-18T13:10:37.178Z",
+  "updatedAt": "2026-10-19T16:24:26.649Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -75,6 +75,15 @@
       "publishedAt": "2026-09-04T07:00:00.000Z"
     },
     {
+      "title": "Accuracy of Teichholz and modified Simpson echocardiographic techniques for measuring cardiac output in Northeastern Donkeys (Equus asinus)",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004090?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "No evidence of H5N1 avian influenza virus infection in Japanese horses in 2025",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003667?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -113,15 +122,6 @@
     {
       "title": "Leptomeningeal dissemination of a poorly differentiated carcinoma involving the trigeminal ganglion in a horse: a case report",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003588?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Ultrasonography of the spleen, kidneys and bladder in healthy mangalarga marchador horses across different life stages",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004053?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
