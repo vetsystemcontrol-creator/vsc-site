@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-19T16:24:26.649Z",
+  "updatedAt": "2026-10-20T14:15:21.958Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -57,15 +57,6 @@
       "publishedAt": "2026-09-09T07:00:00.000Z"
     },
     {
-      "title": "Veterinária diz que já está acostumada com coices após ser derrubada por cavalo enquanto gravava vídeos",
-      "url": "https://news.google.com/rss/articles/CBMi2gFBVV95cUxQallzSURUNmlwVFloaWpUMVhVZlpza1FvNzdsYTQ1Qm9JblJGSzF3cUY5ckk5S0JHMGdGdnppYUlLc3VjZzVjNng0dmlBbnowQmpuNDhQM01xYnFNcWc1ZmowVFRDMGVfSThLWTF3c25JRU5EaWN0SFozdE0zQVVHWW9nVjNhelBOMk1uTDlmSEpjemdFZ2o3MGRlM1BTVWZaVUwza1FoY2M5S0J3Y04wenV2ZXF1bE1UZkIxMFJDQWRtRC1WOHJrTDNIQ1Q4MjZtZFpqQXRvM2gwQQ?oc=5",
-      "source": "educativaipora.com.br",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-06T07:00:00.000Z"
-    },
-    {
       "title": "Cavalo dá coice e derruba veterinária enquanto ela gravava vídeo",
       "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbzMtR0VqWkoySlhJMjN6NGFvaFJzdXo0M3g4WmNnR0NyWjR0UDZ6cE0wcGpSSUZ6dTlOTUJCWnljZHJCME4xMm1lUWpIeW9pNU83X2xPeTBTNHp4U01fa243MkM4N0FmeWVPWWRoOTVXREFKUG4xOHBHSFpQTW02TnJMbEtxQmlXcURkbjlIRDY3SExadHJxVnNvMDhQb2RXUURwVElXWjRVUEpQRVBNY01oWEw4N2dLNFhV0gHKAUFVX3lxTE1SQzhRdkhIMlVfRUJwb0F4MG5IcmstTEZyaXpSREllZE9zOElDdDR4bFJnSWxUSlZ5bTZLdzNZZVVFVm1TRUZZTnBOLUtxZU8xT3pCdUFFSFBlWkxDYUtRRE5MY3FfZExldE5OSW80eFJZYjZNaXVzSVhSQ01JVGhTdV9pb2l0SEtuU1R5MVhjcThQa1o2NkZTb0oweDJYMV9JM2FVVlJrZmJ6cHliMUVhR0tLa0VRTzBtdWZEMHhtYjRoWGZBSTR4RGc?oc=5",
       "source": "G1",
@@ -75,8 +66,26 @@
       "publishedAt": "2026-09-04T07:00:00.000Z"
     },
     {
+      "title": "Filha de João Paulo perdeu o pai aos 5 anos, virou veterinária e hoje comanda fazendas em Brotas com gado, cavalos e melhoramento genético",
+      "url": "https://news.google.com/rss/articles/CBMiiAJBVV95cUxNdWtraF8tc3VKUlR5NndyUEh3MDh3TVJSUWs1OUtRODV0NnBreWhLMnlrYlMzOGs5aGU1SmNtNHU3ajJBalVYVzFhcE1iY2lwU0U5M3FINFR2NjJSbUV2ZFphaU8xRTl2OFo4c3l5YUZPcm5ZV2MzTDA4RTVJaHRBbGZwdVVjMUkxNC1aY01reS15b3VXcno3Tl8ydU9SbzAySE4wdjlYY1lQMXFqUmNOV1BJWmk1YUpvNlc1VWVkSWptNkU3eDlZR0V2N05wRUZyZDF6Qi1zRWVYb3FYamFqWFdJbWxOMXBhYVZrNGwyS0dGM0hPS0d0b0RHcDlMQUhwLUhzSVBfQXc?oc=5",
+      "source": "CPG Click Petróleo e Gás",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-09-04T07:00:00.000Z"
+    },
+    {
       "title": "Accuracy of Teichholz and modified Simpson echocardiographic techniques for measuring cardiac output in Northeastern Donkeys (Equus asinus)",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004090?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
+      "title": "Effect of shod status on distal limb thermography in leisure horses",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004041?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -113,15 +122,6 @@
     {
       "title": "Concurrent small intestinal neoplasia and large colon volvulus in a standardbred yearling",
       "url": "https://www.sciencedirect.com/science/article/pii/S073708062600359X?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Leptomeningeal dissemination of a poorly differentiated carcinoma involving the trigeminal ganglion in a horse: a case report",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003588?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
