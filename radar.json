@@ -1,7 +1,16 @@
 {
-  "updatedAt": "2026-10-28T15:55:52.490Z",
+  "updatedAt": "2026-10-29T16:01:01.650Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Mais de 41 mil atos fiscalizatórios: CNP mostra resultados e fortalecimento da fiscalização no país",
+      "url": "https://www.cfmv.gov.br/mais-de-41-mil-atos-fiscalizatorios-cnp-mostra-resultados-e-fortalecimento-da-fiscalizacao-no-pais/comunicacao/noticias/2026/10/29/",
+      "source": "CFMV",
+      "sourceKind": "profissao",
+      "sourceLabel": "Conselho Federal de Medicina Veterinária",
+      "lang": "pt",
+      "publishedAt": "2026-10-29T11:16:52.000Z"
+    },
     {
       "title": "Cólica em cavalos: inteligência artificial pode prever risco de morte e necessidade de cirurgia",
       "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQOXRaMEhKRnJDREoxWEFYZWw1d0RpYnZjRjVrbE9pRWZ1Y09DTlVaZjRUUV9INDg0WVZLa0tBUTlfU2xwOFJFU29mbDBQSTFXVHdWR3g0NW5lZ285UWtmVlhPZUxUUnNBN19tMkdQWFg1MDNETzRGeFkycmNNMnExU3JYWHZBNlJJakZscTBzbFBvZm15cHVVMk9PTHFtWE9JcUcxeUp1cTluU2tQRXpPbV85OW9oLTNiSkRjUDh4eGk?oc=5",
@@ -12,13 +21,49 @@
       "publishedAt": "2026-10-27T13:12:35.000Z"
     },
     {
-      "title": "Portal UFS - UFS inicia atendimento veterinário gratuito para cavalos",
-      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOXzdvTXRWQUtzR3NOUGtGdWMtSDZqbWdWa0JXWkFDSWN5QlJQZEhLLUlHRDdYVXh2eGZBSHYteWl2ckd6WUZJY0hFbGZoTXdvaWw3ellpQ1lSalhOYW0xRDJLR0Y0OExGMGlDVmZId3Izc2JBZUEtaE42RTkwcEpDVEFqWktjVWliS0V5T3VlVVFNM2FP?oc=5",
-      "source": "Portal UFS",
+      "title": "Produto veterinário contaminado por fungos infecta quase 100 cavalos e leva a 20 eutanásias nos EUA",
+      "url": "https://news.google.com/rss/articles/CBMixwFBVV95cUxOYlo3Tm5UdjQzbUFhUzA0NmVMX1NOaUlRUmU4cXZtQk1BOHpqX3BkaTR1bUVTWXZUMzhiNjhvSTB6UFdoT2tNYTV4Yjd4MUFVRWh2TFRld0ItZ19EY1h5T1V3a2RSTEZtMEFQNWlyd3hDVHpsbjl2Rk1ZaDRLQ1FNbjI1Uk1PYjhOZEhKUTRnWkV1WW5veHZSbkZfN3Zsa201UW1FanZSenFlVFZCNlg2dGNZSDFqVTdqRDlCLXp0VFNRVllSbFNB?oc=5",
+      "source": "CompreRural",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-10-20T14:58:00.000Z"
+      "publishedAt": "2026-10-20T20:56:44.000Z"
+    },
+    {
+      "title": "UFS inicia atendimento veterinário gratuito para cavalos",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQUzFnYjRGOTFaa29MLUN0S0F4bGlDeFlEOUhwMGlreXdjc0cyUTNLeENTb3dKQWUwNTRXc3BvM2tKU0N1NFRoZHZmdHQ4MXFJRnY2Vkl2dmRTMHk2OHhFS3dHUzEyNDdzdGhfMkQ0VVlRcnpIQTFBOXk5VjJoNVAxek9kcDJHOVhQS1NtU29wNUY3WkExYjhnQS1RcGo?oc=5",
+      "source": "Infonet",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-10-20T19:27:22.000Z"
+    },
+    {
+      "title": "UFS oferece atendimento veterinário gratuito para cavalos em Sergipe",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQQUExZFJOWWR0eV9MdmlGS2ZuR2x5UzZhdUVIS0ZNX3JTWW41N0pIcWM4UkNJMkUxZk5MazhqekE5SURWcHVrczN3b3FXRjBDLTBHbkJUNGZtRlJYcUtraksyRFluSVI5RVljZktuZXVUWDE2ZFcwN0NvSm5BMEN2VXFObGd5UDZkX2wwVWlKdnA4di1faHAxVm5ENVR1RDJEdjhzNzhlNThQQQ?oc=5",
+      "source": "RO Acontece",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-10-20T17:48:33.000Z"
+    },
+    {
+      "title": "UNIFACS amplia atendimento veterinário com novo serviço para cavalos urbanos de Salvador",
+      "url": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNNDQ5b1JaQkhFcGpvcEZ6SDRRRlF5ajVKSGs1VHRsQk5iWFpqMElyMGpxNGJ6cjR2dnFuZHl0SHU1bnp0bW0yVFBwRE1YaHdMcTVzVlltYzJmQ1AydWJETVFLamYzYUlQUU5SVzEwOU15aVRCS1d0X2dQVkZ3c1NIQ043QVh4RUg0NWVnSUZaMGpfOG5KRl80Vk5xc3psV1RMeTlta1IxWmxxRUNjUWpQS0hKbl9nZzE2NTduanRXMGRoRzlUTWc?oc=5",
+      "source": "Jornal O candeeiro",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-10-20T17:21:26.000Z"
+    },
+    {
+      "title": "UFS oferece atendimento veterinário gratuito para cavalos; veja como agendar",
+      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxOSHJJMk1fNVdHbzZzY2thRVhNSHJKN2tQTUxMbVdMaTJRS1p5N1ZFeGt5ZDJJOHIwYURJM1lQSkVXdzE3Y2J2R3BYUnpCN09BZk11b0JhR0I1UWZuVloxNmZERWttdC0xQXR3RTh5djRoWDlURW9mVDBoalZQOUthZHlCVUU4azY4dU5xY0tRTnpYX3RVazRTOUE1M3g4WTQ0aVFEaTlrU1NYNEMt?oc=5",
+      "source": "Fan F1",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-10-20T16:13:00.000Z"
     },
     {
       "title": "Anuidades e débitos com os CRMVs poderão ser pagos com cartão de crédito em até 12 vezes",
@@ -30,40 +75,13 @@
       "publishedAt": "2026-10-15T20:00:00.000Z"
     },
     {
-      "title": "Cavalo passa mal e morre durante cavalgada de Nossa Senhora em Friburgo: 'não tinha veterinário', diz tutor",
-      "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxNT29YbHlYRHJyTUI0VW5kd2hsVER4SDRaZGgtQVZ2SWhLZ1BsZWo2czJWSGdQZ2puYzdGZXhvUmdIeWNwYi01Wkt3NnZjdnVvNmRMcjRIYzlsN0tyWVVOTVhDczFMVEJ0OUxVc3VSYnFwVVVkRjgtZXJLYUNrQ2JnNnk2eU1RNEFYT3AtYW9jd3BJdmU5c05kYjJ4dGIyX1Naa1BCZi1fMG9ycjU3cXFoU0ZrcndFSHdYdzFKanFyNkVkMDB1OEJ4TzlkcFNQUUx1cDA5dk1UOERvaWVvMmtwcEd6UUJEbnJKY01kQktTcWdRVHBfZzZJZ3JkZ9IBigJBVV95cUxQcVFtdjFXWl9FZ0xjRlRDUEhmRmYxNWhORFJjOGpzQ2ozS1g0YWxndmw5VWJ1b1locGUzalVDcUxxT2IzZ0dYajJ5RjNCa2dKLVU1b0prWnhVd3lCaExlWVhDMDNXd3FOUFl6UnFBTUpEWjc0TENDdkJjOWJrakhTY2lDQmxGVS1lWkFTa1FuODU4RG9KbXNqYzkzc0lPTnljWlJlMUNqams4VHNFdGtWdno2Sm5Fa1U0M3lHeHJPMFFPVG5fakJxc0x1bEJzN3NpTTQ3R21fT1o4bVRNS1Zjcl9WT2Jlc0M3SDZmczVRT1NxN0Z0REhleWhuSWNJdmVVUGUtRXJ3eHNIZw?oc=5",
-      "source": "G1",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-10-14T07:00:00.000Z"
-    },
-    {
-      "title": "Quem é a veterinária brasileira que deixou Minas pelos EUA e descobriu nos cavalos uma paixão para a vida",
-      "url": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxNWHkwaThaMW5PRXFZenJDYWVYcFUwbHNpdEV4aktxOWNNRExhZFVnSllycGRmZ01vMGxQWG1OXzMwY3l2V1oyVHQ2THBaalhUWFZPMjZrbzltMUNfQ1ZWbWlqdG9sSDd6ZWVqd0w3aTJ5RjFuNVV2Nmp6ZVhzbTZ3TkZaRkhNNFJJV1R0ZjFuZHpvMjFZRzNjUzFPdE9sWk1yamZ3QVhnSm1rZGd2cGxxUTNCODZabm9SZFVTTlhsWThxQVBCWEVuaWxVMU5yYnNqay1pQ2ljZlNtdmdVaWpKNlB2X2tDbDZrVmJVTHRkTndSRHN0QWJvOdIBhwJBVV95cUxNX3E1UHhlMTVkc01sbm1fcnRUR3VCRllTVXBKZ2J2UTdHY0ZuczZzSkNWZ3hsQW4xM1FWdTY3Zk03ZC12ZFY5ZWp4bDB2OVhSaERqS2E1aGVWcjBrT1ItZTNrR1diSUQtbTAtQ2dzdDhFTzJmUVdhYi1uUUN3U2xtWUp5dkFZTzQ5S2tHVkVvSWhTRmFlVjlrNGx2Umo5c0JGTEpyMkNyUFhrVGcwS2RmWUJJcFp5VlByd05jQlZsZlcxSkYxWjRwMWpETjBZWkZ2NXg0d2hCLVlRdHRfRkczM0tyOGM4Y2lnenBybUdzWkFUX0JiNExlYWpIV2hkSUJZYjB0MHJLQQ?oc=5",
-      "source": "O GLOBO",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-10-08T07:00:00.000Z"
-    },
-    {
-      "title": "Cavalo dá coice e derruba veterinária enquanto ela gravava vídeo",
-      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbzMtR0VqWkoySlhJMjN6NGFvaFJzdXo0M3g4WmNnR0NyWjR0UDZ6cE0wcGpSSUZ6dTlOTUJCWnljZHJCME4xMm1lUWpIeW9pNU83X2xPeTBTNHp4U01fa243MkM4N0FmeWVPWWRoOTVXREFKUG4xOHBHSFpQTW02TnJMbEtxQmlXcURkbjlIRDY3SExadHJxVnNvMDhQb2RXUURwVElXWjRVUEpQRVBNY01oWEw4N2dLNFhV0gHKAUFVX3lxTE1SQzhRdkhIMlVfRUJwb0F4MG5IcmstTEZyaXpSREllZE9zOElDdDR4bFJnSWxUSlZ5bTZLdzNZZVVFVm1TRUZZTnBOLUtxZU8xT3pCdUFFSFBlWkxDYUtRRE5MY3FfZExldE5OSW80eFJZYjZNaXVzSVhSQ01JVGhTdV9pb2l0SEtuU1R5MVhjcThQa1o2NkZTb0oweDJYMV9JM2FVVlJrZmJ6cHliMUVhR0tLa0VRTzBtdWZEMHhtYjRoWGZBSTR4RGc?oc=5",
-      "source": "G1",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-04T07:00:00.000Z"
-    },
-    {
-      "title": "CNA debate bem-estar animal e sanidade de equídeos durante a Expointer",
-      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQZHRoczFyai1tXzc5TFBackd3SmhpeWZaSEZLNTBwR0szekZ3TUpqS1U0YkZjLW9pUUJIY1dJMWswNVdpdmE4Y1h5MHdyamlncXRQY1gwcXpvOGNOOUdjRXFVRk1pUHBkYkxFSDZyTHJqUTdjbmVEdDF4VVBOUUgwQlZhb3lDYkpsZzhSS2pUTTBEZVc3UXZSbk4wWnJZUHJHWVMxUm1BYw?oc=5",
-      "source": "Portal CNA Brasil",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-03T11:25:45.000Z"
+      "title": "Left ventricular volume indexing in athletic Brazilian sport horses using body weight",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004119?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
     },
     {
       "title": "Evaluation of machine learning models for predicting breeding values of key performance traits in Iranian crossbred (Thoroughbred × Turkmen) racehorses",
@@ -104,15 +122,6 @@
     {
       "title": "The effects of clomiphene citrate on reproductive parameters in the mare",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003606?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Hidden tarsal lesions: The role of flexed and oblique radiographs in young horses",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003710?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
