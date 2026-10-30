@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-10-29T16:01:01.650Z",
+  "updatedAt": "2026-10-30T15:49:35.541Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -30,15 +30,6 @@
       "publishedAt": "2026-10-20T20:56:44.000Z"
     },
     {
-      "title": "UFS inicia atendimento veterinário gratuito para cavalos",
-      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQUzFnYjRGOTFaa29MLUN0S0F4bGlDeFlEOUhwMGlreXdjc0cyUTNLeENTb3dKQWUwNTRXc3BvM2tKU0N1NFRoZHZmdHQ4MXFJRnY2Vkl2dmRTMHk2OHhFS3dHUzEyNDdzdGhfMkQ0VVlRcnpIQTFBOXk5VjJoNVAxek9kcDJHOVhQS1NtU29wNUY3WkExYjhnQS1RcGo?oc=5",
-      "source": "Infonet",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-10-20T19:27:22.000Z"
-    },
-    {
       "title": "UFS oferece atendimento veterinário gratuito para cavalos em Sergipe",
       "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQQUExZFJOWWR0eV9MdmlGS2ZuR2x5UzZhdUVIS0ZNX3JTWW41N0pIcWM4UkNJMkUxZk5MazhqekE5SURWcHVrczN3b3FXRjBDLTBHbkJUNGZtRlJYcUtraksyRFluSVI5RVljZktuZXVUWDE2ZFcwN0NvSm5BMEN2VXFObGd5UDZkX2wwVWlKdnA4di1faHAxVm5ENVR1RDJEdjhzNzhlNThQQQ?oc=5",
       "source": "RO Acontece",
@@ -64,6 +55,15 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-10-20T16:13:00.000Z"
+    },
+    {
+      "title": "Portal UFS - UFS inicia atendimento veterinário gratuito para cavalos",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOXzdvTXRWQUtzR3NOUGtGdWMtSDZqbWdWa0JXWkFDSWN5QlJQZEhLLUlHRDdYVXh2eGZBSHYteWl2ckd6WUZJY0hFbGZoTXdvaWw3ellpQ1lSalhOYW0xRDJLR0Y0OExGMGlDVmZId3Izc2JBZUEtaE42RTkwcEpDVEFqWktjVWliS0V5T3VlVVFNM2FP?oc=5",
+      "source": "Portal UFS",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-10-20T07:00:00.000Z"
     },
     {
       "title": "Anuidades e débitos com os CRMVs poderão ser pagos com cartão de crédito em até 12 vezes",
