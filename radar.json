@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-02T19:25:08.540Z",
+  "updatedAt": "2026-11-03T16:58:08.753Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -12,15 +12,6 @@
       "publishedAt": "2026-10-29T11:16:52.000Z"
     },
     {
-      "title": "Cólica em cavalos: inteligência artificial pode prever risco de morte e necessidade de cirurgia",
-      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQOXRaMEhKRnJDREoxWEFYZWw1d0RpYnZjRjVrbE9pRWZ1Y09DTlVaZjRUUV9INDg0WVZLa0tBUTlfU2xwOFJFU29mbDBQSTFXVHdWR3g0NW5lZ285UWtmVlhPZUxUUnNBN19tMkdQWFg1MDNETzRGeFkycmNNMnExU3JYWHZBNlJJakZscTBzbFBvZm15cHVVMk9PTHFtWE9JcUcxeUp1cTluU2tQRXpPbV85OW9oLTNiSkRjUDh4eGk?oc=5",
-      "source": "CompreRural",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-10-27T13:12:35.000Z"
-    },
-    {
       "title": "Portal UFS - UFS inicia atendimento veterinário gratuito para cavalos",
       "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOXzdvTXRWQUtzR3NOUGtGdWMtSDZqbWdWa0JXWkFDSWN5QlJQZEhLLUlHRDdYVXh2eGZBSHYteWl2ckd6WUZJY0hFbGZoTXdvaWw3ellpQ1lSalhOYW0xRDJLR0Y0OExGMGlDVmZId3Izc2JBZUEtaE42RTkwcEpDVEFqWktjVWliS0V5T3VlVVFNM2FP?oc=5",
       "source": "Portal UFS",
@@ -28,24 +19,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-10-20T07:00:00.000Z"
-    },
-    {
-      "title": "Anuidades e débitos com os CRMVs poderão ser pagos com cartão de crédito em até 12 vezes",
-      "url": "https://www.cfmv.gov.br/anuidades-e-debitos-com-os-crmvs-poderao-ser-pagos-com-cartao-de-credito-em-ate-12-vezes/comunicacao/noticias/2026/10/15/",
-      "source": "CFMV",
-      "sourceKind": "profissao",
-      "sourceLabel": "Conselho Federal de Medicina Veterinária",
-      "lang": "pt",
-      "publishedAt": "2026-10-15T20:00:00.000Z"
-    },
-    {
-      "title": "Cavalo passa mal e morre durante cavalgada de Nossa Senhora em Friburgo: 'não tinha veterinário', diz tutor",
-      "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxNT29YbHlYRHJyTUI0VW5kd2hsVER4SDRaZGgtQVZ2SWhLZ1BsZWo2czJWSGdQZ2puYzdGZXhvUmdIeWNwYi01Wkt3NnZjdnVvNmRMcjRIYzlsN0tyWVVOTVhDczFMVEJ0OUxVc3VSYnFwVVVkRjgtZXJLYUNrQ2JnNnk2eU1RNEFYT3AtYW9jd3BJdmU5c05kYjJ4dGIyX1Naa1BCZi1fMG9ycjU3cXFoU0ZrcndFSHdYdzFKanFyNkVkMDB1OEJ4TzlkcFNQUUx1cDA5dk1UOERvaWVvMmtwcEd6UUJEbnJKY01kQktTcWdRVHBfZzZJZ3JkZ9IBigJBVV95cUxQcVFtdjFXWl9FZ0xjRlRDUEhmRmYxNWhORFJjOGpzQ2ozS1g0YWxndmw5VWJ1b1locGUzalVDcUxxT2IzZ0dYajJ5RjNCa2dKLVU1b0prWnhVd3lCaExlWVhDMDNXd3FOUFl6UnFBTUpEWjc0TENDdkJjOWJrakhTY2lDQmxGVS1lWkFTa1FuODU4RG9KbXNqYzkzc0lPTnljWlJlMUNqams4VHNFdGtWdno2Sm5Fa1U0M3lHeHJPMFFPVG5fakJxc0x1bEJzN3NpTTQ3R21fT1o4bVRNS1Zjcl9WT2Jlc0M3SDZmczVRT1NxN0Z0REhleWhuSWNJdmVVUGUtRXJ3eHNIZw?oc=5",
-      "source": "G1",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-10-14T07:00:00.000Z"
     },
     {
       "title": "Quem é a veterinária brasileira que deixou Minas pelos EUA e descobriu nos cavalos uma paixão para a vida",
@@ -66,13 +39,13 @@
       "publishedAt": "2026-09-04T07:00:00.000Z"
     },
     {
-      "title": "CNA debate bem-estar animal e sanidade de equídeos durante a Expointer",
-      "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQZHRoczFyai1tXzc5TFBackd3SmhpeWZaSEZLNTBwR0szekZ3TUpqS1U0YkZjLW9pUUJIY1dJMWswNVdpdmE4Y1h5MHdyamlncXRQY1gwcXpvOGNOOUdjRXFVRk1pUHBkYkxFSDZyTHJqUTdjbmVEdDF4VVBOUUgwQlZhb3lDYkpsZzhSS2pUTTBEZVc3UXZSbk4wWnJZUHJHWVMxUm1BYw?oc=5",
-      "source": "Portal CNA Brasil",
+      "title": "CNA debate bem-estar animal e sanidade de equídeos na Expointer",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOLURLMm8zWXpLU2RSVm9aQmJsYndIcHhEN0lEUTdodXNjU1hTaVdnc0E3T29KQVF5R2gzOEFUZl9xaXl4LW0zYjg2bW93M0NoZU9FM1U1cmY2V185TWFrcWZ4cDJYZWZTRkR3N09sTkNZaEhjQzZHT245V2FubV9DU05DcWdCcjdmNHdDWnRSVnM3XzViTlhzMnBLQ09jSTRCSjN2WmtB?oc=5",
+      "source": "Canal Rural",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-09-03T11:25:45.000Z"
+      "publishedAt": "2026-09-03T07:00:00.000Z"
     },
     {
       "title": "Feed protein partitioning impacts horse fecal nitrogen profiles: A retrospective pilot study",
