@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-05T17:18:36.171Z",
+  "updatedAt": "2026-11-07T15:36:37.259Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -19,6 +19,15 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-10-20T07:00:00.000Z"
+    },
+    {
+      "title": "Cavalo passa mal e morre durante cavalgada de Nossa Senhora em Friburgo: 'não tinha veterinário', diz tutor",
+      "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxNT29YbHlYRHJyTUI0VW5kd2hsVER4SDRaZGgtQVZ2SWhLZ1BsZWo2czJWSGdQZ2puYzdGZXhvUmdIeWNwYi01Wkt3NnZjdnVvNmRMcjRIYzlsN0tyWVVOTVhDczFMVEJ0OUxVc3VSYnFwVVVkRjgtZXJLYUNrQ2JnNnk2eU1RNEFYT3AtYW9jd3BJdmU5c05kYjJ4dGIyX1Naa1BCZi1fMG9ycjU3cXFoU0ZrcndFSHdYdzFKanFyNkVkMDB1OEJ4TzlkcFNQUUx1cDA5dk1UOERvaWVvMmtwcEd6UUJEbnJKY01kQktTcWdRVHBfZzZJZ3JkZ9IBigJBVV95cUxQcVFtdjFXWl9FZ0xjRlRDUEhmRmYxNWhORFJjOGpzQ2ozS1g0YWxndmw5VWJ1b1locGUzalVDcUxxT2IzZ0dYajJ5RjNCa2dKLVU1b0prWnhVd3lCaExlWVhDMDNXd3FOUFl6UnFBTUpEWjc0TENDdkJjOWJrakhTY2lDQmxGVS1lWkFTa1FuODU4RG9KbXNqYzkzc0lPTnljWlJlMUNqams4VHNFdGtWdno2Sm5Fa1U0M3lHeHJPMFFPVG5fakJxc0x1bEJzN3NpTTQ3R21fT1o4bVRNS1Zjcl9WT2Jlc0M3SDZmczVRT1NxN0Z0REhleWhuSWNJdmVVUGUtRXJ3eHNIZw?oc=5",
+      "source": "G1",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-10-14T07:00:00.000Z"
     },
     {
       "title": "Quem é a veterinária brasileira que deixou Minas pelos EUA e descobriu nos cavalos uma paixão para a vida",
@@ -66,8 +75,8 @@
       "publishedAt": null
     },
     {
-      "title": "Metabolite changes in equine amniotic fluid associated with experimentally induced ascending placentitis",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004302?dgcid=rss_sd_all",
+      "title": "A subclinical biomechanical phenotype detected by AI-assisted video gait analysis in horses heterozygous for the Fragile Foal Syndrome Allele in PLOD1",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004132?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -75,8 +84,8 @@
       "publishedAt": null
     },
     {
-      "title": "A scoping review of equine musculoskeletal therapy interventions to inform evidence-based decision making",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004296?dgcid=rss_sd_all",
+      "title": "The impact of track incline on musculoskeletal injuries in thoroughbred racehorses in training: A retrospective cohort study of fractures on flat and uphill woodchip surfaces",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003928?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -84,8 +93,8 @@
       "publishedAt": null
     },
     {
-      "title": "Evaluation of machine learning models for predicting breeding values of key performance traits in Iranian crossbred (Thoroughbred × Turkmen) racehorses",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004120?dgcid=rss_sd_all",
+      "title": "Characterizing dietary and exercise management practices and inflammatory biomarkers in a population of recreationally managed horses in Pennsylvania",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004077?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -93,8 +102,8 @@
       "publishedAt": null
     },
     {
-      "title": "Accuracy of Teichholz and modified Simpson echocardiographic techniques for measuring cardiac output in Northeastern Donkeys (Equus asinus)",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004090?dgcid=rss_sd_all",
+      "title": "Multimodal characterization of equine synovitis: Correlation between arthroscopic, histopathological, and biomarker assessments in septic vs. aseptic cases",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004144?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
