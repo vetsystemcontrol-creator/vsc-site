@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-09T19:43:32.133Z",
+  "updatedAt": "2026-11-11T17:01:52.902Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -39,15 +39,6 @@
       "publishedAt": "2026-09-04T07:00:00.000Z"
     },
     {
-      "title": "CNA debate bem-estar animal e sanidade de equídeos na Expointer",
-      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOLURLMm8zWXpLU2RSVm9aQmJsYndIcHhEN0lEUTdodXNjU1hTaVdnc0E3T29KQVF5R2gzOEFUZl9xaXl4LW0zYjg2bW93M0NoZU9FM1U1cmY2V185TWFrcWZ4cDJYZWZTRkR3N09sTkNZaEhjQzZHT245V2FubV9DU05DcWdCcjdmNHdDWnRSVnM3XzViTlhzMnBLQ09jSTRCSjN2WmtB?oc=5",
-      "source": "Canal Rural",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-03T07:00:00.000Z"
-    },
-    {
       "title": "The use and perception of hay nets and slow feeders by horse owners and handlers: findings from a United Kingdom survey",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004065?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -75,6 +66,15 @@
       "publishedAt": null
     },
     {
+      "title": "The horse’s hidden threat: occurrence and exposure risks to the tremorgenic alkaloid paxilline in central European grasslands",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004405?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
+    },
+    {
       "title": "A subclinical biomechanical phenotype detected by AI-assisted video gait analysis in horses heterozygous for the Fragile Foal Syndrome Allele in PLOD1",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004132?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
@@ -86,15 +86,6 @@
     {
       "title": "Association between matrix Metalloproteinase-9 (MMP-9) immunohistochemical expression and clinicopathological features in equine melanoma",
       "url": "https://www.sciencedirect.com/science/article/pii/S073708062600393X?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "The impact of track incline on musculoskeletal injuries in thoroughbred racehorses in training: A retrospective cohort study of fractures on flat and uphill woodchip surfaces",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626003928?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
