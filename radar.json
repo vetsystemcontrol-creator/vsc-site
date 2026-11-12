@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-11T17:01:52.902Z",
+  "updatedAt": "2026-11-12T17:30:36.790Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -37,6 +37,24 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-09-04T07:00:00.000Z"
+    },
+    {
+      "title": "Conheça as pesquisas da UFU sobre a saúde de equinos",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOekU0LVJFeHFqb0RxT3JtZ3Z3ZVA5empKOEpwcWpTQUtfZW5lVEZaOG03T21nVUNSVWxuT2kxU2NXZnM3WjF5YTBwQ1RmV0VQNzF2aVZtREhlR3VmZVZZcldSM2pMLXBNTy1sSzhmbktwMnVZNl91U1hGZGJCUi1rc1k2OG9hOG1hT2hJalktNnQ?oc=5",
+      "source": "Comunica UFU",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-18T07:00:00.000Z"
+    },
+    {
+      "title": "Evidence of Coxiella burnetii exposure in equids in Brazil",
+      "url": "https://www.sciencedirect.com/science/article/pii/S073708062600434X?dgcid=rss_sd_all",
+      "source": "Journal of Equine Veterinary Science",
+      "sourceKind": "ciencia",
+      "sourceLabel": "Ciência (Elsevier)",
+      "lang": "en",
+      "publishedAt": null
     },
     {
       "title": "The use and perception of hay nets and slow feeders by horse owners and handlers: findings from a United Kingdom survey",
@@ -77,15 +95,6 @@
     {
       "title": "A subclinical biomechanical phenotype detected by AI-assisted video gait analysis in horses heterozygous for the Fragile Foal Syndrome Allele in PLOD1",
       "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004132?dgcid=rss_sd_all",
-      "source": "Journal of Equine Veterinary Science",
-      "sourceKind": "ciencia",
-      "sourceLabel": "Ciência (Elsevier)",
-      "lang": "en",
-      "publishedAt": null
-    },
-    {
-      "title": "Association between matrix Metalloproteinase-9 (MMP-9) immunohistochemical expression and clinicopathological features in equine melanoma",
-      "url": "https://www.sciencedirect.com/science/article/pii/S073708062600393X?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
