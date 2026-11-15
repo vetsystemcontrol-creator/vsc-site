@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-13T17:07:13.289Z",
+  "updatedAt": "2026-11-15T16:16:20.855Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -37,15 +37,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-09-04T07:00:00.000Z"
-    },
-    {
-      "title": "CNA debate bem-estar animal e sanidade de equídeos na Expointer",
-      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOLURLMm8zWXpLU2RSVm9aQmJsYndIcHhEN0lEUTdodXNjU1hTaVdnc0E3T29KQVF5R2gzOEFUZl9xaXl4LW0zYjg2bW93M0NoZU9FM1U1cmY2V185TWFrcWZ4cDJYZWZTRkR3N09sTkNZaEhjQzZHT245V2FubV9DU05DcWdCcjdmNHdDWnRSVnM3XzViTlhzMnBLQ09jSTRCSjN2WmtB?oc=5",
-      "source": "Canal Rural",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-09-03T07:00:00.000Z"
     },
     {
       "title": "Conheça as pesquisas da UFU sobre a saúde de equinos",
@@ -93,8 +84,8 @@
       "publishedAt": null
     },
     {
-      "title": "The horse’s hidden threat: occurrence and exposure risks to the tremorgenic alkaloid paxilline in central European grasslands",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004405?dgcid=rss_sd_all",
+      "title": "Physiological impact of reduced anthelmintic intervention in naturally infected Thoroughbred foals: identifying stress indicators of welfare significance",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004314?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
@@ -102,8 +93,8 @@
       "publishedAt": null
     },
     {
-      "title": "A subclinical biomechanical phenotype detected by AI-assisted video gait analysis in horses heterozygous for the Fragile Foal Syndrome Allele in PLOD1",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004132?dgcid=rss_sd_all",
+      "title": "Differential expression of miRNAs in experimental metacarpal and lumbar wounds in horses",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004338?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
