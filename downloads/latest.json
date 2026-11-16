@@ -1,9 +1,9 @@
 {
-  "versionCode": 3548034,
-  "versionName": "26.1.1142 (4ef44614)",
+  "versionCode": 3616276,
+  "versionName": "26.1.1163 (30ab353a)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5006806,
-  "sha256": "704115b82f6ea54a557bd60ab4c0885306c7234625f2f7a41a6e383ebbbfe354",
-  "publishedAt": "2026-09-30T00:55:38.180Z",
-  "notes": "Correcao no fechamento em lote: em casos raros, o atendimento podia ficar preso como 'Em Lote' mesmo depois do fechamento confirmado com sucesso, mesmo com a cobranca correta gerada. Corrigido para nao acontecer mais, e os atendimentos que ja tinham ficado presos foram reparados."
+  "sizeBytes": 5012654,
+  "sha256": "b7645f4379bb5c5a9c0d812a3cc3a92e6f43fd2be2ae61bceaa2d8dab857c980",
+  "publishedAt": "2026-11-16T10:18:49.212Z",
+  "notes": "Conflitos de sincronização entre aparelhos diferentes passam a aguardar a sua decisão, em vez de sobrescrever sozinhos."
 }
