@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-19T18:09:51.545Z",
+  "updatedAt": "2026-11-20T17:43:30.064Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -12,33 +12,6 @@
       "publishedAt": "2026-11-19T17:58:54.000Z"
     },
     {
-      "title": "Assistência veterinária em competições, comunicação e comportamento equino são temas dos novos episódios do Voz Equestre",
-      "url": "https://news.google.com/rss/articles/CBMi8gFBVV95cUxQcHlhZ3puZHF4YkVJeHVON2J1M2hpRTBQRHgwMkFRbVhKSnNmajExblZMYW8tZU5rNXhxUlladFE5SFBaZlJXLVFMazRnY3dtVElIc1VrMGJEcGFWUV84c0NWNFkyZlJRS2NYelVneTdDRkVzNjY3WW16ZVpyNGRLY2ZRR2NEdWwxbmE0LXM0NXRqYXpYZGNFdWJnSTVuaDJJd1NDelUtX09NTC05a2hOdmdKZzBoSGZOdTJWWTN5dDR6LWs5THVvSEQtazdMbW5nX3dONTk4ZGF1M2lBQnM5SXE4U050WGVtZFFfd2pneU5aUQ?oc=5",
-      "source": "jornaltribuna.com.br",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-11-19T17:13:17.000Z"
-    },
-    {
-      "title": "Osteoartrite em equinos: conheça os principais sinais e as estratégias de cuidados com a saúde articular",
-      "url": "https://news.google.com/rss/articles/CBMi3AFBVV95cUxOeGVEalVOanh3dmtMMlFER2JQc1ZINzJZdUVGekh3emdDbVBsOG5aMEN0TE1xYkliZ3lKU3JodzJJeVE2anNTQkg2VFZiNk1Wb1A2SzMzcHI1NEc1bDF0MkpKd0xMMzRmWTVTb0JrSzF2eWpLRDJnMXZyd01uY3B0cTVWZjlmYU16UXA2TTBKbUtvQTE5UGhlNExqenVtcWh0b3A0MVhoRHhmazdLOUprVVNQMXhfT21LRlFobHRjdy1OSjE1QnJtRVhKQmZsR0lUR0l0eHlmbktBd05x?oc=5",
-      "source": "jornaltribuna.com.br",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-11-18T23:00:06.000Z"
-    },
-    {
-      "title": "Vacinação de cavalos ajuda a prevenir tétano e encefalomielite no plantel",
-      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBpNFoySUFDX0pFdzU2X3BHMHg2TDRpUWZUdU05XzVENjZTQTlZSkk3bm82T2pDdjQwSGpuT3F1QUMtdHhncHFiWVl1ZmV2MlBqSXlwVUZzSnVXSjlSZmVHVk9CRHdQS3RSS2VWQUljdDdKZ0txX2NiTkxyTGo?oc=5",
-      "source": "CompreRural",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-11-18T22:39:38.000Z"
-    },
-    {
       "title": "Portal UFS - UFS inicia atendimento veterinário gratuito para cavalos",
       "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOXzdvTXRWQUtzR3NOUGtGdWMtSDZqbWdWa0JXWkFDSWN5QlJQZEhLLUlHRDdYVXh2eGZBSHYteWl2ckd6WUZJY0hFbGZoTXdvaWw3ellpQ1lSalhOYW0xRDJLR0Y0OExGMGlDVmZId3Izc2JBZUEtaE42RTkwcEpDVEFqWktjVWliS0V5T3VlVVFNM2FP?oc=5",
       "source": "Portal UFS",
@@ -48,13 +21,31 @@
       "publishedAt": "2026-10-20T07:00:00.000Z"
     },
     {
-      "title": "Cavalo passa mal e morre durante cavalgada de Nossa Senhora em Friburgo: 'não tinha veterinário', diz tutor",
-      "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxNT29YbHlYRHJyTUI0VW5kd2hsVER4SDRaZGgtQVZ2SWhLZ1BsZWo2czJWSGdQZ2puYzdGZXhvUmdIeWNwYi01Wkt3NnZjdnVvNmRMcjRIYzlsN0tyWVVOTVhDczFMVEJ0OUxVc3VSYnFwVVVkRjgtZXJLYUNrQ2JnNnk2eU1RNEFYT3AtYW9jd3BJdmU5c05kYjJ4dGIyX1Naa1BCZi1fMG9ycjU3cXFoU0ZrcndFSHdYdzFKanFyNkVkMDB1OEJ4TzlkcFNQUUx1cDA5dk1UOERvaWVvMmtwcEd6UUJEbnJKY01kQktTcWdRVHBfZzZJZ3JkZ9IBigJBVV95cUxQcVFtdjFXWl9FZ0xjRlRDUEhmRmYxNWhORFJjOGpzQ2ozS1g0YWxndmw5VWJ1b1locGUzalVDcUxxT2IzZ0dYajJ5RjNCa2dKLVU1b0prWnhVd3lCaExlWVhDMDNXd3FOUFl6UnFBTUpEWjc0TENDdkJjOWJrakhTY2lDQmxGVS1lWkFTa1FuODU4RG9KbXNqYzkzc0lPTnljWlJlMUNqams4VHNFdGtWdno2Sm5Fa1U0M3lHeHJPMFFPVG5fakJxc0x1bEJzN3NpTTQ3R21fT1o4bVRNS1Zjcl9WT2Jlc0M3SDZmczVRT1NxN0Z0REhleWhuSWNJdmVVUGUtRXJ3eHNIZw?oc=5",
+      "title": "Quem é a veterinária brasileira que deixou Minas pelos EUA e descobriu nos cavalos uma paixão para a vida",
+      "url": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxNWHkwaThaMW5PRXFZenJDYWVYcFUwbHNpdEV4aktxOWNNRExhZFVnSllycGRmZ01vMGxQWG1OXzMwY3l2V1oyVHQ2THBaalhUWFZPMjZrbzltMUNfQ1ZWbWlqdG9sSDd6ZWVqd0w3aTJ5RjFuNVV2Nmp6ZVhzbTZ3TkZaRkhNNFJJV1R0ZjFuZHpvMjFZRzNjUzFPdE9sWk1yamZ3QVhnSm1rZGd2cGxxUTNCODZabm9SZFVTTlhsWThxQVBCWEVuaWxVMU5yYnNqay1pQ2ljZlNtdmdVaWpKNlB2X2tDbDZrVmJVTHRkTndSRHN0QWJvOdIBhwJBVV95cUxNX3E1UHhlMTVkc01sbm1fcnRUR3VCRllTVXBKZ2J2UTdHY0ZuczZzSkNWZ3hsQW4xM1FWdTY3Zk03ZC12ZFY5ZWp4bDB2OVhSaERqS2E1aGVWcjBrT1ItZTNrR1diSUQtbTAtQ2dzdDhFTzJmUVdhYi1uUUN3U2xtWUp5dkFZTzQ5S2tHVkVvSWhTRmFlVjlrNGx2Umo5c0JGTEpyMkNyUFhrVGcwS2RmWUJJcFp5VlByd05jQlZsZlcxSkYxWjRwMWpETjBZWkZ2NXg0d2hCLVlRdHRfRkczM0tyOGM4Y2lnenBybUdzWkFUX0JiNExlYWpIV2hkSUJZYjB0MHJLQQ?oc=5",
+      "source": "O GLOBO",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-10-08T07:00:00.000Z"
+    },
+    {
+      "title": "Cavalo dá coice e derruba veterinária enquanto ela gravava vídeo",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPbzMtR0VqWkoySlhJMjN6NGFvaFJzdXo0M3g4WmNnR0NyWjR0UDZ6cE0wcGpSSUZ6dTlOTUJCWnljZHJCME4xMm1lUWpIeW9pNU83X2xPeTBTNHp4U01fa243MkM4N0FmeWVPWWRoOTVXREFKUG4xOHBHSFpQTW02TnJMbEtxQmlXcURkbjlIRDY3SExadHJxVnNvMDhQb2RXUURwVElXWjRVUEpQRVBNY01oWEw4N2dLNFhV0gHKAUFVX3lxTE1SQzhRdkhIMlVfRUJwb0F4MG5IcmstTEZyaXpSREllZE9zOElDdDR4bFJnSWxUSlZ5bTZLdzNZZVVFVm1TRUZZTnBOLUtxZU8xT3pCdUFFSFBlWkxDYUtRRE5MY3FfZExldE5OSW80eFJZYjZNaXVzSVhSQ01JVGhTdV9pb2l0SEtuU1R5MVhjcThQa1o2NkZTb0oweDJYMV9JM2FVVlJrZmJ6cHliMUVhR0tLa0VRTzBtdWZEMHhtYjRoWGZBSTR4RGc?oc=5",
       "source": "G1",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-10-14T07:00:00.000Z"
+      "publishedAt": "2026-09-04T07:00:00.000Z"
+    },
+    {
+      "title": "Conheça as pesquisas da UFU sobre a saúde de equinos",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOekU0LVJFeHFqb0RxT3JtZ3Z3ZVA5empKOEpwcWpTQUtfZW5lVEZaOG03T21nVUNSVWxuT2kxU2NXZnM3WjF5YTBwQ1RmV0VQNzF2aVZtREhlR3VmZVZZcldSM2pMLXBNTy1sSzhmbktwMnVZNl91U1hGZGJCUi1rc1k2OG9hOG1hT2hJalktNnQ?oc=5",
+      "source": "Comunica UFU",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-08-18T07:00:00.000Z"
     },
     {
       "title": "Corrigendum to Evaluation of a canine Coll2-1 ELISA kit for use in equine serum and its correlation with radiographic joint disease, Journal of Equine Veterinary Science 166 (2026) 106063",
