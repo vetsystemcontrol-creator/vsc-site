@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-11-20T17:43:30.064Z",
+  "updatedAt": "2026-11-22T17:02:55.111Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
@@ -19,6 +19,15 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-10-20T07:00:00.000Z"
+    },
+    {
+      "title": "Cavalo passa mal e morre durante cavalgada de Nossa Senhora em Friburgo: 'não tinha veterinário', diz tutor",
+      "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxNT29YbHlYRHJyTUI0VW5kd2hsVER4SDRaZGgtQVZ2SWhLZ1BsZWo2czJWSGdQZ2puYzdGZXhvUmdIeWNwYi01Wkt3NnZjdnVvNmRMcjRIYzlsN0tyWVVOTVhDczFMVEJ0OUxVc3VSYnFwVVVkRjgtZXJLYUNrQ2JnNnk2eU1RNEFYT3AtYW9jd3BJdmU5c05kYjJ4dGIyX1Naa1BCZi1fMG9ycjU3cXFoU0ZrcndFSHdYdzFKanFyNkVkMDB1OEJ4TzlkcFNQUUx1cDA5dk1UOERvaWVvMmtwcEd6UUJEbnJKY01kQktTcWdRVHBfZzZJZ3JkZ9IBigJBVV95cUxQcVFtdjFXWl9FZ0xjRlRDUEhmRmYxNWhORFJjOGpzQ2ozS1g0YWxndmw5VWJ1b1locGUzalVDcUxxT2IzZ0dYajJ5RjNCa2dKLVU1b0prWnhVd3lCaExlWVhDMDNXd3FOUFl6UnFBTUpEWjc0TENDdkJjOWJrakhTY2lDQmxGVS1lWkFTa1FuODU4RG9KbXNqYzkzc0lPTnljWlJlMUNqams4VHNFdGtWdno2Sm5Fa1U0M3lHeHJPMFFPVG5fakJxc0x1bEJzN3NpTTQ3R21fT1o4bVRNS1Zjcl9WT2Jlc0M3SDZmczVRT1NxN0Z0REhleWhuSWNJdmVVUGUtRXJ3eHNIZw?oc=5",
+      "source": "G1",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-10-14T07:00:00.000Z"
     },
     {
       "title": "Quem é a veterinária brasileira que deixou Minas pelos EUA e descobriu nos cavalos uma paixão para a vida",
@@ -93,8 +102,8 @@
       "publishedAt": null
     },
     {
-      "title": "Inter-week variation in movement asymmetry at trot in cavalry horses in training",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004399?dgcid=rss_sd_all",
+      "title": "Plasma biomarkers of muscle atrophy in senior horses with or without pituitary pars intermedia dysfunction",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004442?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
