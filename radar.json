@@ -1,11 +1,20 @@
 {
-  "updatedAt": "2026-11-22T17:02:55.111Z",
+  "updatedAt": "2026-11-24T20:05:31.158Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
     {
+      "title": "Inteligência Artificial abre novas perspetivas na medicina veterinária equina",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxOaENHSTY0YU1HTGtHSTNvX2xEenpzSlQwdXM3YVNON3hzblQ0R0lQTC0xUEs2eTUwTnZXZzRTUEdQUXpIaENTSklxQ3hwWkgyWXRwcGY2SF9wR092WHRHZjNNOTJmWEFycWxKWEdjQXRoblRIRXFRRWw0RTV5Sloza2hpU0c3MzI4TjB2TVgzMlBLekdBQW0tcUlXMXY2cGNqeWJhQVhpWXptcEtFMUtLajBn?oc=5",
+      "source": "Equisport Online",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-11-24T10:36:00.000Z"
+    },
+    {
       "title": "Curso de Medicina Veterinária da Universidade do Agro, em Uberlândia realizam visita técnica à clínica especializada em equinos",
       "url": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxPamFUV2dMS3VZdDdOSEt2VWlSUThXUGVqZURjNFZpaTNueF8tWERBa1dNTWlnbGxhT0FicDBTRjBxWTRwZS1nME9ZcnBleEZfTnk2TEgyS0hiUFg1bVNmdlZQejdVaW9VNXRjcVVoSlo1V1V5c3p4OXV4dVN0aV9ma2NwZ0hHNUlHc255STV3ZWVucjUxcHd3ZUliZG9qNWYtNld4cVRoaGlmbzZaMjJlWHZWa25sRl9ic0duVjRSQXgxREs4ckpLQzlNVEVRMXRrQjdlazZQRU1iOW1vMHJtUTVyckQ1TG8?oc=5",
-      "source": "Uniube | Universidade de Uberaba",
+      "source": "Uniube",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
@@ -19,15 +28,6 @@
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
       "publishedAt": "2026-10-20T07:00:00.000Z"
-    },
-    {
-      "title": "Cavalo passa mal e morre durante cavalgada de Nossa Senhora em Friburgo: 'não tinha veterinário', diz tutor",
-      "url": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxNT29YbHlYRHJyTUI0VW5kd2hsVER4SDRaZGgtQVZ2SWhLZ1BsZWo2czJWSGdQZ2puYzdGZXhvUmdIeWNwYi01Wkt3NnZjdnVvNmRMcjRIYzlsN0tyWVVOTVhDczFMVEJ0OUxVc3VSYnFwVVVkRjgtZXJLYUNrQ2JnNnk2eU1RNEFYT3AtYW9jd3BJdmU5c05kYjJ4dGIyX1Naa1BCZi1fMG9ycjU3cXFoU0ZrcndFSHdYdzFKanFyNkVkMDB1OEJ4TzlkcFNQUUx1cDA5dk1UOERvaWVvMmtwcEd6UUJEbnJKY01kQktTcWdRVHBfZzZJZ3JkZ9IBigJBVV95cUxQcVFtdjFXWl9FZ0xjRlRDUEhmRmYxNWhORFJjOGpzQ2ozS1g0YWxndmw5VWJ1b1locGUzalVDcUxxT2IzZ0dYajJ5RjNCa2dKLVU1b0prWnhVd3lCaExlWVhDMDNXd3FOUFl6UnFBTUpEWjc0TENDdkJjOWJrakhTY2lDQmxGVS1lWkFTa1FuODU4RG9KbXNqYzkzc0lPTnljWlJlMUNqams4VHNFdGtWdno2Sm5Fa1U0M3lHeHJPMFFPVG5fakJxc0x1bEJzN3NpTTQ3R21fT1o4bVRNS1Zjcl9WT2Jlc0M3SDZmczVRT1NxN0Z0REhleWhuSWNJdmVVUGUtRXJ3eHNIZw?oc=5",
-      "source": "G1",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-10-14T07:00:00.000Z"
     },
     {
       "title": "Quem é a veterinária brasileira que deixou Minas pelos EUA e descobriu nos cavalos uma paixão para a vida",
@@ -48,13 +48,13 @@
       "publishedAt": "2026-09-04T07:00:00.000Z"
     },
     {
-      "title": "Conheça as pesquisas da UFU sobre a saúde de equinos",
-      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOekU0LVJFeHFqb0RxT3JtZ3Z3ZVA5empKOEpwcWpTQUtfZW5lVEZaOG03T21nVUNSVWxuT2kxU2NXZnM3WjF5YTBwQ1RmV0VQNzF2aVZtREhlR3VmZVZZcldSM2pMLXBNTy1sSzhmbktwMnVZNl91U1hGZGJCUi1rc1k2OG9hOG1hT2hJalktNnQ?oc=5",
-      "source": "Comunica UFU",
+      "title": "CNA debate bem-estar animal e sanidade de equídeos na Expointer",
+      "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOLURLMm8zWXpLU2RSVm9aQmJsYndIcHhEN0lEUTdodXNjU1hTaVdnc0E3T29KQVF5R2gzOEFUZl9xaXl4LW0zYjg2bW93M0NoZU9FM1U1cmY2V185TWFrcWZ4cDJYZWZTRkR3N09sTkNZaEhjQzZHT245V2FubV9DU05DcWdCcjdmNHdDWnRSVnM3XzViTlhzMnBLQ09jSTRCSjN2WmtB?oc=5",
+      "source": "Canal Rural",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-08-18T07:00:00.000Z"
+      "publishedAt": "2026-09-03T07:00:00.000Z"
     },
     {
       "title": "Corrigendum to Evaluation of a canine Coll2-1 ELISA kit for use in equine serum and its correlation with radiographic joint disease, Journal of Equine Veterinary Science 166 (2026) 106063",
