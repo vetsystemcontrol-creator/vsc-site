@@ -1,9 +1,9 @@
 {
-  "versionCode": 3616276,
-  "versionName": "26.1.1163 (30ab353a)",
+  "versionCode": 3632834,
+  "versionName": "26.1.1234 (a1cd6e38)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5012654,
-  "sha256": "b7645f4379bb5c5a9c0d812a3cc3a92e6f43fd2be2ae61bceaa2d8dab857c980",
-  "publishedAt": "2026-11-16T10:18:49.212Z",
-  "notes": "Conflitos de sincronização entre aparelhos diferentes passam a aguardar a sua decisão, em vez de sobrescrever sozinhos."
+  "sizeBytes": 5014850,
+  "sha256": "26b33625d61c68b0c7627241ea57cb561152bf07a6f4d247a3b3928ae6c17b24",
+  "publishedAt": "2026-11-27T22:15:49.713Z",
+  "notes": "Fim do conflito falso nos atendimentos com produto, item e financeiro; e \"ficar com a versão do servidor\" passa a funcionar também para produto."
 }
