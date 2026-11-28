@@ -1,7 +1,16 @@
 {
-  "updatedAt": "2026-11-27T18:50:37.451Z",
+  "updatedAt": "2026-11-28T17:28:30.011Z",
   "notice": "Manchetes de fontes públicas. O conteúdo é do veículo de origem — clique para ler no site dele.",
   "items": [
+    {
+      "title": "Osteoartrite em equinos; conheça os principais sinais e as estratégias de cuidados com a saúde articular",
+      "url": "https://news.google.com/rss/articles/CBMi_gFBVV95cUxNaDllMXA0LVFsSU5jek5ycy1JSXpSZWNjTGlBZzFkZkxRSE5kUWNFTlpzRktsZmgxSlFSSzRVWFd6TWJGMERadkRLZENQNldjeURuTGZyWUktenNnVU9DdWZIb0o5ZFVha1h4enl4UHZ1enhmeGJHTjZ5d0dZeGpVSkx6aGhBN3VDMFpoTXVvaFVzN3RRZDlPUHBXcnFpM1hYUUZTeVFqWldGeUlyQWZyTjdCR3hBQWoxZWdyUWEtZmF5cEktY2xYOU00eXFKV19JSXlBWGNNdkRiMlRvWnJobGpyeDJmVk5rbnc1RDhOQmJXWXpCQkg2aFZMcEhjZw?oc=5",
+      "source": "Gazeta Digital",
+      "sourceKind": "imprensa",
+      "sourceLabel": "Notícias (via Google Notícias)",
+      "lang": "pt",
+      "publishedAt": "2026-11-28T09:00:00.000Z"
+    },
     {
       "title": "Prêmio nacional incentiva boas práticas de saúde e bem-estar animal na suinocultura",
       "url": "https://www.cfmv.gov.br/premio-nacional-incentiva-boas-praticas-de-saude-e-bem-estar-animal-na-suinocultura/destaque/2026/11/26/",
@@ -12,58 +21,40 @@
       "publishedAt": "2026-11-26T14:02:09.000Z"
     },
     {
-      "title": "Osteoartrite em equinos: Veterinário alerta sobre os principais sinais e as estratégias de cuidados com a saúde articular",
-      "url": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxPYnZMem9STmk4SXBaUWxkeTFJUFhNa0wtUHRJbmlYSlpPLXhQY3Q3cnRYSnJ2N1Vocmt4NkluaHoyRHpRYXVUUE9ISG9Hb01hbnRTSTk5VVRZTnVTbDc3M0hEa2lsaXd6WUNlX2ZQbWY2eXRlQ3hRQ2FESXY0NUoxeWo4R19KV2k3VERlNXNFTEtLcW9YM3lpUUlrOWZJMlJYUEFEM19Pc3U5VEZxZ25BVUd0RWgyeFFGWTJMT0l2OTdvaGh3TEZkNHBoa0Nad2hDelliUlVfZEJzNlBwWnNORUJOTmtDallyQ1Nvb0prVkxjaXh3UHZV?oc=5",
-      "source": "www.imparcial.com.br",
+      "title": "Portal UFS - UFS inicia atendimento veterinário gratuito para cavalos",
+      "url": "https://news.google.com/rss/articles/CBMilAFBVV95cUxOXzdvTXRWQUtzR3NOUGtGdWMtSDZqbWdWa0JXWkFDSWN5QlJQZEhLLUlHRDdYVXh2eGZBSHYteWl2ckd6WUZJY0hFbGZoTXdvaWw3ellpQ1lSalhOYW0xRDJLR0Y0OExGMGlDVmZId3Izc2JBZUEtaE42RTkwcEpDVEFqWktjVWliS0V5T3VlVVFNM2FP?oc=5",
+      "source": "Portal UFS",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-11-26T09:30:00.000Z"
+      "publishedAt": "2026-10-20T07:00:00.000Z"
     },
     {
-      "title": "Assistência veterinária em competições, comunicação e comportamento equino são temas dos novos episódios do Voz Equestre",
-      "url": "https://news.google.com/rss/articles/CBMi7AFBVV95cUxNTW5nUXBBcmZwOHNvVU9DVHpSV2NYazFQaml6SXhtUGFBVmxWT1VRM3g1TGZJRVNGTXRQd3RCNlIyOC1vZlc3WDVRUVgxM25STU00N1U3N0N5WjRKZ3hOc3lubnd6bHJZajB2dE9zY0dBYjM4VGlaMjk0dHp6d0hOcnZDbHBjRjNiNGg1N0piZGxUOGJ3N2M4TDJrckFRRXV0V29WSkxsU2FDMEdFUVpZZnkxRXRZbXIzY3FIZFR6ZklsV1NHUnNGLU5Ta3htUkNleC1XbzZZbWJnblVzaUw5ZDg5M3R3T2ZJc2JRZA?oc=5",
-      "source": "jornaltribuna.com.br",
+      "title": "Quem é a veterinária brasileira que deixou Minas pelos EUA e descobriu nos cavalos uma paixão para a vida",
+      "url": "https://news.google.com/rss/articles/CBMi-AFBVV95cUxNWHkwaThaMW5PRXFZenJDYWVYcFUwbHNpdEV4aktxOWNNRExhZFVnSllycGRmZ01vMGxQWG1OXzMwY3l2V1oyVHQ2THBaalhUWFZPMjZrbzltMUNfQ1ZWbWlqdG9sSDd6ZWVqd0w3aTJ5RjFuNVV2Nmp6ZVhzbTZ3TkZaRkhNNFJJV1R0ZjFuZHpvMjFZRzNjUzFPdE9sWk1yamZ3QVhnSm1rZGd2cGxxUTNCODZabm9SZFVTTlhsWThxQVBCWEVuaWxVMU5yYnNqay1pQ2ljZlNtdmdVaWpKNlB2X2tDbDZrVmJVTHRkTndSRHN0QWJvOdIBhwJBVV95cUxNX3E1UHhlMTVkc01sbm1fcnRUR3VCRllTVXBKZ2J2UTdHY0ZuczZzSkNWZ3hsQW4xM1FWdTY3Zk03ZC12ZFY5ZWp4bDB2OVhSaERqS2E1aGVWcjBrT1ItZTNrR1diSUQtbTAtQ2dzdDhFTzJmUVdhYi1uUUN3U2xtWUp5dkFZTzQ5S2tHVkVvSWhTRmFlVjlrNGx2Umo5c0JGTEpyMkNyUFhrVGcwS2RmWUJJcFp5VlByd05jQlZsZlcxSkYxWjRwMWpETjBZWkZ2NXg0d2hCLVlRdHRfRkczM0tyOGM4Y2lnenBybUdzWkFUX0JiNExlYWpIV2hkSUJZYjB0MHJLQQ?oc=5",
+      "source": "O GLOBO",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-11-19T17:13:17.000Z"
+      "publishedAt": "2026-10-08T07:00:00.000Z"
     },
     {
-      "title": "Vacinação de cavalos ajuda a prevenir tétano e encefalomielite no plantel",
-      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBpNFoySUFDX0pFdzU2X3BHMHg2TDRpUWZUdU05XzVENjZTQTlZSkk3bm82T2pDdjQwSGpuT3F1QUMtdHhncHFiWVl1ZmV2MlBqSXlwVUZzSnVXSjlSZmVHVk9CRHdQS3RSS2VWQUljdDdKZ0txX2NiTkxyTGo?oc=5",
-      "source": "CompreRural",
+      "title": "Aesp promove primeiro curso militar de auxiliar de médico veterinário em equinos",
+      "url": "https://news.google.com/rss/articles/CBMivgFBVV95cUxNNC1YalJKQXZmNGptMTlQeHJvWDNlbWZQd2hpTGVnYkdIeU1MTWZVWVVLOGhnVDhVaUwtMkdHb0hxUlhBQ3Vnc1A0eU15eEhfcHl4ckdtWHlYUUNpcVdEbmdHRXVWSGVNTC1adGRrMkhCdDNrUHNsNjFvc3loeTJsam1JS2swVnBMcnJNLXRDa3dQa0F0aTlCVzJyQTNIWjNjM1pTbERpQkxONjJ1OXNKZ0hGWUNMYzhRWE1ldGFR?oc=5",
+      "source": "Governo do Estado do Ceará",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-11-18T22:39:38.000Z"
+      "publishedAt": "2026-10-07T07:00:00.000Z"
     },
     {
-      "title": "Medicina interna de equinos: Primeira diplomada formada em Portugal",
-      "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE9wX3BpbmZrS3BndVRqQXlYZ2lRdUxmY2xMQzhrVE5SSjVETDF6bmdpV0MwbVhYcGZWNzVyb3Jtb3JVWjRkN1B6ZEJnTzZqdF83QmdKZi1fTHBldXRRalZXR1BEaUF5UjNkaXhzTk9MVGJuSW9QUmVjbVdKQmM?oc=5",
-      "source": "Veterinaria Atual",
+      "title": "Conheça as pesquisas da UFU sobre a saúde de equinos",
+      "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxOekU0LVJFeHFqb0RxT3JtZ3Z3ZVA5empKOEpwcWpTQUtfZW5lVEZaOG03T21nVUNSVWxuT2kxU2NXZnM3WjF5YTBwQ1RmV0VQNzF2aVZtREhlR3VmZVZZcldSM2pMLXBNTy1sSzhmbktwMnVZNl91U1hGZGJCUi1rc1k2OG9hOG1hT2hJalktNnQ?oc=5",
+      "source": "Comunica UFU",
       "sourceKind": "imprensa",
       "sourceLabel": "Notícias (via Google Notícias)",
       "lang": "pt",
-      "publishedAt": "2026-11-16T09:56:53.000Z"
-    },
-    {
-      "title": "Estudantes de Medicina Veterinária da Afya atuam no atendimento a cavalos atletas em feira agropecuária",
-      "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxPc2E1LUZXSWJocDdOREdWNW0tT2l1eE04ay1GNkZhSFF3MVRFdnVsUlpSMVNvRm9OZzJhYUFVNXZJWUVHbkNaWlU4MjJaZzV6YnZ5Mk5FWHBZekxDamVxQ1ZUVjR6cnpwTXhrcTNZS01mTmEzbDRGR25Pek5keTBTNlJfeFVMWGFkeWg4dUdxb2Z6UkJuRF81eWtjcF8wajZoOXVFMGRvU1dNY1Bqd0szVl8xWjJaTkZYa1NrM0tiLXpsVEs1VjE0SlFtS0dVcjltT1pRMUQ1ZzJNZy1CaTgtTF9LcDI5ME1famxRYUVLZmlJbUZs?oc=5",
-      "source": "Afya | Home",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-11-02T08:00:00.000Z"
-    },
-    {
-      "title": "UFS oferece atendimento veterinário gratuito para cavalos em Sergipe",
-      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQQUExZFJOWWR0eV9MdmlGS2ZuR2x5UzZhdUVIS0ZNX3JTWW41N0pIcWM4UkNJMkUxZk5MazhqekE5SURWcHVrczN3b3FXRjBDLTBHbkJUNGZtRlJYcUtraksyRFluSVI5RVljZktuZXVUWDE2ZFcwN0NvSm5BMEN2VXFObGd5UDZkX2wwVWlKdnA4di1faHAxVm5ENVR1RDJEdjhzNzhlNThQQQ?oc=5",
-      "source": "RO Acontece",
-      "sourceKind": "imprensa",
-      "sourceLabel": "Notícias (via Google Notícias)",
-      "lang": "pt",
-      "publishedAt": "2026-10-20T17:48:33.000Z"
+      "publishedAt": "2026-08-18T07:00:00.000Z"
     },
     {
       "title": "Corrigendum to Evaluation of a canine Coll2-1 ELISA kit for use in equine serum and its correlation with radiographic joint disease, Journal of Equine Veterinary Science 166 (2026) 106063",
@@ -111,8 +102,8 @@
       "publishedAt": null
     },
     {
-      "title": "Quercetin reduces post-thaw oxidative markers during equine semen cryopreservation",
-      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004533?dgcid=rss_sd_all",
+      "title": "A rare case of equine pulmonary and encephalic cryptococcosis with progressive neurologic disease",
+      "url": "https://www.sciencedirect.com/science/article/pii/S0737080626004648?dgcid=rss_sd_all",
       "source": "Journal of Equine Veterinary Science",
       "sourceKind": "ciencia",
       "sourceLabel": "Ciência (Elsevier)",
