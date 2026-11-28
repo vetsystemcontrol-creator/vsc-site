@@ -1,9 +1,9 @@
 {
-  "versionCode": 3632834,
-  "versionName": "26.1.1234 (a1cd6e38)",
+  "versionCode": 3632981,
+  "versionName": "26.1.1246 (ffd18aaa)",
   "apkUrl": "https://www.vetsystemcontrol.com.br/downloads/vetsystemcontrol-equine.apk",
-  "sizeBytes": 5014850,
-  "sha256": "26b33625d61c68b0c7627241ea57cb561152bf07a6f4d247a3b3928ae6c17b24",
-  "publishedAt": "2026-11-27T22:15:49.713Z",
-  "notes": "Fim do conflito falso nos atendimentos com produto, item e financeiro; e \"ficar com a versão do servidor\" passa a funcionar também para produto."
+  "sizeBytes": 5016282,
+  "sha256": "6e2129f60d5f6fef4d8562ae8329a03271507178ca37bd67dbb05385214a7897",
+  "publishedAt": "2026-11-28T00:42:55.048Z",
+  "notes": "Os dados do app deixam de ir para o backup do Android: um tablet novo ou um app reinstalado começa vazio e baixa tudo do servidor."
 }
